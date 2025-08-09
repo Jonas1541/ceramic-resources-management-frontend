@@ -1,0 +1,47 @@
+<h1 mat-dialog-title>{{ isEditMode ? 'Editar Produto' : 'Adicionar Produto' }}</h1>
+
+<div mat-dialog-content [formGroup]="productForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Nome</mat-label>
+    <input matInput formControlName="name" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Preço</mat-label>
+    <input matInput type="text" formControlName="price" appDecimalMask required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Altura</mat-label>
+    <input matInput type="text" formControlName="height" appDecimalMask required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Comprimento</mat-label>
+    <input matInput type="text" formControlName="length" appDecimalMask required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Largura</mat-label>
+    <input matInput type="text" formControlName="width" appDecimalMask required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Tipo de Produto</mat-label>
+    <mat-select formControlName="typeId" required>
+      <mat-option *ngFor="let type of productTypes" [value]="type.id">{{ type.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Linha de Produto</mat-label>
+    <mat-select formControlName="lineId" required>
+      <mat-option *ngFor="let line of productLines" [value]="line.id">{{ line.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="productForm.invalid">Salvar</button>
+</div>

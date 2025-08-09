@@ -1,0 +1,52 @@
+<div class="container">
+  <h1>Relatório Geral Anual</h1>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Ano</mat-label>
+    <input matInput type="number" [(ngModel)]="currentYear" (change)="onYearChange($event)">
+  </mat-form-field>
+
+  <div *ngIf="yearReport">
+    <h2>Resumo do Ano {{ yearReport.year }}</h2>
+    <p>Total de Entradas (Quantidade): {{ yearReport.totalIncomingQty }}</p>
+    <p>Total de Entradas (Custo): {{ yearReport.totalIncomingCost | currency:'BRL' }}</p>
+    <p>Total de Saídas (Quantidade): {{ yearReport.totalOutgoingQty }}</p>
+    <p>Total de Saídas (Lucro): {{ yearReport.totalOutgoingProfit | currency:'BRL' }}</p>
+
+    <h2>Relatório Mensal</h2>
+    <table mat-table [dataSource]="yearReport.months" class="mat-elevation-z8">
+
+      <!-- Colunas de Dados -->
+      <ng-container matColumnDef="monthName">
+        <th mat-header-cell *matHeaderCellDef> Mês </th>
+        <td mat-cell *matCellDef="let element"> {{element.monthName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="incomingQty">
+        <th mat-header-cell *matHeaderCellDef> Entradas (Qtd) </th>
+        <td mat-cell *matCellDef="let element"> {{element.incomingQty}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="incomingCost">
+        <th mat-header-cell *matHeaderCellDef> Entradas (Custo) </th>
+        <td mat-cell *matCellDef="let element"> {{element.incomingCost | currency:'BRL'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="outgoingQty">
+        <th mat-header-cell *matHeaderCellDef> Saídas (Qtd) </th>
+        <td mat-cell *matCellDef="let element"> {{element.outgoingQty}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="outgoingProfit">
+        <th mat-header-cell *matHeaderCellDef> Saídas (Lucro) </th>
+        <td mat-cell *matCellDef="let element"> {{element.outgoingProfit | currency:'BRL'}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <div *ngIf="!yearReport">
+    <p>Carregando relatório...</p>
+  </div>
+</div>

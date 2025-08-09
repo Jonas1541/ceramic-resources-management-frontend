@@ -1,0 +1,41 @@
+<div class="container">
+  <h1>Fornos</h1>
+
+  <button mat-raised-button color="primary" (click)="openKilnForm()">Adicionar Forno</button>
+
+  <table mat-table [dataSource]="kilns" class="mat-elevation-z8">
+
+    <!-- Colunas de Dados -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Nome </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="power">
+      <th mat-header-cell *matHeaderCellDef> Potência (CV) </th>
+      <td mat-cell *matCellDef="let element"> {{element.power | decimalFormat}} </td>
+    </ng-container>
+
+    <!-- Coluna de Ações -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Ações </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary" (click)="openKilnForm(element)" title="Editar Forno">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteKiln(element.id)" title="Excluir Forno">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" (click)="openBisqueFiringList(element.id)" title="Ver Queimas de Biscoito">
+          <mat-icon>local_fire_department</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" (click)="openGlazeFiringList(element.id)" title="Ver Queimas de Esmalte">
+          <mat-icon>local_fire_department</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

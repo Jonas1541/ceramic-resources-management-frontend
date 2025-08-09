@@ -1,0 +1,60 @@
+<h1 mat-dialog-title>{{ isEditMode ? 'Editar Batelada' : 'Adicionar Batelada' }}</h1>
+
+<div mat-dialog-content [formGroup]="batchForm">
+  
+  <!-- Seção de Uso de Recursos -->
+  <h2>Uso de Recursos</h2>
+  <div formArrayName="resourceUsages">
+    <div *ngFor="let resourceUsage of resourceUsages.controls; let i=index" [formGroupName]="i" class="form-array-item vertical-layout">
+      <mat-form-field appearance="fill">
+        <mat-label>Recurso</mat-label>
+        <mat-select formControlName="resourceId" required>
+          <mat-option *ngFor="let resource of resources" [value]="resource.id">{{ resource.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Qtd. Inicial</mat-label>
+        <input matInput type="text" formControlName="initialQuantity" appDecimalMask required>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Umidade (%)</mat-label>
+        <input matInput type="text" formControlName="umidity" appDecimalMask required>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Qtd. Adicionada</mat-label>
+        <input matInput type="text" formControlName="addedQuantity" appDecimalMask required>
+      </mat-form-field>
+      <button mat-icon-button color="warn" (click)="removeResourceUsage(i)" title="Remover Recurso">
+        <mat-icon>remove_circle</mat-icon>
+      </button>
+    </div>
+  </div>
+  <button mat-stroked-button color="primary" (click)="addResourceUsage()">Adicionar Recurso</button>
+
+  <!-- Seção de Uso de Máquinas -->
+  <h2 class="section-title">Uso de Máquinas</h2>
+  <div formArrayName="machineUsages">
+    <div *ngFor="let machineUsage of machineUsages.controls; let i=index" [formGroupName]="i" class="form-array-item vertical-layout">
+      <mat-form-field appearance="fill">
+        <mat-label>Máquina</mat-label>
+        <mat-select formControlName="machineId" required>
+          <mat-option *ngFor="let machine of machines" [value]="machine.id">{{ machine.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Tempo de Uso (horas)</mat-label>
+        <input matInput type="text" formControlName="usageTime" appDecimalMask required>
+      </mat-form-field>
+      <button mat-icon-button color="warn" (click)="removeMachineUsage(i)" title="Remover Máquina">
+        <mat-icon>remove_circle</mat-icon>
+      </button>
+    </div>
+  </div>
+  <button mat-stroked-button color="primary" (click)="addMachineUsage()">Adicionar Máquina</button>
+
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="batchForm.invalid">Salvar</button>
+</div>

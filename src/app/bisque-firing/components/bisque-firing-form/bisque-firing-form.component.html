@@ -1,0 +1,66 @@
+<h1 mat-dialog-title>{{ isEditMode ? 'Editar Queima de Biscoito' : 'Adicionar Queima de Biscoito' }}</h1>
+
+<div mat-dialog-content [formGroup]="bisqueFiringForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Temperatura (°C)</mat-label>
+    <input matInput type="text" formControlName="temperature" appDecimalMask required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Tempo de Queima (horas)</mat-label>
+    <input matInput type="text" formControlName="burnTime" appDecimalMask required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Tempo de Resfriamento (horas)</mat-label>
+    <input matInput type="text" formControlName="coolingTime" appDecimalMask required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Consumo de Gás (m³)</mat-label>
+    <input matInput type="text" formControlName="gasConsumption" appDecimalMask required>
+  </mat-form-field>
+
+  <!-- Seção de Produtos -->
+  <h2 class="section-title">Produtos</h2>
+  <div formArrayName="biscuits">
+    <div *ngFor="let biscuitControl of biscuits.controls; let i=index" class="form-array-item">
+      <mat-form-field appearance="fill">
+        <mat-label>Produto</mat-label>
+        <mat-select [formControl]="biscuitControl" required>
+          <mat-option *ngFor="let transaction of productTransactions" [value]="transaction.id">{{ transaction.productName }} - ID: {{ transaction.id }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-icon-button color="warn" (click)="removeBiscuit(i)" title="Remover Produto">
+        <mat-icon>remove_circle</mat-icon>
+      </button>
+    </div>
+  </div>
+  <button mat-stroked-button color="primary" (click)="addBiscuit()">Adicionar Produto</button>
+
+  <!-- Seção de Uso de Máquinas -->
+  <h2 class="section-title">Uso de Máquinas</h2>
+  <div formArrayName="machineUsages">
+    <div *ngFor="let machineUsage of machineUsages.controls; let i=index" [formGroupName]="i" class="form-array-item">
+      <mat-form-field appearance="fill">
+        <mat-label>Máquina</mat-label>
+        <mat-select formControlName="machineId" required>
+          <mat-option *ngFor="let machine of machines" [value]="machine.id">{{ machine.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Tempo de Uso (horas)</mat-label>
+        <input matInput type="text" formControlName="usageTime" appDecimalMask required>
+      </mat-form-field>
+      <button mat-icon-button color="warn" (click)="removeMachineUsage(i)" title="Remover Máquina">
+        <mat-icon>remove_circle</mat-icon>
+      </button>
+    </div>
+  </div>
+  <button mat-stroked-button color="primary" (click)="addMachineUsage()">Adicionar Máquina</button>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="bisqueFiringForm.invalid">Salvar</button>
+</div>

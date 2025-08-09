@@ -1,0 +1,43 @@
+<div class="container">
+  <h1>Estufas</h1>
+
+  <button mat-raised-button color="primary" (click)="openDryingRoomForm()">Adicionar Estufa</button>
+
+  <table mat-table [dataSource]="dryingRooms" class="mat-elevation-z8">
+
+    <!-- Colunas de Dados -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Nome </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="gasConsumptionPerHour">
+      <th mat-header-cell *matHeaderCellDef> Consumo de Gás (m³/h) </th>
+      <td mat-cell *matCellDef="let element"> {{element.gasConsumptionPerHour | decimalFormat}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="uses">
+      <th mat-header-cell *matHeaderCellDef> Usos </th>
+      <td mat-cell *matCellDef="let element"> {{element.uses}} </td>
+    </ng-container>
+
+    <!-- Coluna de Ações -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Ações </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary" (click)="openDryingRoomForm(element)" title="Editar Estufa">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteDryingRoom(element.id)" title="Excluir Estufa">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button (click)="openSessionList(element.id)" title="Ver Usos">
+          <mat-icon>list_alt</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

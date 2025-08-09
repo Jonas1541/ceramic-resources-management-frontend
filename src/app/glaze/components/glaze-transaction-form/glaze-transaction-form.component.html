@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>Registrar Transação de Glasura</h1>
+
+<div mat-dialog-content [formGroup]="transactionForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Tipo de Transação</mat-label>
+    <mat-select formControlName="type" required>
+      <mat-option *ngFor="let type of transactionTypes" [value]="type">
+        {{ type === 'INCOMING' ? 'Entrada' : 'Saída' }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Quantidade (kg)</mat-label>
+    <input matInput type="text" formControlName="quantity" appDecimalMask required>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="transactionForm.invalid">Salvar</button>
+</div>

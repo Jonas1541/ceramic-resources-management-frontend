@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Registrar Saída de Produto</h1>
+
+<div mat-dialog-content [formGroup]="outgoingForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Motivo da Saída</mat-label>
+    <mat-select formControlName="outgoingReason" required>
+      <mat-option *ngFor="let reason of outgoingReasons" [value]="reason">
+        {{ reason === 'SOLD' ? 'Venda' : 'Descarte por Defeito' }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="outgoingForm.invalid">Salvar</button>
+</div>

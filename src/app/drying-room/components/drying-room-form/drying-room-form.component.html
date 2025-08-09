@@ -1,0 +1,36 @@
+<h1 mat-dialog-title>{{ isEditMode ? 'Editar' : 'Adicionar' }} Estufa</h1>
+
+<div mat-dialog-content [formGroup]="dryingRoomForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Nome</mat-label>
+    <input matInput formControlName="name" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Consumo de Gás por Hora (m³/h)</mat-label>
+    <input matInput type="text" formControlName="gasConsumptionPerHour" appDecimalMask required>
+  </mat-form-field>
+
+  <!-- Seção de Máquinas Associadas -->
+  <h2 class="section-title">Máquinas Associadas</h2>
+  <div formArrayName="machineIds">
+    <div *ngFor="let machineIdControl of machineIds.controls; let i=index" [formGroupName]="i" class="form-array-item">
+      <mat-form-field appearance="fill">
+        <mat-label>Máquina</mat-label>
+        <mat-select [formControl]="machineIdControl" required>
+          <mat-option *ngFor="let machine of machines" [value]="machine.id">{{ machine.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-icon-button color="warn" (click)="removeMachineId(i)" title="Remover Máquina">
+        <mat-icon>remove_circle</mat-icon>
+      </button>
+    </div>
+  </div>
+  <button mat-stroked-button color="primary" (click)="addMachineId()">Adicionar Máquina</button>
+
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="dryingRoomForm.invalid">Salvar</button>
+</div>

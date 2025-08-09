@@ -1,0 +1,82 @@
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { ProductService } from '../../services/product.service';
+import { ProductTransaction } from '../../models/product-transaction.model';
+import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+
+import { ProductTransactionFormComponent } from '../product-transaction-form/product-transaction-form.component';
+import { ProductTransactionOutgoingFormComponent } from '../product-transaction-outgoing-form/product-transaction-outgoing-form.component';
+
+import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
+
+@Component({
+  selector: 'app-product-transaction-list',
+  standalone: true,
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, CurrencyPipe, MatIconModule, ProductTransactionFormComponent, DecimalFormatPipe],
+  providers: [DecimalPipe],
+  templateUrl: './product-transaction-list.component.html',
+  styleUrls: ['./product-transaction-list.component.scss']
+})
+export class ProductTransactionListComponent implements OnInit {
+
+  transactions: ProductTransaction[] = [];
+  displayedColumns: string[] = ['id', 'state', 'productName', 'glazeColor', 'glazeQuantity', 'profit', 'createdAt', 'outgoingAt', 'outgoingReason', 'actions'];
+
+  constructor(
+    private productService: ProductService,
+    public dialog: MatDialog,
+    public dialogRef: MatDialogRef<ProductTransactionListComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { productId: string }
+  ) { }
+
+  ngOnInit(): void {
+    this.loadTransactions();
+  }
+
+  loadTransactions(): void {
+    this.productService.getProductTransactions(this.data.productId).subscribe(data => {
+      this.transactions = data;
+    });
+  }
+
+  outgoingTransaction(transactionId: string): void {
+    const dialogRef = this.dialog.open(ProductTransactionOutgoingFormComponent, {
+      width: '400px',
+      data: { productId: this.data.productId, transactionId: transactionId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadTransactions();
+      }
+    });
+  }
+
+  onClose(): void {
+    this.dialogRef.close();
+  }
+
+  deleteTransaction(transactionId: string): void {
+    if (confirm('Tem certeza que deseja excluir esta transação?')) {
+      this.productService.deleteProductTransaction(this.data.productId, transactionId).subscribe(() => {
+        this.loadTransactions();
+      });
+    }
+  }
+
+  openTransactionForm(): void {
+    const dialogRef = this.dialog.open(ProductTransactionFormComponent, {
+      width: '400px',
+      data: { productId: this.data.productId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadTransactions();
+      }
+    });
+  }
+}

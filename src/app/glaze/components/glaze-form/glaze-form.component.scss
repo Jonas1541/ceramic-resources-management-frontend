@@ -1,0 +1,26 @@
+.form-array-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-array-item mat-form-field {
+  flex: 1;
+}
+
+.section-title {
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.vertical-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vertical-layout-item {
+  flex-direction: column;
+  align-items: stretch;
+}

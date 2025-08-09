@@ -1,0 +1,24 @@
+<div class="container">
+  <h1>Gerenciamento da Conta</h1>
+
+  <div *ngIf="deletionStatus">
+    <h2>Status da Exclusão</h2>
+    <p *ngIf="deletionStatus.isMarkedForDeletion">
+      Sua conta está marcada para exclusão em {{ deletionStatus.deletionScheduledAt | date:'short' }}.
+    </p>
+    <p *ngIf="!deletionStatus.isMarkedForDeletion">
+      Sua conta não está marcada para exclusão.
+    </p>
+
+    <button mat-raised-button color="warn" (click)="scheduleDeletion()" [disabled]="deletionStatus.isMarkedForDeletion">
+      Agendar Exclusão
+    </button>
+    <button mat-raised-button (click)="cancelDeletion()" [disabled]="!deletionStatus.isMarkedForDeletion">
+      Cancelar Exclusão
+    </button>
+  </div>
+
+  <div *ngIf="!deletionStatus">
+    <p>Carregando status da exclusão...</p>
+  </div>
+</div>

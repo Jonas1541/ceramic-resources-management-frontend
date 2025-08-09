@@ -1,0 +1,81 @@
+<h1 mat-dialog-title>Detalhes da Batelada</h1>
+
+<div mat-dialog-content *ngIf="batch" class="details-container">
+  <div class="info-section">
+    <h2>Informações Gerais</h2>
+    <p><strong>ID:</strong> {{ batch.id }}</p>
+    <p><strong>Criado Em:</strong> {{ batch.createdAt | date:'short' }}</p>
+    <p><strong>Atualizado Em:</strong> {{ batch.updatedAt | date:'short' }}</p>
+  </div>
+
+  <div class="info-section">
+    <h2>Custos e Consumo</h2>
+    <p><strong>Água Total da Batelada (m³):</strong> {{ batch.batchTotalWater | decimalFormat }}</p>
+    <p><strong>Custo Total da Água (R$):</strong> {{ batch.batchTotalWaterCost | currency:'BRL' }}</p>
+    <p><strong>Quantidade Total de Recursos (kg):</strong> {{ batch.resourceTotalQuantity | decimalFormat }}</p>
+    <p><strong>Custo Total dos Recursos (R$):</strong> {{ batch.resourceTotalCost | currency:'BRL' }}</p>
+    <p><strong>Consumo de Energia das Máquinas (kWh):</strong> {{ batch.machinesEnergyConsumption | decimalFormat }}</p>
+    <p><strong>Custo de Energia das Máquinas (R$):</strong> {{ batch.machinesEnergyConsumptionCost | currency:'BRL' }}</p>
+    <p><strong>Custo Final da Batelada (R$):</strong> {{ batch.batchFinalCost | currency:'BRL' }}</p>
+  </div>
+
+  <div class="table-section">
+    <h2>Uso de Recursos</h2>
+    <table mat-table [dataSource]="batch.resourceUsages" class="mat-elevation-z8">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Nome </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="initialQuantity">
+        <th mat-header-cell *matHeaderCellDef> Qtd. Inicial (kg) </th>
+        <td mat-cell *matCellDef="let element"> {{element.initialQuantity | decimalFormat}} </td>
+      </ng-container>
+      <ng-container matColumnDef="umidity">
+        <th mat-header-cell *matHeaderCellDef> Umidade (%) </th>
+        <td mat-cell *matCellDef="let element"> {{element.umidity | percent:'1.0-2':'pt-BR'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="addedQuantity">
+        <th mat-header-cell *matHeaderCellDef> Qtd. Adicionada (kg) </th>
+        <td mat-cell *matCellDef="let element"> {{element.addedQuantity | decimalFormat}} </td>
+      </ng-container>
+      <ng-container matColumnDef="totalQuantity">
+        <th mat-header-cell *matHeaderCellDef> Qtd. Total (kg) </th>
+        <td mat-cell *matCellDef="let element"> {{element.totalQuantity | decimalFormat}} </td>
+      </ng-container>
+      <ng-container matColumnDef="totalWater">
+        <th mat-header-cell *matHeaderCellDef> Água Total (m³) </th>
+        <td mat-cell *matCellDef="let element"> {{element.totalWater | decimalFormat}} </td>
+      </ng-container>
+      <ng-container matColumnDef="totalCost">
+        <th mat-header-cell *matHeaderCellDef> Custo Total (R$) </th>
+        <td mat-cell *matCellDef="let element"> {{element.totalCost | currency:'BRL'}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="resourceUsagesColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: resourceUsagesColumns;"></tr>
+    </table>
+  </div>
+
+  <div class="table-section">
+    <h2>Uso de Máquinas</h2>
+    <table mat-table [dataSource]="batch.machineUsages" class="mat-elevation-z8">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Nome </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="usageTime">
+        <th mat-header-cell *matHeaderCellDef> Tempo de Uso (horas) </th>
+        <td mat-cell *matCellDef="let element"> {{element.usageTime | decimalFormat}} </td>
+      </ng-container>
+      <ng-container matColumnDef="energyConsumption">
+        <th mat-header-cell *matHeaderCellDef> Consumo de Energia (kWh) </th>
+        <td mat-cell *matCellDef="let element"> {{element.energyConsumption | decimalFormat}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="machineUsagesColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: machineUsagesColumns;"></tr>
+    </table>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onClose()">Fechar</button>
+</div>

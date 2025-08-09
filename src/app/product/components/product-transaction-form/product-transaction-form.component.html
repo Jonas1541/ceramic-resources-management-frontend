@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Registrar Transação de Produto</h1>
+
+<div mat-dialog-content [formGroup]="transactionForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Quantidade</mat-label>
+    <input matInput type="text" formControlName="quantity" appDecimalMask required min="1">
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="transactionForm.invalid">Salvar</button>
+</div>
