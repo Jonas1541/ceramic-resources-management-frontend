@@ -9,5 +9,5 @@ export interface GlazeFiring {
     gasConsumption: number;
     kiln: Kiln;
     machineUsages: FiringMachineUsage[];
-    costAtTime: number;
+    cost: number;
 }

@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angu
 import { GlazeFiringService } from '../../services/glaze-firing.service';
 import { GlazeFiring } from '../../models/glaze-firing.model';
 import { GlazeFiringFormComponent } from '../glaze-firing-form/glaze-firing-form.component';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,12 +14,13 @@ import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
   selector: 'app-glaze-firing-list',
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe],
+  providers: [DecimalPipe],
   templateUrl: './glaze-firing-list.component.html',
   styleUrls: ['./glaze-firing-list.component.scss']
 })
 export class GlazeFiringListComponent implements OnInit {
 
-  displayedColumns: string[] = ['temperature', 'burnTime', 'coolingTime', 'gasConsumption', 'kiln', 'costAtTime', 'actions'];
+  displayedColumns: string[] = ['id', 'createdAt', 'updatedAt', 'temperature', 'burnTime', 'coolingTime', 'gasConsumption', 'cost', 'actions'];
   glazeFirings: GlazeFiring[] = [];
 
   constructor(

@@ -6,6 +6,25 @@
   <table mat-table [dataSource]="bisqueFirings" class="mat-elevation-z8">
 
     <!-- Colunas de Dados -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> ID </th>
+      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef> Criado Em </th>
+      <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'short'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="updatedAt">
+      <th mat-header-cell *matHeaderCellDef> Atualizado Em </th>
+      <td mat-cell *matCellDef="let element">
+        <span *ngIf="element.updatedAt !== element.createdAt">
+          {{element.updatedAt | date:'short'}}
+        </span>
+      </td>
+    </ng-container>
+
     <ng-container matColumnDef="temperature">
       <th mat-header-cell *matHeaderCellDef> Temperatura (°C) </th>
       <td mat-cell *matCellDef="let element"> {{element.temperature | decimalFormat}} </td>
@@ -26,14 +45,15 @@
       <td mat-cell *matCellDef="let element"> {{element.gasConsumption | decimalFormat}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="kiln">
-      <th mat-header-cell *matHeaderCellDef> Forno </th>
-      <td mat-cell *matCellDef="let element"> {{element.kiln.name}} </td>
-    </ng-container>
+    
 
-    <ng-container matColumnDef="costAtTime">
+    <ng-container matColumnDef="cost">
       <th mat-header-cell *matHeaderCellDef> Custo (R$) </th>
-      <td mat-cell *matCellDef="let element"> {{element.costAtTime | currency:'BRL'}} </td>
+      <td mat-cell *matCellDef="let element">
+        <span *ngIf="element.cost !== null && element.cost !== undefined">
+          {{element.cost | currency:'BRL'}}
+        </span>
+      </td>
     </ng-container>
 
     <!-- Coluna de Ações -->
