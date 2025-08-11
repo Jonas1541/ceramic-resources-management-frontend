@@ -9,31 +9,23 @@ export const routes: Routes = [
       { path: '', redirectTo: 'resources', pathMatch: 'full' },
       { 
         path: 'resources', 
-        loadChildren: () => import('./resource/resource.module').then(m => m.ResourceModule) 
+        loadComponent: () => import('./resource/components/resource-list/resource-list.component').then(m => m.ResourceListComponent)
       },
       {
         path: 'glazes',
-        loadChildren: () => import('./glaze/glaze.module').then(m => m.GlazeModule)
+        loadComponent: () => import('./glaze/components/glaze-list/glaze-list.component').then(m => m.GlazeListComponent)
       },
       {
         path: 'batches',
-        loadChildren: () => import('./batch/batch.module').then(m => m.BatchModule)
+        loadComponent: () => import('./batch/components/batch-list/batch-list.component').then(m => m.BatchListComponent)
       },
       {
         path: 'machines',
-        loadChildren: () => import('./machine/machine.module').then(m => m.MachineModule)
+        loadComponent: () => import('./machine/components/machine-list/machine-list.component').then(m => m.MachineListComponent)
       },
       {
         path: 'products',
-        loadChildren: () => import('./product/product.module').then(m => m.ProductModule)
-      },
-      {
-        path: 'bisque-firings',
-        loadChildren: () => import('./bisque-firing/bisque-firing.module').then(m => m.BisqueFiringModule)
-      },
-      {
-        path: 'glaze-firings',
-        loadChildren: () => import('./glaze-firing/glaze-firing.module').then(m => m.GlazeFiringModule)
+        loadComponent: () => import('./product/components/product-list/product-list.component').then(m => m.ProductListComponent)
       },
       {
         path: 'drying-rooms',
@@ -41,20 +33,20 @@ export const routes: Routes = [
       },
       {
         path: 'kilns',
-        loadChildren: () => import('./kiln/kiln.module').then(m => m.KilnModule)
+        loadComponent: () => import('./kiln/components/kiln-list/kiln-list.component').then(m => m.KilnListComponent)
       },
       {
         path: 'reports',
-        loadChildren: () => import('./report/report.module').then(m => m.ReportModule)
+        loadComponent: () => import('./report/components/general-report/general-report.component').then(m => m.GeneralReportComponent)
       },
       {
         path: 'account',
-        loadChildren: () => import('./account-management/account-management.module').then(m => m.AccountManagementModule)
+        loadComponent: () => import('./account-management/components/account-management.component').then(m => m.AccountManagementComponent)
       }
     ]
   },
   {
     path: '', 
-    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+    loadChildren: () => import('./auth/auth.routes').then(m => m.AUTH_ROUTES)
   }
 ];
