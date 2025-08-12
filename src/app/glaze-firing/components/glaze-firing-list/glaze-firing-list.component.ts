@@ -10,10 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
+import { GlazeFiringDetailsComponent } from '../glaze-firing-details/glaze-firing-details.component';
+
 @Component({
   selector: 'app-glaze-firing-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe, GlazeFiringDetailsComponent],
   providers: [DecimalPipe],
   templateUrl: './glaze-firing-list.component.html',
   styleUrls: ['./glaze-firing-list.component.scss']
@@ -42,7 +44,7 @@ export class GlazeFiringListComponent implements OnInit {
 
   openGlazeFiringForm(glazeFiring?: GlazeFiring): void {
     const dialogRef = this.dialog.open(GlazeFiringFormComponent, {
-      width: '400px',
+      width: '700px',
       data: { glazeFiring: glazeFiring, kilnId: this.data.kilnId }
     });
 
@@ -50,6 +52,14 @@ export class GlazeFiringListComponent implements OnInit {
       if (result) {
         this.loadGlazeFirings();
       }
+    });
+  }
+
+  openGlazeFiringDetails(glazeFiringId: string): void {
+    this.dialog.open(GlazeFiringDetailsComponent, {
+      minWidth: '40vw',
+      maxWidth: '60vw',
+      data: { kilnId: this.data.kilnId, glazeFiringId: glazeFiringId }
     });
   }
 

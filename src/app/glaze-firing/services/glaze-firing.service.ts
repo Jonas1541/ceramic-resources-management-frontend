@@ -16,8 +16,8 @@ export class GlazeFiringService {
     return this.http.get<GlazeFiring[]>(`http://localhost:8080/kilns/${kilnId}/glaze-firings`);
   }
 
-  getGlazeFiring(id: string): Observable<GlazeFiring> {
-    return this.http.get<GlazeFiring>(`${this.apiUrl}/${id}`);
+  getGlazeFiring(kilnId: string, id: string): Observable<GlazeFiring> {
+    return this.http.get<GlazeFiring>(`http://localhost:8080/kilns/${kilnId}/glaze-firings/${id}`);
   }
 
   createGlazeFiring(kilnId: string, glazeFiring: Partial<GlazeFiring>): Observable<GlazeFiring> {

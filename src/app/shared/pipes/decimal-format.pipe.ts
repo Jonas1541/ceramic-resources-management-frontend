@@ -9,7 +9,7 @@ export class DecimalFormatPipe implements PipeTransform {
 
   constructor(private decimalPipe: DecimalPipe) {}
 
-  transform(value: number | string, digitsInfo: string = '1.2-2'): string | null {
+  transform(value: number | string, digitsInfo: string = '1.0-2'): string | null {
     if (value === null || value === undefined || value === '') {
       return null;
     }

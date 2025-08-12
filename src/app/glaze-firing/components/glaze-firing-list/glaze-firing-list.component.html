@@ -1,7 +1,7 @@
-<h1 mat-dialog-title>Queimas de Esmalte</h1>
+<h1 mat-dialog-title>Queimas de Glasura</h1>
 
 <div mat-dialog-content class="dialog-content">
-  <button mat-raised-button color="primary" (click)="openGlazeFiringForm()">Adicionar Queima de Esmalte</button>
+  <button mat-raised-button color="primary" (click)="openGlazeFiringForm()">Adicionar Queima de Glasura</button>
 
   <table mat-table [dataSource]="glazeFirings" class="mat-elevation-z8">
 
@@ -65,6 +65,9 @@
         </button>
         <button mat-icon-button color="warn" (click)="deleteGlazeFiring(element.id)" title="Excluir Queima">
           <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button (click)="openGlazeFiringDetails(element.id)" title="Ver Detalhes">
+          <mat-icon>visibility</mat-icon>
         </button>
       </td>
     </ng-container>

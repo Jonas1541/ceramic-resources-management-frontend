@@ -16,8 +16,8 @@ export class BisqueFiringService {
     return this.http.get<BisqueFiring[]>(`http://localhost:8080/kilns/${kilnId}/bisque-firings`);
   }
 
-  getBisqueFiring(id: string): Observable<BisqueFiring> {
-    return this.http.get<BisqueFiring>(`${this.apiUrl}/${id}`);
+  getBisqueFiring(kilnId: string, id: string): Observable<BisqueFiring> {
+    return this.http.get<BisqueFiring>(`http://localhost:8080/kilns/${kilnId}/bisque-firings/${id}`);
   }
 
   createBisqueFiring(kilnId: string, bisqueFiring: Partial<BisqueFiring>): Observable<BisqueFiring> {

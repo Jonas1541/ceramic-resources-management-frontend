@@ -10,10 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
+import { BisqueFiringDetailsComponent } from '../bisque-firing-details/bisque-firing-details.component';
+
 @Component({
   selector: 'app-bisque-firing-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe, BisqueFiringDetailsComponent],
   providers: [DecimalPipe],
   templateUrl: './bisque-firing-list.component.html',
   styleUrls: ['./bisque-firing-list.component.scss']
@@ -42,7 +44,7 @@ export class BisqueFiringListComponent implements OnInit {
 
   openBisqueFiringForm(bisqueFiring?: BisqueFiring): void {
     const dialogRef = this.dialog.open(BisqueFiringFormComponent, {
-      width: '400px',
+      width: '700px',
       data: { bisqueFiring: bisqueFiring, kilnId: this.data.kilnId }
     });
 
@@ -50,6 +52,14 @@ export class BisqueFiringListComponent implements OnInit {
       if (result) {
         this.loadBisqueFirings();
       }
+    });
+  }
+
+  openBisqueFiringDetails(bisqueFiringId: string): void {
+    this.dialog.open(BisqueFiringDetailsComponent, {
+      minWidth: '40vw',
+      maxWidth: '60vw',
+      data: { kilnId: this.data.kilnId, bisqueFiringId: bisqueFiringId }
     });
   }
 
