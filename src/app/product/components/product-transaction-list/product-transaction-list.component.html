@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Transações do Produto</h1>
+<h1 mat-dialog-title>Unidades em Estoque</h1>
 
 <div mat-dialog-content>
   <table mat-table [dataSource]="transactions" class="mat-elevation-z8">
@@ -8,7 +8,7 @@
     </ng-container>
     <ng-container matColumnDef="state">
       <th mat-header-cell *matHeaderCellDef> Estado </th>
-      <td mat-cell *matCellDef="let element"> {{element.state}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.state | translateProductState}} </td>
     </ng-container>
     <ng-container matColumnDef="productName">
       <th mat-header-cell *matHeaderCellDef> Produto </th>
@@ -36,13 +36,16 @@
     </ng-container>
     <ng-container matColumnDef="outgoingReason">
       <th mat-header-cell *matHeaderCellDef> Motivo da Saída </th>
-      <td mat-cell *matCellDef="let element"> {{element.outgoingReason}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.outgoingReason | translateOutgoingReason}} </td>
     </ng-container>
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> Ações </th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button color="primary" (click)="outgoingTransaction(element.id)" title="Registrar Saída">
+        <button mat-icon-button color="primary" (click)="outgoingTransaction(element.id)" title="Registrar Saída" *ngIf="element.state !== 'SOLD'">
           <mat-icon>north_east</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" (click)="cancelOutgoing(element.id)" title="Cancelar Saída" *ngIf="element.state === 'SOLD'">
+          <mat-icon>undo</mat-icon>
         </button>
         <button mat-icon-button color="warn" (click)="deleteTransaction(element.id)" title="Excluir Transação">
           <mat-icon>delete</mat-icon>
@@ -55,6 +58,6 @@
 </div>
 
 <div mat-dialog-actions>
-  <button mat-button (click)="openTransactionForm()">Adicionar Transação</button>
+  <button mat-button (click)="openTransactionForm()">Adicionar Unidade</button>
   <button mat-button (click)="onClose()">Fechar</button>
 </div>

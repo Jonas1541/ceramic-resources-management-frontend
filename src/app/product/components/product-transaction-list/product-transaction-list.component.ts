@@ -12,10 +12,14 @@ import { ProductTransactionOutgoingFormComponent } from '../product-transaction-
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
+import { TranslateProductStatePipe } from '../../../shared/pipes/translate-product-state.pipe';
+
+import { TranslateOutgoingReasonPipe } from '../../../shared/pipes/translate-outgoing-reason.pipe';
+
 @Component({
   selector: 'app-product-transaction-list',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, CurrencyPipe, MatIconModule, ProductTransactionFormComponent, DecimalFormatPipe],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, CurrencyPipe, MatIconModule, ProductTransactionFormComponent, DecimalFormatPipe, TranslateProductStatePipe, TranslateOutgoingReasonPipe],
   providers: [DecimalPipe],
   templateUrl: './product-transaction-list.component.html',
   styleUrls: ['./product-transaction-list.component.scss']
@@ -53,6 +57,14 @@ export class ProductTransactionListComponent implements OnInit {
         this.loadTransactions();
       }
     });
+  }
+
+  cancelOutgoing(transactionId: string): void {
+    if (confirm('Tem certeza que deseja cancelar a saída desta unidade?')) {
+      this.productService.cancelOutgoing(this.data.productId, transactionId).subscribe(() => {
+        this.loadTransactions();
+      });
+    }
   }
 
   onClose(): void {

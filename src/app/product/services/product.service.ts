@@ -52,4 +52,8 @@ export class ProductService {
   deleteProductTransaction(productId: string, transactionId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${productId}/transactions/${transactionId}`);
   }
+
+  cancelOutgoing(productId: string, transactionId: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${productId}/transactions/${transactionId}`, {});
+  }
 }
