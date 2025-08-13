@@ -19,7 +19,7 @@ import { TranslateOutgoingReasonPipe } from '../../../shared/pipes/translate-out
 @Component({
   selector: 'app-product-transaction-list',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, CurrencyPipe, MatIconModule, ProductTransactionFormComponent, DecimalFormatPipe, TranslateProductStatePipe, TranslateOutgoingReasonPipe],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, CurrencyPipe, MatIconModule, DecimalFormatPipe, TranslateProductStatePipe, TranslateOutgoingReasonPipe],
   providers: [DecimalPipe],
   templateUrl: './product-transaction-list.component.html',
   styleUrls: ['./product-transaction-list.component.scss']

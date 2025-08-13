@@ -15,7 +15,7 @@ import { BisqueFiringDetailsComponent } from '../bisque-firing-details/bisque-fi
 @Component({
   selector: 'app-bisque-firing-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe, BisqueFiringDetailsComponent],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './bisque-firing-list.component.html',
   styleUrls: ['./bisque-firing-list.component.scss']

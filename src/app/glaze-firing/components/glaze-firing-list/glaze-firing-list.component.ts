@@ -15,7 +15,7 @@ import { GlazeFiringDetailsComponent } from '../glaze-firing-details/glaze-firin
 @Component({
   selector: 'app-glaze-firing-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe, GlazeFiringDetailsComponent],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './glaze-firing-list.component.html',
   styleUrls: ['./glaze-firing-list.component.scss']
