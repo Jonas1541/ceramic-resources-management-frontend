@@ -12,18 +12,18 @@
     </ng-container>
 
     <ng-container matColumnDef="unitValue">
-      <th mat-header-cell *matHeaderCellDef> Custo por Kg (R$/kg) </th>
-      <td mat-cell *matCellDef="let element"> {{element.unitValue | currency:'BRL'}} </td>
+      <th mat-header-cell *matHeaderCellDef> Custo por Kg </th>
+      <td mat-cell *matCellDef="let element"> {{element.unitValue | currency:'BRL'}} /kg </td>
     </ng-container>
 
     <ng-container matColumnDef="currentQuantity">
-      <th mat-header-cell *matHeaderCellDef> Qtd. em Estoque (kg) </th>
-      <td mat-cell *matCellDef="let element"> {{element.currentQuantity | decimalFormat}} </td>
+      <th mat-header-cell *matHeaderCellDef> Qtd. em Estoque </th>
+      <td mat-cell *matCellDef="let element"> {{element.currentQuantity | decimalFormat}} kg </td>
     </ng-container>
 
     <ng-container matColumnDef="unitCost">
-      <th mat-header-cell *matHeaderCellDef> Custo de Produção (R$/kg) </th>
-      <td mat-cell *matCellDef="let element"> {{element.unitCost | currency:'BRL'}} </td>
+      <th mat-header-cell *matHeaderCellDef> Custo de Produção </th>
+      <td mat-cell *matCellDef="let element"> {{element.unitCost | currency:'BRL'}} /kg </td>
     </ng-container>
 
     <!-- Coluna de Ações -->

@@ -13,7 +13,7 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-label>Qtd. Inicial</mat-label>
+        <mat-label>Qtd. Inicial (kg)</mat-label>
         <input matInput type="text" formControlName="initialQuantity" appDecimalMask required>
       </mat-form-field>
       <mat-form-field appearance="fill">
@@ -21,7 +21,7 @@
         <input matInput type="text" formControlName="umidity" appDecimalMask required>
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-label>Qtd. Adicionada</mat-label>
+        <mat-label>Qtd. Adicionada (kg)</mat-label>
         <input matInput type="text" formControlName="addedQuantity" appDecimalMask required>
       </mat-form-field>
       <button mat-icon-button color="warn" (click)="removeResourceUsage(i)" title="Remover Recurso">

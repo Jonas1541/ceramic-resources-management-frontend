@@ -26,23 +26,23 @@
     </ng-container>
 
     <ng-container matColumnDef="temperature">
-      <th mat-header-cell *matHeaderCellDef> Temperatura (°C) </th>
-      <td mat-cell *matCellDef="let element"> {{element.temperature | decimalFormat}} </td>
+      <th mat-header-cell *matHeaderCellDef> Temperatura </th>
+      <td mat-cell *matCellDef="let element"> {{element.temperature | decimalFormat}} °C </td>
     </ng-container>
 
     <ng-container matColumnDef="burnTime">
-      <th mat-header-cell *matHeaderCellDef> Tempo de Queima (horas) </th>
-      <td mat-cell *matCellDef="let element"> {{element.burnTime | decimalFormat}} </td>
+      <th mat-header-cell *matHeaderCellDef> Tempo de Queima </th>
+      <td mat-cell *matCellDef="let element"> {{element.burnTime | decimalFormat}} h </td>
     </ng-container>
 
     <ng-container matColumnDef="coolingTime">
-      <th mat-header-cell *matHeaderCellDef> Tempo de Resfriamento (horas) </th>
-      <td mat-cell *matCellDef="let element"> {{element.coolingTime | decimalFormat}} </td>
+      <th mat-header-cell *matHeaderCellDef> Tempo de Resfriamento </th>
+      <td mat-cell *matCellDef="let element"> {{element.coolingTime | decimalFormat}} h </td>
     </ng-container>
 
     <ng-container matColumnDef="gasConsumption">
-      <th mat-header-cell *matHeaderCellDef> Consumo de Gás (m³) </th>
-      <td mat-cell *matCellDef="let element"> {{element.gasConsumption | decimalFormat}} </td>
+      <th mat-header-cell *matHeaderCellDef> Consumo de Gás </th>
+      <td mat-cell *matCellDef="let element"> {{element.gasConsumption | decimalFormat}} m³ </td>
     </ng-container>
 
     
