@@ -43,7 +43,7 @@ export class GlazeListComponent implements OnInit {
 
   openGlazeForm(glaze?: Glaze): void {
     const dialogRef = this.dialog.open(GlazeFormComponent, {
-      width: '400px',
+      width: '700px',
       data: { glaze: glaze }
     });
 

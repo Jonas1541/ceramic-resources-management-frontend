@@ -1,12 +1,11 @@
-.form-array-item {
+.form-array-item-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 8px;
 }
 
-.form-array-item mat-form-field {
-  flex: 1;
+.form-array-item-row mat-form-field {
+  flex-grow: 1;
 }
 
 .section-title {
