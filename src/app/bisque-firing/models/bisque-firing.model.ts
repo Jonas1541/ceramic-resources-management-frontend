@@ -10,7 +10,7 @@ export interface BisqueFiring {
     burnTime: number;
     coolingTime: number;
     gasConsumption: number;
-    kiln: Kiln;
+    kilnName: string;
     biscuits: ProductTransaction[]; // Assumindo que são ProductTransactions
     machineUsages: FiringMachineUsage[];
     cost: number;

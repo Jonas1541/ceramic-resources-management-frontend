@@ -18,6 +18,8 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
 
+import { forkJoin } from 'rxjs';
+
 @Component({
   selector: 'app-bisque-firing-form',
   standalone: true,
@@ -50,31 +52,40 @@ export class BisqueFiringFormComponent implements OnInit {
       biscuits: this.fb.array([], [Validators.required, Validators.minLength(1)]),
       machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
-
-    if (this.isEditMode) {
-      // TODO: Preencher os FormArrays com os dados existentes
-    }
   }
 
   ngOnInit(): void {
-    this.loadMachines();
-    this.loadProductTransactions();
-  }
+    forkJoin({
+      machines: this.machineService.getMachines(),
+      greenwareProducts: this.productService.getProductTransactions('1', 'GREENWARE')
+    }).subscribe(({ machines, greenwareProducts }) => {
+      this.machines = machines;
+      this.productTransactions = greenwareProducts;
 
-  loadMachines(): void {
-    this.machineService.getMachines().subscribe(data => {
-      this.machines = data;
+      if (this.isEditMode && this.data.bisqueFiring) {
+        // Adiciona os produtos BISCUIT que já estão na queima, se não estiverem na lista de greenware
+        const existingBiscuitProducts = this.data.bisqueFiring.biscuits.filter(biscuit =>
+          !this.productTransactions.some(pt => pt.id === biscuit.id)
+        );
+        this.productTransactions = [...this.productTransactions, ...existingBiscuitProducts];
+
+        // Preencher os FormArrays com os dados existentes
+        this.data.bisqueFiring.biscuits.forEach(biscuit => {
+          this.biscuits.push(new FormControl<string>(biscuit.id, { nonNullable: true }));
+        });
+        this.data.bisqueFiring.machineUsages.forEach(usage => {
+          const machine = this.machines.find(m => m.name === usage.machineName);
+          this.machineUsages.push(this.fb.group({
+            machineId: [machine ? machine.id : '', Validators.required],
+            usageTime: [usage.usageTime, Validators.required]
+          }));
+        });
+      }
     });
   }
 
-  loadProductTransactions(): void {
-    this.productService.getProductTransactions('1', 'GREENWARE').subscribe(data => {
-      this.productTransactions = data;
-    });
-  }
-
-  get biscuits(): FormArray<FormControl<string>> {
-    return this.bisqueFiringForm.get('biscuits') as FormArray<FormControl<string>>;
+  get biscuits(): FormArray<FormControl<string | null>> {
+    return this.bisqueFiringForm.get('biscuits') as FormArray<FormControl<string | null>>;
   }
 
   addBiscuit(): void {

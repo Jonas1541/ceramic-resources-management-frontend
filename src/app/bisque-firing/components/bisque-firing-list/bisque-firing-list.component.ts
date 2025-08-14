@@ -43,16 +43,31 @@ export class BisqueFiringListComponent implements OnInit {
   }
 
   openBisqueFiringForm(bisqueFiring?: BisqueFiring): void {
-    const dialogRef = this.dialog.open(BisqueFiringFormComponent, {
-      width: '700px',
-      data: { bisqueFiring: bisqueFiring, kilnId: this.data.kilnId }
-    });
+    if (bisqueFiring) {
+      this.bisqueFiringService.getBisqueFiring(this.data.kilnId, bisqueFiring.id).subscribe(fullBisqueFiring => {
+        const dialogRef = this.dialog.open(BisqueFiringFormComponent, {
+          width: '700px',
+          data: { bisqueFiring: fullBisqueFiring, kilnId: this.data.kilnId }
+        });
 
-    dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result) {
-        this.loadBisqueFirings();
-      }
-    });
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+          if (result) {
+            this.loadBisqueFirings();
+          }
+        });
+      });
+    } else {
+      const dialogRef = this.dialog.open(BisqueFiringFormComponent, {
+        width: '700px',
+        data: { kilnId: this.data.kilnId }
+      });
+
+      dialogRef.afterClosed().subscribe((result: boolean) => {
+        if (result) {
+          this.loadBisqueFirings();
+        }
+      });
+    }
   }
 
   openBisqueFiringDetails(bisqueFiringId: string): void {
