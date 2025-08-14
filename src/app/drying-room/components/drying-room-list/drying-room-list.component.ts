@@ -42,7 +42,7 @@ export class DryingRoomListComponent implements OnInit {
 
   openDryingRoomForm(dryingRoom?: DryingRoom): void {
     const dialogRef = this.dialog.open(DryingRoomFormComponent, {
-      width: '400px',
+      width: '700px',
       data: { dryingRoom: dryingRoom }
     });
 
