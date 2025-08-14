@@ -37,16 +37,33 @@ export class BatchListComponent implements OnInit {
   }
 
   openBatchForm(batch?: BatchList): void {
-    const dialogRef = this.dialog.open(BatchFormComponent, {
-      width: '400px',
-      data: { batch: batch }
-    });
+    if (batch) {
+      // Modo de edição: buscar o lote completo antes de abrir o diálogo
+      this.batchService.getBatch(batch.id).subscribe(fullBatch => {
+        const dialogRef = this.dialog.open(BatchFormComponent, {
+          width: '700px',
+          data: { batch: fullBatch }
+        });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadBatches();
-      }
-    });
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.loadBatches();
+          }
+        });
+      });
+    } else {
+      // Modo de criação: abrir o diálogo sem dados
+      const dialogRef = this.dialog.open(BatchFormComponent, {
+        width: '700px',
+        data: {}
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.loadBatches();
+        }
+      });
+    }
   }
 
   openBatchDetails(batchId: string): void {

@@ -52,8 +52,20 @@ export class BatchFormComponent implements OnInit {
 
     if (data && data.batch) {
       this.isEditMode = true;
-      this.batchForm.patchValue(data.batch);
-      // TODO: Preencher os FormArrays com os dados existentes
+      data.batch.resourceUsages.forEach(usage => {
+        this.resourceUsages.push(this.fb.group({
+          resourceId: [usage.resourceId, Validators.required],
+          initialQuantity: [usage.initialQuantity, Validators.required],
+          umidity: [usage.umidity * 100, Validators.required],
+          addedQuantity: [usage.addedQuantity, Validators.required]
+        }));
+      });
+      data.batch.machineUsages.forEach(usage => {
+        this.machineUsages.push(this.fb.group({
+          machineId: [usage.machineId, Validators.required],
+          usageTime: [usage.usageTime, Validators.required]
+        }));
+      });
     }
   }
 
