@@ -17,122 +17,166 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
+import { forkJoin } from 'rxjs';
 
 @Component({
-  selector: 'app-glaze-firing-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule, MatIconModule, DecimalMaskDirective],
-  templateUrl: './glaze-firing-form.component.html',
-  styleUrls: ['./glaze-firing-form.component.scss']
+    selector: 'app-glaze-firing-form',
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule, MatIconModule, DecimalMaskDirective],
+    templateUrl: './glaze-firing-form.component.html',
+    styleUrls: ['./glaze-firing-form.component.scss']
 })
 export class GlazeFiringFormComponent implements OnInit {
 
-  glazeFiringForm: FormGroup;
-  isEditMode = false;
-  machines: Machine[] = [];
-  productTransactions: ProductTransaction[] = [];
-  glazes: Glaze[] = [];
+    glazeFiringForm: FormGroup;
+    isEditMode = false;
+    machines: Machine[] = [];
+    productTransactions: ProductTransaction[] = [];
+    glazes: Glaze[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private glazeFiringService: GlazeFiringService,
-    private machineService: MachineService,
-    private productService: ProductService,
-    private glazeService: GlazeService,
-    public dialogRef: MatDialogRef<GlazeFiringFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { glazeFiring?: GlazeFiring, kilnId: string }
-  ) {
-    this.isEditMode = !!this.data.glazeFiring;
-    this.glazeFiringForm = this.fb.group({
-      temperature: [this.data.glazeFiring?.temperature || '', [Validators.required, Validators.min(0)]],
-      burnTime: [this.data.glazeFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
-      coolingTime: [this.data.glazeFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
-      gasConsumption: [this.data.glazeFiring?.gasConsumption || '', [Validators.required, Validators.min(0)]],
-      glosts: this.fb.array([], [Validators.required, Validators.minLength(1)]),
-      machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
-    });
-
-    if (this.isEditMode) {
-      // TODO: Preencher os FormArrays com os dados existentes
-    }
-  }
-
-  ngOnInit(): void {
-    this.loadMachines();
-    this.loadProductTransactions();
-    this.loadGlazes();
-  }
-
-  loadMachines(): void {
-    this.machineService.getMachines().subscribe(data => {
-      this.machines = data;
-    });
-  }
-
-  loadProductTransactions(): void {
-    this.productService.getProductTransactions('1', 'BISCUIT').subscribe(data => {
-      this.productTransactions = data;
-    });
-  }
-
-  loadGlazes(): void {
-    this.glazeService.getGlazes().subscribe(data => {
-      this.glazes = data;
-    });
-  }
-
-  get glosts(): FormArray {
-    return this.glazeFiringForm.get('glosts') as FormArray;
-  }
-
-  addGlost(): void {
-    const glostForm = this.fb.group({
-      productTransactionId: ['', Validators.required],
-      glazeId: ['', Validators.required],
-      quantity: ['', [Validators.required, Validators.min(0.01)]]
-    });
-    this.glosts.push(glostForm);
-  }
-
-  removeGlost(index: number): void {
-    this.glosts.removeAt(index);
-  }
-
-  get machineUsages(): FormArray {
-    return this.glazeFiringForm.get('machineUsages') as FormArray;
-  }
-
-  addMachineUsage(): void {
-    const machineUsageForm = this.fb.group({
-      machineId: ['', Validators.required],
-      usageTime: ['', Validators.required]
-    });
-    this.machineUsages.push(machineUsageForm);
-  }
-
-  removeMachineUsage(index: number): void {
-    this.machineUsages.removeAt(index);
-  }
-
-  onCancel(): void {
-    this.dialogRef.close();
-  }
-
-  onSubmit(): void {
-    if (this.glazeFiringForm.invalid) {
-      return;
+    constructor(
+        private fb: FormBuilder,
+        private glazeFiringService: GlazeFiringService,
+        private machineService: MachineService,
+        private productService: ProductService,
+        private glazeService: GlazeService,
+        public dialogRef: MatDialogRef<GlazeFiringFormComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: { glazeFiring?: GlazeFiring, kilnId: string }
+    ) {
+        this.isEditMode = !!this.data.glazeFiring;
+        this.glazeFiringForm = this.fb.group({
+            temperature: [this.data.glazeFiring?.temperature || '', [Validators.required, Validators.min(0)]],
+            burnTime: [this.data.glazeFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
+            coolingTime: [this.data.glazeFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
+            gasConsumption: [this.data.glazeFiring?.gasConsumption || '', [Validators.required, Validators.min(0)]],
+            glosts: this.fb.array([], [Validators.required, Validators.minLength(1)]),
+            machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
+        });
     }
 
-    const formData = this.glazeFiringForm.value;
+    ngOnInit(): void {
+        // 1. Busca os dados iniciais (máquinas, esmaltes e produtos 'BISCUIT' que podem ser adicionados)
+        forkJoin({
+            machines: this.machineService.getMachines(),
+            biscuitProducts: this.productService.getProductTransactions('1', 'BISCUIT'),
+            glazes: this.glazeService.getGlazes()
+        }).subscribe(({ machines, biscuitProducts, glazes }) => {
+            this.machines = machines;
+            this.glazes = glazes;
+            // Define a lista inicial de produtos selecionáveis
+            this.productTransactions = biscuitProducts;
 
-    if (this.isEditMode) {
-      this.glazeFiringService.updateGlazeFiring(this.data.kilnId, this.data.glazeFiring!.id, formData).subscribe(() => {
-        this.dialogRef.close(true);
-      });
-    } else {
-      this.glazeFiringService.createGlazeFiring(this.data.kilnId, formData).subscribe(() => {
-        this.dialogRef.close(true);
-      });
+            // 2. Se estiver no modo de edição, busca os dados completos dos produtos já existentes na queima
+            if (this.isEditMode && this.data.glazeFiring) {
+
+                // Popula os campos simples do formulário
+                this.glazeFiringForm.patchValue({
+                    temperature: this.data.glazeFiring.temperature,
+                    burnTime: this.data.glazeFiring.burnTime,
+                    coolingTime: this.data.glazeFiring.coolingTime,
+                    gasConsumption: this.data.glazeFiring.gasConsumption,
+                });
+
+                // Prepara as chamadas para buscar cada produto 'GLAZED' pelo seu ID
+                const existingGlazedProductObservables = this.data.glazeFiring.glosts.map(glost =>
+                    this.productService.getProductTransactionById(glost.productId, glost.productTxId)
+                );
+
+                // Se houver produtos para buscar, executa todas as chamadas em paralelo
+                if (existingGlazedProductObservables.length > 0) {
+                    forkJoin(existingGlazedProductObservables).subscribe(existingGlazedProducts => {
+
+                        // 3. Combina a lista de produtos 'BISCUIT' com os 'GLAZED' que acabamos de buscar
+                        this.productTransactions = [...this.productTransactions, ...existingGlazedProducts];
+
+                        // 4. Agora, com a lista de produtos completa, popula os FormArrays
+                        this.populateFormArrays();
+                    });
+                } else {
+                    // Se não houver produtos na queima, apenas popula os outros FormArrays
+                    this.populateFormArrays();
+                }
+
+            }
+        });
     }
-  }
+
+    // MÉTODO AUXILIAR PARA MANTER O CÓDIGO LIMPO
+    private populateFormArrays(): void {
+        if (!this.data.glazeFiring) return;
+
+        // Popula o FormArray de 'glosts'
+        this.data.glazeFiring.glosts.forEach(glost => {
+
+            const glaze = this.glazes.find(g => g.color === glost.glazeColor);
+            this.glosts.push(this.fb.group({
+                productTransactionId: [glost.productTxId, Validators.required],
+                glazeId: [glaze ? glaze.id : '', Validators.required],
+                quantity: [glost.quantity, [Validators.required, Validators.min(0.01)]]
+            }));
+        });
+
+        // Popula o FormArray de 'machineUsages'
+        this.data.glazeFiring.machineUsages.forEach(usage => {
+            this.machineUsages.push(this.fb.group({
+                machineId: [usage.machineId, Validators.required],
+                usageTime: [usage.usageTime, Validators.required]
+            }));
+        });
+    }
+
+    get glosts(): FormArray {
+        return this.glazeFiringForm.get('glosts') as FormArray;
+    }
+
+    addGlost(): void {
+        const glostForm = this.fb.group({
+            productTransactionId: ['', Validators.required],
+            glazeId: ['', Validators.required],
+            quantity: ['', [Validators.required, Validators.min(0.01)]]
+        });
+        this.glosts.push(glostForm);
+    }
+
+    removeGlost(index: number): void {
+        this.glosts.removeAt(index);
+    }
+
+    get machineUsages(): FormArray {
+        return this.glazeFiringForm.get('machineUsages') as FormArray;
+    }
+
+    addMachineUsage(): void {
+        const machineUsageForm = this.fb.group({
+            machineId: ['', Validators.required],
+            usageTime: ['', Validators.required]
+        });
+        this.machineUsages.push(machineUsageForm);
+    }
+
+    removeMachineUsage(index: number): void {
+        this.machineUsages.removeAt(index);
+    }
+
+    onCancel(): void {
+        this.dialogRef.close();
+    }
+
+    onSubmit(): void {
+        if (this.glazeFiringForm.invalid) {
+            return;
+        }
+
+        const formData = this.glazeFiringForm.value;
+
+        if (this.isEditMode) {
+            this.glazeFiringService.updateGlazeFiring(this.data.kilnId, this.data.glazeFiring!.id, formData).subscribe(() => {
+                this.dialogRef.close(true);
+            });
+        } else {
+            this.glazeFiringService.createGlazeFiring(this.data.kilnId, formData).subscribe(() => {
+                this.dialogRef.close(true);
+            });
+        }
+    }
 }

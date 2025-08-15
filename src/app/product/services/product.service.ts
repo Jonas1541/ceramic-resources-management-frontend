@@ -33,6 +33,10 @@ export class ProductService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
+    getProductTransactionById(productId: string, transactionId: number | string): Observable<ProductTransaction> {
+        return this.http.get<ProductTransaction>(`${this.apiUrl}/${productId}/transactions/${transactionId}`);
+    }
+
   getProductTransactions(productId: string, state?: string): Observable<ProductTransaction[]> {
     let url = `${this.apiUrl}/${productId}/transactions`;
     if (state) {

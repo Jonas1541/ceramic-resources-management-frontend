@@ -43,16 +43,31 @@ export class GlazeFiringListComponent implements OnInit {
   }
 
   openGlazeFiringForm(glazeFiring?: GlazeFiring): void {
-    const dialogRef = this.dialog.open(GlazeFiringFormComponent, {
-      width: '700px',
-      data: { glazeFiring: glazeFiring, kilnId: this.data.kilnId }
-    });
+    if (glazeFiring) {
+      this.glazeFiringService.getGlazeFiring(this.data.kilnId, glazeFiring.id).subscribe(fullGlazeFiring => {
+        const dialogRef = this.dialog.open(GlazeFiringFormComponent, {
+          width: '700px',
+          data: { glazeFiring: fullGlazeFiring, kilnId: this.data.kilnId }
+        });
 
-    dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result) {
-        this.loadGlazeFirings();
-      }
-    });
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+          if (result) {
+            this.loadGlazeFirings();
+          }
+        });
+      });
+    } else {
+      const dialogRef = this.dialog.open(GlazeFiringFormComponent, {
+        width: '700px',
+        data: { kilnId: this.data.kilnId }
+      });
+
+      dialogRef.afterClosed().subscribe((result: boolean) => {
+        if (result) {
+          this.loadGlazeFirings();
+        }
+      });
+    }
   }
 
   openGlazeFiringDetails(glazeFiringId: string): void {
