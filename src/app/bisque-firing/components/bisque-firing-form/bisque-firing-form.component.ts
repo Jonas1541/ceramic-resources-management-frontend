@@ -74,11 +74,10 @@ export class BisqueFiringFormComponent implements OnInit {
           this.biscuits.push(new FormControl<string>(biscuit.id, { nonNullable: true }));
         });
         this.data.bisqueFiring.machineUsages.forEach(usage => {
-          const machine = this.machines.find(m => m.name === usage.machineName);
-          this.machineUsages.push(this.fb.group({
-            machineId: [machine ? machine.id : '', Validators.required],
-            usageTime: [usage.usageTime, Validators.required]
-          }));
+            this.machineUsages.push(this.fb.group({
+                machineId: [usage.machineId, Validators.required],
+                usageTime: [usage.usageTime, Validators.required]
+            }));
         });
       }
     });
