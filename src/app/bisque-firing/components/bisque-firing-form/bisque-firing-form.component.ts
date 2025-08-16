@@ -17,7 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
-
+import { ChangeDetectorRef } from '@angular/core';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -41,7 +41,8 @@ export class BisqueFiringFormComponent implements OnInit {
     private machineService: MachineService,
     private productService: ProductService,
     public dialogRef: MatDialogRef<BisqueFiringFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { bisqueFiring?: BisqueFiring, kilnId: string }
+    @Inject(MAT_DIALOG_DATA) public data: { bisqueFiring?: BisqueFiring, kilnId: string },
+    private cdRef: ChangeDetectorRef
   ) {
     this.isEditMode = !!this.data.bisqueFiring;
     this.bisqueFiringForm = this.fb.group({
@@ -89,6 +90,7 @@ export class BisqueFiringFormComponent implements OnInit {
 
   addBiscuit(): void {
     this.biscuits.push(new FormControl<string>('', { nonNullable: true }));
+    this.cdRef.detectChanges();
   }
 
   removeBiscuit(index: number): void {
@@ -100,11 +102,13 @@ export class BisqueFiringFormComponent implements OnInit {
   }
 
   addMachineUsage(): void {
-    const machineUsageForm = this.fb.group({
-      machineId: ['', Validators.required],
-      usageTime: ['', Validators.required]
+    setTimeout(() => {
+      const machineUsageForm = this.fb.group({
+        machineId: ['', Validators.required],
+        usageTime: ['', Validators.required]
+      });
+      this.machineUsages.push(machineUsageForm);
     });
-    this.machineUsages.push(machineUsageForm);
   }
 
   removeMachineUsage(index: number): void {
