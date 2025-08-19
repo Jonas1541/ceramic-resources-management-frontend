@@ -73,6 +73,13 @@ export class DryingRoomFormComponent implements OnInit {
     this.machineIds.removeAt(index);
   }
 
+  getAvailableMachines(currentIndex: number): Machine[] {
+    const selectedMachineIds = this.machineIds.controls
+      .map((control, index) => index === currentIndex ? null : control.value)
+      .filter(id => id !== null);
+    return this.machines.filter(machine => !selectedMachineIds.includes(machine.id));
+  }
+
   onCancel(): void {
     this.dialogRef.close();
   }
