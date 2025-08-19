@@ -17,3 +17,7 @@
   display: flex;
   flex-direction: column;
 }
+
+button[mat-stroked-button].add-button {
+  height: 40px; /* Altura padrão para botões do Material */
+}
