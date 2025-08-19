@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { DryingRoomService } from '../../services/drying-room.service';
@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-drying-room-form',
@@ -32,7 +33,8 @@ export class DryingRoomFormComponent implements OnInit {
     private dryingRoomService: DryingRoomService,
     private machineService: MachineService,
     public dialogRef: MatDialogRef<DryingRoomFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { dryingRoom: DryingRoom }
+    @Inject(MAT_DIALOG_DATA) public data: { dryingRoom: DryingRoom },
+    private cdr: ChangeDetectorRef
   ) {
     this.dryingRoomForm = this.fb.group({
       name: ['', Validators.required],
@@ -43,20 +45,18 @@ export class DryingRoomFormComponent implements OnInit {
     if (data && data.dryingRoom) {
       this.isEditMode = true;
       this.dryingRoomForm.patchValue(data.dryingRoom);
-      // Preencher o FormArray com os IDs das máquinas existentes
-      data.dryingRoom.machines.forEach(machine => {
-        this.machineIds.push(new FormControl<string>(machine.id, { nonNullable: true }));
-      });
     }
   }
 
   ngOnInit(): void {
-    this.loadMachines();
-  }
-
-  loadMachines(): void {
-    this.machineService.getMachines().subscribe((data: Machine[]) => {
-      this.machines = data;
+    this.machineService.getMachines().subscribe((machines) => {
+      this.machines = machines;
+      if (this.isEditMode && this.data.dryingRoom.machines) {
+        this.data.dryingRoom.machines.forEach(machine => {
+          this.machineIds.push(new FormControl<string>(machine.id, { nonNullable: true }));
+        });
+        this.cdr.detectChanges(); // Forçar detecção de alterações
+      }
     });
   }
 
@@ -66,6 +66,7 @@ export class DryingRoomFormComponent implements OnInit {
 
   addMachineId(): void {
     this.machineIds.push(new FormControl<string>('', { nonNullable: true }));
+    this.cdr.detectChanges();
   }
 
   removeMachineId(index: number): void {
