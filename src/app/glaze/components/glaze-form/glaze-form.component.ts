@@ -114,6 +114,20 @@ export class GlazeFormComponent implements OnInit {
     this.machineUsages.removeAt(index);
   }
 
+  getAvailableResources(currentIndex: number): Resource[] {
+    const selectedResourceIds = this.resourceUsages.controls
+      .map((control, index) => index === currentIndex ? null : control.get('resourceId')?.value)
+      .filter(id => id !== null);
+    return this.resources.filter(resource => !selectedResourceIds.includes(resource.id));
+  }
+
+  getAvailableMachines(currentIndex: number): Machine[] {
+    const selectedMachineIds = this.machineUsages.controls
+      .map((control, index) => index === currentIndex ? null : control.get('machineId')?.value)
+      .filter(id => id !== null);
+    return this.machines.filter(machine => !selectedMachineIds.includes(machine.id));
+  }
+
   onCancel(): void {
     this.dialogRef.close();
   }
