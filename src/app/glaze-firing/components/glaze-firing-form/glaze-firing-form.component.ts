@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { GlazeFiringService } from '../../services/glaze-firing.service';
@@ -41,7 +41,8 @@ export class GlazeFiringFormComponent implements OnInit {
         private productService: ProductService,
         private glazeService: GlazeService,
         public dialogRef: MatDialogRef<GlazeFiringFormComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { glazeFiring?: GlazeFiring, kilnId: string }
+        @Inject(MAT_DIALOG_DATA) public data: { glazeFiring?: GlazeFiring, kilnId: string },
+        private cdr: ChangeDetectorRef
     ) {
         this.isEditMode = !!this.data.glazeFiring;
         this.glazeFiringForm = this.fb.group({
@@ -123,6 +124,7 @@ export class GlazeFiringFormComponent implements OnInit {
                 usageTime: [usage.usageTime, Validators.required]
             }));
         });
+        this.cdr.detectChanges(); // Forçar detecção de alterações
     }
 
     get glosts(): FormArray {

@@ -120,6 +120,20 @@ export class BatchFormComponent implements OnInit {
     this.machineUsages.removeAt(index);
   }
 
+  getAvailableResources(currentIndex: number): Resource[] {
+    const selectedResourceIds = this.resourceUsages.controls
+      .map((control, index) => index === currentIndex ? null : control.get('resourceId')?.value)
+      .filter(id => id !== null);
+    return this.resources.filter(resource => !selectedResourceIds.includes(resource.id));
+  }
+
+  getAvailableMachines(currentIndex: number): Machine[] {
+    const selectedMachineIds = this.machineUsages.controls
+      .map((control, index) => index === currentIndex ? null : control.get('machineId')?.value)
+      .filter(id => id !== null);
+    return this.machines.filter(machine => !selectedMachineIds.includes(machine.id));
+  }
+
   onCancel(): void {
     this.dialogRef.close();
   }
@@ -138,7 +152,8 @@ export class BatchFormComponent implements OnInit {
       this.batchService.updateBatch(this.data.batch.id, formData).subscribe({
         next: () => this.dialogRef.close(true),
         error: (err) => {
-          const message = this.errorMessages[err.error.message] || err.error.message;
+          const serverMessage = err.error?.message;
+          const message = this.errorMessages[serverMessage] || serverMessage || 'Ocorreu um erro ao atualizar a batelada.';
           alert(message);
         }
       });
@@ -146,7 +161,8 @@ export class BatchFormComponent implements OnInit {
       this.batchService.createBatch(formData).subscribe({
         next: () => this.dialogRef.close(true),
         error: (err) => {
-          const message = this.errorMessages[err.error.message] || err.error.message;
+          const serverMessage = err.error?.message;
+          const message = this.errorMessages[serverMessage] || serverMessage || 'Ocorreu um erro ao criar a batelada.';
           alert(message);
         }
       });

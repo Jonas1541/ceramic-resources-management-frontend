@@ -115,6 +115,13 @@ export class BisqueFiringFormComponent implements OnInit {
     this.machineUsages.removeAt(index);
   }
 
+  getAvailableMachines(currentIndex: number): Machine[] {
+    const selectedMachineIds = this.machineUsages.controls
+      .map((control, index) => index === currentIndex ? null : control.get('machineId')?.value)
+      .filter(id => id !== null);
+    return this.machines.filter(machine => !selectedMachineIds.includes(machine.id));
+  }
+
   onCancel(): void {
     this.dialogRef.close();
   }
