@@ -122,6 +122,13 @@ export class BisqueFiringFormComponent implements OnInit {
     return this.machines.filter(machine => !selectedMachineIds.includes(machine.id));
   }
 
+  getAvailableProducts(currentIndex: number): ProductTransaction[] {
+    const selectedProductTransactionIds = this.biscuits.controls
+      .map((control, index) => index === currentIndex ? null : control.value)
+      .filter(id => id !== null);
+    return this.productTransactions.filter(transaction => !selectedProductTransactionIds.includes(transaction.id));
+  }
+
   onCancel(): void {
     this.dialogRef.close();
   }
