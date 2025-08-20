@@ -84,7 +84,7 @@ export class GlazeFiringListComponent implements OnInit {
 
   deleteGlazeFiring(id: string): void {
     if (confirm('Tem certeza que deseja excluir esta queima de esmalte?')) {
-      this.glazeFiringService.deleteGlazeFiring(id).subscribe({
+      this.glazeFiringService.deleteGlazeFiring(this.data.kilnId, id).subscribe({
         next: () => this.loadGlazeFirings(),
         error: (err) => {
           if (err.status === 409) {

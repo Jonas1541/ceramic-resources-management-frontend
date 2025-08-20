@@ -28,7 +28,7 @@ export class BisqueFiringService {
     return this.http.put<BisqueFiring>(`http://localhost:8080/kilns/${kilnId}/bisque-firings/${id}`, bisqueFiring);
   }
 
-  deleteBisqueFiring(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteBisqueFiring(kilnId: string, id: string): Observable<void> {
+    return this.http.delete<void>(`http://localhost:8080/kilns/${kilnId}/bisque-firings/${id}`);
   }
 }

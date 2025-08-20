@@ -28,7 +28,7 @@ export class GlazeFiringService {
     return this.http.put<GlazeFiring>(`http://localhost:8080/kilns/${kilnId}/glaze-firings/${id}`, glazeFiring);
   }
 
-  deleteGlazeFiring(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteGlazeFiring(kilnId: string, id: string): Observable<void> {
+    return this.http.delete<void>(`http://localhost:8080/kilns/${kilnId}/glaze-firings/${id}`);
   }
 }

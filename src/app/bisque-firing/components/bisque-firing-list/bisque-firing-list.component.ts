@@ -84,7 +84,7 @@ export class BisqueFiringListComponent implements OnInit {
 
   deleteBisqueFiring(id: string): void {
     if (confirm('Tem certeza que deseja excluir esta queima de biscoito?')) {
-      this.bisqueFiringService.deleteBisqueFiring(id).subscribe({
+      this.bisqueFiringService.deleteBisqueFiring(this.data.kilnId, id).subscribe({
         next: () => this.loadBisqueFirings(),
         error: (err) => {
           if (err.status === 409) {
