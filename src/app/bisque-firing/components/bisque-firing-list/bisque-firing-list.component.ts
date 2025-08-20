@@ -25,6 +25,10 @@ export class BisqueFiringListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'createdAt', 'updatedAt', 'temperature', 'burnTime', 'coolingTime', 'gasConsumption', 'cost', 'actions'];
   bisqueFirings: BisqueFiring[] = [];
 
+  errorMessages: { [key: string]: string } = {
+    'A queima não pode ser apagada pois há um produto que já passou pela 2° queima.': 'Não é possível deletar esta queima de biscoito pois há um produto que já passou pela 2° queima.'
+  };
+
   constructor(
     private bisqueFiringService: BisqueFiringService,
     public dialog: MatDialog,
@@ -87,11 +91,9 @@ export class BisqueFiringListComponent implements OnInit {
       this.bisqueFiringService.deleteBisqueFiring(this.data.kilnId, id).subscribe({
         next: () => this.loadBisqueFirings(),
         error: (err) => {
-          if (err.status === 409) {
-            alert('Não é possível deletar esta queima de biscoito pois ela possui transações associadas.');
-          } else {
-            alert(err.error.message);
-          }
+          const serverMessage = err.error?.message;
+          const message = this.errorMessages[serverMessage] || serverMessage || 'Ocorreu um erro ao deletar a queima de biscoito.';
+          alert(message);
         }
       });
     }
