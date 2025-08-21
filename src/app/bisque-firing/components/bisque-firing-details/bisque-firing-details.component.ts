@@ -19,7 +19,7 @@ import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 export class BisqueFiringDetailsComponent implements OnInit {
 
   bisqueFiring: BisqueFiring | null = null;
-  biscuitsColumns: string[] = ['id', 'productName']; // Colunas para exibir os produtos
+  biscuitsColumns: string[] = ['product']; // Colunas para exibir os produtos
   machineUsagesColumns: string[] = ['machineName', 'usageTime']; // Colunas para exibir o uso de máquinas
 
   constructor(
