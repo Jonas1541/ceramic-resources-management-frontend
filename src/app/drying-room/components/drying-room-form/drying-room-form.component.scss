@@ -1,3 +1,13 @@
+  .form-array-item-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 12px 8px;
+  margin-bottom: 16px;
+}
+
 .form-array-item-row {
   display: flex;
   align-items: center;

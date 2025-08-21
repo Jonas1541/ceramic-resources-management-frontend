@@ -40,7 +40,7 @@
   <!-- Seção de Uso de Máquinas -->
   <h2 class="section-title">Uso de Máquinas</h2>
   <div formArrayName="machineUsages">
-    <div *ngFor="let machineUsage of machineUsages.controls; let i=index" [formGroupName]="i" class="form-array-item">
+    <div *ngFor="let machineUsage of machineUsages.controls; let i=index" [formGroupName]="i" class="form-array-item-container">
       <div class="form-array-item-row">
         <button mat-icon-button color="warn" (click)="removeMachineUsage(i)" title="Remover Máquina">
           <mat-icon>remove_circle</mat-icon>
