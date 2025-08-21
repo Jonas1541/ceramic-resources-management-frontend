@@ -30,11 +30,11 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> Ações </th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button color="primary" (click)="openBatchForm(element)" title="Editar Batelada">
-          <mat-icon>edit</mat-icon>
-        </button>
         <button mat-icon-button (click)="openBatchDetails(element.id)" title="Ver Detalhes">
           <mat-icon>visibility</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" (click)="openBatchForm(element)" title="Editar Batelada">
+          <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button color="warn" (click)="deleteBatch(element.id)" title="Excluir Batelada">
           <mat-icon>delete</mat-icon>
