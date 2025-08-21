@@ -141,12 +141,22 @@ export class BisqueFiringFormComponent implements OnInit {
     const formData = this.bisqueFiringForm.value;
 
     if (this.isEditMode) {
-      this.bisqueFiringService.updateBisqueFiring(this.data.kilnId, this.data.bisqueFiring!.id, formData).subscribe(() => {
-        this.dialogRef.close(true);
+      this.bisqueFiringService.updateBisqueFiring(this.data.kilnId, this.data.bisqueFiring!.id, formData).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          if (err.status === 409) {
+            alert(err.error.message);
+          } else {
+            alert('Ocorreu um erro ao atualizar a queima de biscoito.');
+          }
+        }
       });
     } else {
-      this.bisqueFiringService.createBisqueFiring(this.data.kilnId, formData).subscribe(() => {
-        this.dialogRef.close(true);
+      this.bisqueFiringService.createBisqueFiring(this.data.kilnId, formData).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          alert('Ocorreu um erro ao criar a queima de biscoito.');
+        }
       });
     }
   }
