@@ -5,7 +5,7 @@
     <mat-label>Motivo da Saída</mat-label>
     <mat-select formControlName="outgoingReason" required>
       <mat-option *ngFor="let reason of outgoingReasons" [value]="reason">
-        {{ reason === 'SOLD' ? 'Venda' : 'Descarte por Defeito' }}
+        {{ reasonTranslations[reason] }}
       </mat-option>
     </mat-select>
   </mat-form-field>

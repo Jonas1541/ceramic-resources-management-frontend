@@ -18,7 +18,11 @@ import { MatOptionModule } from '@angular/material/core';
 export class ProductTransactionOutgoingFormComponent implements OnInit {
 
   outgoingForm: FormGroup;
-  outgoingReasons = ['SOLD', 'DEFECT_DISPOSAL', 'DISCARDED'];
+  outgoingReasons = ['SOLD', 'DEFECT_DISPOSAL'];
+  reasonTranslations: { [key: string]: string } = {
+    'SOLD': 'Venda',
+    'DEFECT_DISPOSAL': 'Descarte por Defeito'
+  };
 
   constructor(
     private fb: FormBuilder,
