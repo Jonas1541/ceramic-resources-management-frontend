@@ -33,12 +33,14 @@
           <mat-form-field appearance="fill">
             <mat-label>Produto</mat-label>
             <mat-select formControlName="productTransactionId" required>
+              <mat-option *ngIf="getAvailableProducts(i).length === 0" disabled>Não há mais produtos para selecionar</mat-option>
               <mat-option *ngFor="let transaction of getAvailableProducts(i)" [value]="transaction.id">{{ transaction.productName }} - ID: {{ transaction.id }}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Glasura</mat-label>
             <mat-select formControlName="glazeId" required>
+              <mat-option *ngIf="getAvailableGlazes(i).length === 0" disabled>Não há mais glasuras para selecionar</mat-option>
               <mat-option *ngFor="let glaze of getAvailableGlazes(i)" [value]="glaze.id">{{ glaze.color }}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -64,6 +66,7 @@
           <mat-form-field appearance="fill">
             <mat-label>Máquina</mat-label>
             <mat-select formControlName="machineId" required>
+              <mat-option *ngIf="getAvailableMachines(i).length === 0" disabled>Não há mais máquinas para selecionar</mat-option>
               <mat-option *ngFor="let machine of getAvailableMachines(i)" [value]="machine.id">{{ machine.name }}</mat-option>
             </mat-select>
           </mat-form-field>

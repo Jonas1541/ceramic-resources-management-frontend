@@ -14,6 +14,7 @@
           <mat-form-field appearance="fill">
             <mat-label>Recurso</mat-label>
             <mat-select formControlName="resourceId" required>
+              <mat-option *ngIf="getAvailableResources(i).length === 0" disabled>Não há mais recursos para selecionar</mat-option>
               <mat-option *ngFor="let resource of getAvailableResources(i)" [value]="resource.id">{{ resource.name }}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -48,6 +49,7 @@
         <mat-form-field appearance="fill">
           <mat-label>Máquina</mat-label>
           <mat-select formControlName="machineId" required>
+            <mat-option *ngIf="getAvailableMachines(i).length === 0" disabled>Não há mais máquinas para selecionar</mat-option>
             <mat-option *ngFor="let machine of getAvailableMachines(i)" [value]="machine.id">{{ machine.name }}</mat-option>
           </mat-select>
         </mat-form-field>
