@@ -5,6 +5,7 @@ export interface GlazeTransaction {
     quantity: number;
     type: string;
     glazeColor: string;
+    productTxId: number | null;
     resourceTotalCostAtTime: number;
     machineEnergyConsumptionCostAtTime: number;
     glazeFinalCostAtTime: number;
