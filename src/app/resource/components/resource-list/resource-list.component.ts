@@ -25,7 +25,8 @@ import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 })
 export class ResourceListComponent implements OnInit {
 
-  displayedColumns: string[] = ['name', 'category', 'unitValue', 'currentQuantity', 'currentQuantityPrice', 'actions'];
+  basicDisplayedColumns: string[] = ['name', 'category', 'unitValue', 'actions'];
+  ceramicDisplayedColumns: string[] = ['name', 'category', 'unitValue', 'currentQuantity', 'currentQuantityPrice', 'actions'];
   basicResources: Resource[] = [];
   ceramicResources: Resource[] = [];
 
