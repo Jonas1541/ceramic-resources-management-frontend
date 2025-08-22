@@ -57,10 +57,14 @@ export class ProductListComponent implements OnInit {
   }
 
   openTransactionList(productId: string): void {
-    this.dialog.open(ProductTransactionListComponent, {
+    const dialogRef = this.dialog.open(ProductTransactionListComponent, {
       minWidth: '80vw',
       maxWidth: '95vw',
       data: { productId: productId }
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadProducts();
     });
   }
 

@@ -68,10 +68,14 @@ export class ResourceListComponent implements OnInit {
   }
 
   openTransactionList(resourceId: string): void {
-    this.dialog.open(ResourceTransactionListComponent, {
+    const dialogRef = this.dialog.open(ResourceTransactionListComponent, {
       minWidth: '80vw',
       maxWidth: '95vw',
       data: { resourceId: resourceId }
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadResources();
     });
   }
 

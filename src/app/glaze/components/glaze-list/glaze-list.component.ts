@@ -55,10 +55,14 @@ export class GlazeListComponent implements OnInit {
   }
 
   openTransactionList(glazeId: string): void {
-    this.dialog.open(GlazeTransactionListComponent, {
+    const dialogRef = this.dialog.open(GlazeTransactionListComponent, {
       minWidth: '80vw',
       maxWidth: '95vw',
       data: { glazeId: glazeId }
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadGlazes();
     });
   }
 
