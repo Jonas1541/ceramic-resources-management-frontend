@@ -19,7 +19,15 @@
 
     <ng-container matColumnDef="unitValue">
       <th mat-header-cell *matHeaderCellDef> Valor Unitário </th>
-      <td mat-cell *matCellDef="let element"> {{element.unitValue | currency:'BRL'}} /kg </td>
+      <!-- Adicionado ngSwitch para exibir a unidade correta com base na categoria -->
+      <td mat-cell *matCellDef="let element">
+        {{element.unitValue | currency:'BRL'}}
+        <span [ngSwitch]="element.category">
+          <span *ngSwitchCase="'WATER'"> /m³</span>
+          <span *ngSwitchCase="'GAS'"> /m³</span>
+          <span *ngSwitchCase="'ELECTRICITY'"> /kWh</span>
+        </span>
+      </td>
     </ng-container>
 
     <!-- Coluna de Ações -->
