@@ -26,7 +26,8 @@ import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 export class ResourceListComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'category', 'unitValue', 'currentQuantity', 'currentQuantityPrice', 'actions'];
-  resources: Resource[] = [];
+  basicResources: Resource[] = [];
+  ceramicResources: Resource[] = [];
 
   constructor(
     private resourceService: ResourceService,
@@ -39,7 +40,16 @@ export class ResourceListComponent implements OnInit {
 
   loadResources(): void {
     this.resourceService.getResources().subscribe(data => {
-      this.resources = data;
+      this.basicResources = data.filter(r => [
+        'ELECTRICITY',
+        'WATER',
+        'GAS'
+      ].includes(r.category));
+      this.ceramicResources = data.filter(r => ![
+        'ELECTRICITY',
+        'WATER',
+        'GAS'
+      ].includes(r.category));
     });
   }
 
