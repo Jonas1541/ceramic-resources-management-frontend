@@ -41,15 +41,25 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> Ações </th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button color="primary" (click)="outgoingTransaction(element.id)" title="Registrar Saída" *ngIf="!element.outgoingAt">
-          <mat-icon>north_east</mat-icon>
-        </button>
-        <button mat-icon-button color="accent" (click)="cancelOutgoingProductTransaction(element.id)" title="Cancelar Saída" *ngIf="element.outgoingAt">
-          <mat-icon>undo</mat-icon>
-        </button>
-        <button mat-icon-button color="warn" (click)="deleteTransaction(element.id)" title="Excluir Transação">
-          <mat-icon>delete</mat-icon>
-        </button>
+        <div class="actions-container">
+          <button mat-icon-button color="primary" (click)="outgoingTransaction(element.id)" title="Registrar Saída" *ngIf="!element.outgoingAt">
+            <mat-icon>north_east</mat-icon>
+          </button>
+          <button mat-icon-button color="accent" (click)="cancelOutgoingProductTransaction(element.id)" title="Cancelar Saída" *ngIf="element.outgoingAt">
+            <mat-icon>undo</mat-icon>
+          </button>
+          <ng-container *ngIf="!element.bisqueFiringId && !element.glazeFiringId; else firingIds">
+            <button mat-icon-button color="warn" (click)="deleteTransaction(element.id)" title="Excluir Transação">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </ng-container>
+          <ng-template #firingIds>
+            <div>
+              <div *ngIf="element.bisqueFiringId">ID da Queima de Biscoito: {{element.bisqueFiringId}}</div>
+              <div *ngIf="element.glazeFiringId">ID da Queima de Glasura: {{element.glazeFiringId}}</div>
+            </div>
+          </ng-template>
+        </div>
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

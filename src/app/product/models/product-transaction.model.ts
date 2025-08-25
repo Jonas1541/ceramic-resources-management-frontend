@@ -9,4 +9,6 @@ export interface ProductTransaction {
     glazeColor: string;
     glazeQuantity: number;
     profit: number;
+    bisqueFiringId: number | null;
+    glazeFiringId: number | null;
 }
