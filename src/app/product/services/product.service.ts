@@ -57,7 +57,7 @@ export class ProductService {
     return this.http.delete<void>(`${this.apiUrl}/${productId}/transactions/${transactionId}`);
   }
 
-  cancelOutgoing(productId: string, transactionId: string): Observable<any> {
+  cancelOutgoingProductTransaction(productId: string, transactionId: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${productId}/transactions/${transactionId}`, {});
   }
 }

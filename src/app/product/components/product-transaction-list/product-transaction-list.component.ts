@@ -59,9 +59,9 @@ export class ProductTransactionListComponent implements OnInit {
     });
   }
 
-  cancelOutgoing(transactionId: string): void {
+  cancelOutgoingProductTransaction(transactionId: string): void {
     if (confirm('Tem certeza que deseja cancelar a saída desta unidade?')) {
-      this.productService.cancelOutgoing(this.data.productId, transactionId).subscribe(() => {
+      this.productService.cancelOutgoingProductTransaction(this.data.productId, transactionId).subscribe(() => {
         this.loadTransactions();
       });
     }
