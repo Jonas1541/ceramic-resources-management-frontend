@@ -9,10 +9,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
 
+import { TrimDirective } from '../../../shared/directives/trim.directive';
+
 @Component({
   selector: 'app-kiln-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, DecimalMaskDirective],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, DecimalMaskDirective, TrimDirective],
   templateUrl: './kiln-form.component.html',
   styleUrls: ['./kiln-form.component.scss']
 })

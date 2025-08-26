@@ -15,10 +15,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
 import { forkJoin } from 'rxjs';
 
+import { TrimDirective } from '../../../shared/directives/trim.directive';
+
 @Component({
   selector: 'app-drying-room-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule, MatIconModule, DecimalMaskDirective],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule, MatIconModule, DecimalMaskDirective, TrimDirective],
   templateUrl: './drying-room-form.component.html',
   styleUrls: ['./drying-room-form.component.scss']
 })

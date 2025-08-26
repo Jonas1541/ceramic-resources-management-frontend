@@ -19,10 +19,12 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): V
   return null;
 };
 
+import { TrimDirective } from '../../../shared/directives/trim.directive';
+
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterLink, TrimDirective],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })

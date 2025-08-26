@@ -11,10 +11,12 @@ import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
 
+import { TrimDirective } from '../../../shared/directives/trim.directive';
+
 @Component({
   selector: 'app-resource-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule, DecimalMaskDirective],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule, DecimalMaskDirective, TrimDirective],
   templateUrl: './resource-form.component.html',
   styleUrls: ['./resource-form.component.scss']
 })

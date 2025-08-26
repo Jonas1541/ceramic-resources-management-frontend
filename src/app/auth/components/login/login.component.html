@@ -3,7 +3,7 @@
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="fill">
       <mat-label>Email</mat-label>
-      <input matInput formControlName="email" required>
+      <input matInput formControlName="email" required appTrim>
     </mat-form-field>
 
     <mat-form-field appearance="fill">

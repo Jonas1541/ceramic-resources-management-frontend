@@ -3,17 +3,17 @@
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="fill">
       <mat-label>Nome da Empresa</mat-label>
-      <input matInput formControlName="name" required>
+      <input matInput formControlName="name" required appTrim>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Email</mat-label>
-      <input matInput formControlName="email" required>
+      <input matInput formControlName="email" required appTrim>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>CNPJ</mat-label>
-      <input matInput formControlName="cnpj" required>
+      <input matInput formControlName="cnpj" required appTrim>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
