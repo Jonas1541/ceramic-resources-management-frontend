@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ReportService } from '../../services/report.service';
-import { YearReport } from '../../models/year-report.model';
-import { MonthReport } from '../../models/month-report.model';
+import { GeneralReport } from '../../models/general-report.model';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
@@ -18,9 +17,8 @@ import { FormsModule } from '@angular/forms';
 })
 export class GeneralReportComponent implements OnInit {
 
-  currentYear: number = new Date().getFullYear();
-  yearReport: YearReport | null = null;
-  displayedColumns: string[] = ['monthName', 'incomingQty', 'incomingCost', 'outgoingQty', 'outgoingProfit'];
+  reports: GeneralReport[] = [];
+  displayedColumns: string[] = ['monthName', 'incomingCost', 'outgoingProfit'];
 
   constructor(private reportService: ReportService) { }
 
@@ -29,14 +27,8 @@ export class GeneralReportComponent implements OnInit {
   }
 
   loadReport(): void {
-    this.reportService.getYearReport(this.currentYear).subscribe((data: YearReport) => {
-      this.yearReport = data;
+    this.reportService.getGeneralReport().subscribe((data: GeneralReport[]) => {
+      this.reports = data;
     });
-  }
-
-  onYearChange(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    this.currentYear = Number(inputElement.value);
-    this.loadReport();
   }
 }
