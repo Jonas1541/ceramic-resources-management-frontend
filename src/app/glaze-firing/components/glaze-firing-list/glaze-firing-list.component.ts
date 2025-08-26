@@ -83,12 +83,12 @@ export class GlazeFiringListComponent implements OnInit {
   }
 
   deleteGlazeFiring(id: string): void {
-    if (confirm('Tem certeza que deseja excluir esta queima de esmalte?')) {
+    if (confirm('Tem certeza que deseja excluir esta queima de glasura?')) {
       this.glazeFiringService.deleteGlazeFiring(this.data.kilnId, id).subscribe({
         next: () => this.loadGlazeFirings(),
         error: (err) => {
           if (err.status === 409) {
-            alert('Não é possível deletar esta queima de esmalte pois ela possui transações associadas.');
+            alert('Não é possível deletar esta queima de glasura pois ela possui transações associadas.');
           } else {
             alert(err.error.message);
           }

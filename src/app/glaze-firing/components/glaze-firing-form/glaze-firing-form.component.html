@@ -21,8 +21,8 @@
     <input matInput type="text" formControlName="gasConsumption" appDecimalMask required>
   </mat-form-field>
 
-  <!-- Seção de Produtos Esmaltados -->
-  <h2 class="section-title">Produtos Esmaltados</h2>
+  <!-- Seção de Produtos Glasurados -->
+  <h2 class="section-title">Produtos</h2>
   <div formArrayName="glosts">
     <div *ngFor="let glost of glosts.controls; let i=index" [formGroupName]="i" class="form-array-item-container">
       <button mat-icon-button color="warn" (click)="removeGlost(i)" title="Remover Produto Esmaltado" class="remove-button">
@@ -52,7 +52,7 @@
       </div>
     </div>
   </div>
-  <button mat-stroked-button color="primary" (click)="addGlost()" class="add-button">Adicionar Produto Esmaltado</button>
+  <button mat-stroked-button color="primary" (click)="addGlost()" class="add-button">Adicionar Produto</button>
 
   <!-- Seção de Uso de Máquinas -->
   <h2 class="section-title">Uso de Máquinas</h2>

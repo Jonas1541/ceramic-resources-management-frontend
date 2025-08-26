@@ -56,7 +56,7 @@ export class GlazeFiringFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // 1. Busca os dados iniciais (máquinas, esmaltes e produtos 'BISCUIT' que podem ser adicionados)
+        // 1. Busca os dados iniciais (máquinas, glasuras e produtos 'BISCUIT' que podem ser adicionados)
         forkJoin({
             machines: this.machineService.getMachines(),
             biscuitProducts: this.productService.getProductTransactions('1', 'BISCUIT'),
