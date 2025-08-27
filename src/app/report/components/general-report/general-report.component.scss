@@ -1,0 +1,38 @@
+.container {
+  padding: 48px;
+}
+
+.report-year-section {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 48px;
+  justify-content: center;
+  align-items: stretch; /* Garante que os filhos tenham a mesma altura */
+}
+
+.report-header,
+.report-content { /* Aplicando flex: 1 a ambos os contêineres principais */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 👇 A MUDANÇA PRINCIPAL ESTÁ AQUI
+  Agrupamos os dois contêineres de gráfico para que tenham exatamente o mesmo estilo.
+*/
+.annual-chart-container,
+.chart-container {
+  position: relative; /* Necessário para o canvas se ajustar corretamente */
+  width: 90%;
+  height: 450px;
+}
+
+.divider {
+  border-top: 1px solid #ccc;
+  margin: 48px 0;
+}
+
+.annual-details {
+  margin-top: 24px;
+  font-size: 1.1em;
+}
