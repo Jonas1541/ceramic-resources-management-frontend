@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Batch } from '../models/batch.model';
 import { BatchList } from '../models/batch-list.model';
 import { BatchTransaction } from '../models/batch-transaction.model';
+import { YearReport } from '../../report/models/year-report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -36,13 +37,7 @@ export class BatchService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  // Métodos para Transações de Batches
-
-  getBatchTransactions(batchId: string): Observable<BatchTransaction[]> {
-    return this.http.get<BatchTransaction[]>(`${this.apiUrl}/${batchId}/transactions`);
-  }
-
-  createBatchTransaction(batchId: string, transaction: Partial<BatchTransaction>): Observable<BatchTransaction> {
-    return this.http.post<BatchTransaction>(`${this.apiUrl}/${batchId}/transactions`, transaction);
+  getYearlyReport(): Observable<YearReport[]> {
+    return this.http.get<YearReport[]>(`${this.apiUrl}/yearly-report`);
   }
 }

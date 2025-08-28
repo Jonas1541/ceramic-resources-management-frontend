@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatOptionModule } from '@angular/material/core';
 
 import { BatchDetailsComponent } from '../batch-details/batch-details.component';
+import { BatchReportComponent } from '../batch-report/batch-report.component';
 
 @Component({
   selector: 'app-batch-list',
@@ -64,6 +65,13 @@ export class BatchListComponent implements OnInit {
         }
       });
     }
+  }
+
+  openBatchReport(): void {
+    this.dialog.open(BatchReportComponent, {
+      minWidth: '80vw',
+      maxWidth: '1200px'
+    });
   }
 
   openBatchDetails(batchId: string): void {

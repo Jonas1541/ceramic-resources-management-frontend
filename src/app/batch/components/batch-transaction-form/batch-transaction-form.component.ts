@@ -43,9 +43,5 @@ export class BatchTransactionFormComponent implements OnInit {
     }
 
     const formData = this.transactionForm.value;
-
-    this.batchService.createBatchTransaction(this.data.batchId, formData).subscribe(() => {
-      this.dialogRef.close(true);
-    });
   }
 }
