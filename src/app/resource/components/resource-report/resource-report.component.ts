@@ -14,8 +14,8 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-resource-report',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, BaseChartDirective, MatFormFieldModule, MatSelectModule, FormsModule],
-  providers: [CurrencyPipe, DecimalPipe],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, BaseChartDirective, MatFormFieldModule, MatSelectModule, FormsModule, CurrencyPipe],
+  providers: [DecimalPipe],
   templateUrl: './resource-report.component.html',
   styleUrls: ['./resource-report.component.scss']
 })

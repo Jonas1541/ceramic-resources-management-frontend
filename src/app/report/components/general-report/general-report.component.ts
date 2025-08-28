@@ -13,8 +13,7 @@ import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 @Component({
   selector: 'app-general-report',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatFormFieldModule, MatInputModule, FormsModule, BaseChartDirective],
-  providers: [CurrencyPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatFormFieldModule, MatInputModule, FormsModule, BaseChartDirective, CurrencyPipe],
   templateUrl: './general-report.component.html',
   styleUrls: ['./general-report.component.scss']
 })
@@ -26,7 +25,23 @@ export class GeneralReportComponent implements OnInit {
   public annualChartData: ChartConfiguration<'bar'>['data'][] = [];
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
-    maintainAspectRatio: false
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+            }
+            return label;
+          }
+        }
+      }
+    }
   };
   public lineChartLegend = true;
 
@@ -35,7 +50,23 @@ export class GeneralReportComponent implements OnInit {
   public barChartData: ChartConfiguration<'bar'>['data'][] = [];
   public barChartOptions: ChartOptions<'bar'> = {
     responsive: true,
-    maintainAspectRatio: false
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+            }
+            return label;
+          }
+        }
+      }
+    }
   };
   public barChartLegend = true;
 
