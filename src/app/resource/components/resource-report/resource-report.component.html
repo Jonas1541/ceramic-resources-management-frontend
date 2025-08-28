@@ -42,8 +42,12 @@
     </div>
   </div>
 
-  <div *ngIf="allReports.length === 0">
+  <div *ngIf="isLoading">
     <p>Carregando relatório...</p>
+  </div>
+
+  <div *ngIf="!isLoading && allReports.length === 0">
+    <p>Não há dados de transações para este recurso.</p>
   </div>
 </div>
 

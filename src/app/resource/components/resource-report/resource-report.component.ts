@@ -25,6 +25,7 @@ export class ResourceReportComponent implements OnInit {
   selectedReport: YearReport | undefined;
   availableYears: number[] = [];
   selectedYear: number | undefined;
+  isLoading = true; // Adiciona a flag de carregamento
 
   // Agora temos apenas o gráfico mensal, e ele não é mais um array
   public monthlyChartData: ChartConfiguration['data'] = {
@@ -70,6 +71,7 @@ export class ResourceReportComponent implements OnInit {
   }
 
   loadReport(): void {
+    this.isLoading = true;
     this.resourceService.getYearlyReport(this.data.resourceId).subscribe((data: YearReport[]) => {
       this.allReports = data;
       this.availableYears = data.map(r => r.year).sort((a, b) => b - a); // Ordena do mais novo para o mais velho
@@ -78,6 +80,7 @@ export class ResourceReportComponent implements OnInit {
         this.selectedYear = this.availableYears[0];
         this.onYearChange();
       }
+      this.isLoading = false; // Finaliza o carregamento
     });
   }
 
