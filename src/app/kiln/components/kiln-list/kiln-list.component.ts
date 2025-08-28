@@ -12,6 +12,7 @@ import { BisqueFiringListComponent } from '../../../bisque-firing/components/bis
 import { GlazeFiringListComponent } from '../../../glaze-firing/components/glaze-firing-list/glaze-firing-list.component';
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
+import { KilnReportComponent } from '../kiln-report/kiln-report.component';
 
 @Component({
   selector: 'app-kiln-list',
@@ -80,5 +81,13 @@ export class KilnListComponent implements OnInit {
         }
       });
     }
+  }
+
+  openReport(kilnId: string): void {
+    this.dialog.open(KilnReportComponent, {
+      minWidth: '80vw',
+      maxWidth: '1200px',
+      data: { kilnId: kilnId }
+    });
   }
 }

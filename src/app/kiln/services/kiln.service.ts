@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Kiln } from '../models/kiln.model';
+import { YearReport } from '../../report/models/year-report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +31,9 @@ export class KilnService {
 
   deleteKiln(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getYearlyReport(kilnId: string): Observable<YearReport[]> {
+    return this.http.get<YearReport[]>(`${this.apiUrl}/${kilnId}/yearly-report`);
   }
 }
