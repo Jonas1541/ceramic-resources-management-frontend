@@ -13,10 +13,12 @@ import { GlazeTransactionListComponent } from '../glaze-transaction-list/glaze-t
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
+import { GlazeReportComponent } from '../glaze-report/glaze-report.component';
+
 @Component({
   selector: 'app-glaze-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, CurrencyPipe, DecimalFormatPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, CurrencyPipe, DecimalFormatPipe, GlazeReportComponent],
   providers: [DecimalPipe],
   templateUrl: './glaze-list.component.html',
   styleUrls: ['./glaze-list.component.scss']
@@ -63,6 +65,14 @@ export class GlazeListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(() => {
       this.loadGlazes();
+    });
+  }
+
+  openReport(glazeId: string): void {
+    this.dialog.open(GlazeReportComponent, {
+      minWidth: '80vw',
+      maxWidth: '95vw',
+      data: { glazeId: glazeId }
     });
   }
 

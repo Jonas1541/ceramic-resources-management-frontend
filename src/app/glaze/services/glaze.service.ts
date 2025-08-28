@@ -52,4 +52,8 @@ export class GlazeService {
   deleteGlazeTransaction(glazeId: string, transactionId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${glazeId}/transactions/${transactionId}`);
   }
+
+  getYearlyReport(glazeId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${glazeId}/yearly-report`);
+  }
 }
