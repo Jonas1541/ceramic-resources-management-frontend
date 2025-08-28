@@ -5,4 +5,5 @@ export interface GeneralReport {
     months: MonthlyReport[];
     totalIncomingCost: number;
     totalOutgoingProfit: number;
+    totalOutgoingQty: number;
 }

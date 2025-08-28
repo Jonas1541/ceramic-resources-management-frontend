@@ -52,4 +52,8 @@ export class ResourceService {
   deleteResourceTransaction(resourceId: string, transactionId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${resourceId}/transactions/${transactionId}`);
   }
+
+  getYearlyReport(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/yearly-report`);
+  }
 }

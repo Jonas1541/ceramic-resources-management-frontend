@@ -15,10 +15,12 @@ import { ResourceTransactionListComponent } from '../resource-transaction-list/r
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
+import { ResourceReportComponent } from '../resource-report/resource-report.component';
+
 @Component({
   selector: 'app-resource-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, CurrencyPipe, TranslateResourceCategoryPipe, DecimalFormatPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, CurrencyPipe, TranslateResourceCategoryPipe, DecimalFormatPipe, ResourceReportComponent],
   providers: [DecimalPipe],
   templateUrl: './resource-list.component.html',
   styleUrls: ['./resource-list.component.scss']
@@ -80,6 +82,14 @@ export class ResourceListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(() => {
       this.loadResources();
+    });
+  }
+
+  openReport(resourceId: string): void {
+    this.dialog.open(ResourceReportComponent, {
+      minWidth: '80vw',
+      maxWidth: '95vw',
+      data: { resourceId: resourceId }
     });
   }
 

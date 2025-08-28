@@ -1,0 +1,52 @@
+<h1 mat-dialog-title>Relatório do Recurso</h1>
+
+<div mat-dialog-content>
+  <mat-form-field appearance="outline" class="year-selector" *ngIf="availableYears.length > 1">
+    <mat-label>Selecione o Ano</mat-label>
+    <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange()">
+      <mat-option *ngFor="let year of availableYears" [value]="year">
+        {{ year }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div *ngIf="selectedReport">
+    <div class="summary-container">
+      <h2>Visão Geral - {{ selectedYear }}</h2>
+      <table class="summary-table">
+        <tr>
+          <td>Entrada Total:</td>
+          <td>{{ selectedReport.totalIncomingQty }} kg</td>
+        </tr>
+        <tr>
+          <td>Custo Total das Entradas:</td>
+          <td>{{ selectedReport.totalIncomingCost | currency:'BRL' }}</td>
+        </tr>
+        <tr>
+          <td>Saída Total:</td>
+          <td>{{ selectedReport.totalOutgoingQty }} kg</td>
+        </tr>
+      </table>
+    </div>
+
+    <hr class="divider">
+
+    <div class="chart-container">
+      <h2>Detalhes Mensais - {{ selectedYear }}</h2>
+      <canvas baseChart
+        [data]="monthlyChartData"
+        [options]="monthlyChartOptions"
+        [legend]="monthlyChartLegend"
+        type="bar">
+      </canvas>
+    </div>
+  </div>
+
+  <div *ngIf="allReports.length === 0">
+    <p>Carregando relatório...</p>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onClose()">Fechar</button>
+</div>
