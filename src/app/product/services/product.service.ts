@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product.model';
 import { ProductTransaction } from '../models/product-transaction.model';
+import { YearReport } from '../../report/models/year-report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -59,5 +60,9 @@ export class ProductService {
 
   cancelOutgoingProductTransaction(productId: string, transactionId: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${productId}/transactions/${transactionId}`, {});
+  }
+
+  getYearlyReport(productId: string): Observable<YearReport[]> {
+    return this.http.get<YearReport[]>(`${this.apiUrl}/${productId}/yearly-report`);
   }
 }
