@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DryingSessionListComponent } from '../drying-session-list/drying-session-list.component';
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
+import { DryingRoomReportComponent } from '../drying-room-report/drying-room-report.component';
 
 @Component({
   selector: 'app-drying-room-list',
@@ -74,5 +75,13 @@ export class DryingRoomListComponent implements OnInit {
         }
       });
     }
+  }
+
+  openReport(dryingRoomId: string): void {
+    this.dialog.open(DryingRoomReportComponent, {
+      minWidth: '80vw',
+      maxWidth: '1200px',
+      data: { dryingRoomId: dryingRoomId }
+    });
   }
 }

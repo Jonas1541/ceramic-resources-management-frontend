@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { DryingRoom } from '../models/drying-room.model';
 
 import { DryingSession } from '../models/drying-session.model';
+import { YearReport } from '../../report/models/year-report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -48,5 +49,9 @@ export class DryingRoomService {
 
   deleteDryingSession(dryingRoomId: string, sessionId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${dryingRoomId}/drying-sessions/${sessionId}`);
+  }
+
+  getYearlyReport(dryingRoomId: string): Observable<YearReport[]> {
+    return this.http.get<YearReport[]>(`${this.apiUrl}/${dryingRoomId}/yearly-report`);
   }
 }

@@ -1,0 +1,47 @@
+// src/app/product/components/product-report/product-report.component.scss
+
+.year-selector {
+  margin-bottom: 16px;
+  width: 150px;
+}
+
+.summary-container {
+  margin-bottom: 16px;
+}
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 1.1em;
+  }
+
+  td:first-child {
+    font-weight: 500;
+    color: #616161;
+    width: 40%;
+  }
+
+  td:last-child {
+    font-weight: bold;
+  }
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 450px;
+}
+
+.divider {
+  border-top: 1px solid #ccc;
+  margin: 24px 0;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+}

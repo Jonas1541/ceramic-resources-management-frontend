@@ -1,0 +1,52 @@
+<h1 mat-dialog-title>Relatório da Estufa</h1>
+
+<div mat-dialog-content>
+  <mat-form-field appearance="outline" class="year-selector" *ngIf="availableYears.length > 1">
+    <mat-label>Selecione o Ano</mat-label>
+    <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange()">
+      <mat-option *ngFor="let year of availableYears" [value]="year">
+        {{ year }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div *ngIf="selectedReport">
+    <div class="summary-container">
+      <h2>Visão Geral - {{ selectedYear }}</h2>
+      <table class="summary-table">
+        <tr>
+          <td>Total de Sessões no Ano:</td>
+          <td>{{ selectedReport.totalIncomingQty }}</td>
+        </tr>
+        <tr>
+          <td>Custo Total das Sessões:</td>
+          <td>{{ selectedReport.totalIncomingCost | currency:'BRL' }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <hr class="divider">
+
+    <div class="chart-container">
+      <h2>Detalhes Mensais - {{ selectedYear }}</h2>
+      <canvas baseChart
+        [data]="monthlyChartData"
+        [options]="monthlyChartOptions"
+        [legend]="monthlyChartLegend"
+        type="bar">
+      </canvas>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading">
+    <p>Carregando relatório...</p>
+  </div>
+
+  <div *ngIf="!isLoading && allReports.length === 0">
+    <p>Não há dados de sessões de secagem para esta estufa.</p>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onClose()">Fechar</button>
+</div>
