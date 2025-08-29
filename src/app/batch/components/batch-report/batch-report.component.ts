@@ -46,7 +46,7 @@ export class BatchReportComponent implements OnInit {
               if (context.dataset.type === 'line') {
                 label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
               } else {
-                label += `${context.parsed.y.toFixed(2)} kg`;
+                label += new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(context.parsed.y) + ' kg';
               }
             }
             return label;
