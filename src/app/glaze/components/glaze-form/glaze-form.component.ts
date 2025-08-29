@@ -139,24 +139,31 @@ export class GlazeFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.glazeForm.value;
+    const formValue = this.glazeForm.value;
+    const payload = {
+      ...formValue,
+      unitValue: parseFloat(String(formValue.unitValue).replace(',', '.')),
+      resourceUsages: formValue.resourceUsages.map((usage: any) => ({
+        ...usage,
+        quantity: parseFloat(String(usage.quantity).replace(',', '.'))
+      })),
+      machineUsages: formValue.machineUsages.map((usage: any) => ({
+        ...usage,
+        usageTime: parseFloat(String(usage.usageTime).replace(',', '.'))
+      }))
+    };
 
-    if (this.isEditMode) {
-      this.glazeService.updateGlaze(this.data.glaze.id, formData).subscribe({
-        next: () => this.dialogRef.close(true),
-        error: (err) => {
-          const message = this.errorMessages[err.error.message] || err.error.message;
-          alert(message);
-        }
-      });
-    } else {
-      this.glazeService.createGlaze(formData).subscribe({
-        next: () => this.dialogRef.close(true),
-        error: (err) => {
-          const message = this.errorMessages[err.error.message] || err.error.message;
-          alert(message);
-        }
-      });
-    }
+    const operation = this.isEditMode
+      ? this.glazeService.updateGlaze(this.data.glaze.id, payload)
+      : this.glazeService.createGlaze(payload);
+
+    operation.subscribe({
+      next: () => this.dialogRef.close(true),
+      error: (err) => {
+        const serverMessage = err.error?.message;
+        const message = this.errorMessages[serverMessage] || serverMessage || 'Ocorreu um erro ao salvar a glasura.';
+        alert(message);
+      }
+    });
   }
 }

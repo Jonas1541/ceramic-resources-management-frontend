@@ -143,29 +143,34 @@ export class BatchFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.batchForm.value;
-    formData.resourceUsages.forEach((usage: any) => {
-      usage.umidity = usage.umidity / 100;
-    });
+    const formValue = this.batchForm.value;
 
-    if (this.isEditMode) {
-      this.batchService.updateBatch(this.data.batch.id, formData).subscribe({
-        next: () => this.dialogRef.close(true),
-        error: (err) => {
-          const serverMessage = err.error?.message;
-          const message = this.errorMessages[serverMessage] || serverMessage || 'Ocorreu um erro ao atualizar a batelada.';
-          alert(message);
-        }
-      });
-    } else {
-      this.batchService.createBatch(formData).subscribe({
-        next: () => this.dialogRef.close(true),
-        error: (err) => {
-          const serverMessage = err.error?.message;
-          const message = this.errorMessages[serverMessage] || serverMessage || 'Ocorreu um erro ao criar a batelada.';
-          alert(message);
-        }
-      });
-    }
+    // Convert comma-strings to numbers and adjust umidity
+    const payload = {
+      ...formValue,
+      resourceUsages: formValue.resourceUsages.map((usage: any) => ({
+        ...usage,
+        initialQuantity: parseFloat(String(usage.initialQuantity).replace(',', '.')),
+        umidity: parseFloat(String(usage.umidity).replace(',', '.')) / 100,
+        addedQuantity: parseFloat(String(usage.addedQuantity).replace(',', '.'))
+      })),
+      machineUsages: formValue.machineUsages.map((usage: any) => ({
+        ...usage,
+        usageTime: parseFloat(String(usage.usageTime).replace(',', '.'))
+      }))
+    };
+
+    const operation = this.isEditMode
+      ? this.batchService.updateBatch(this.data.batch.id, payload)
+      : this.batchService.createBatch(payload);
+
+    operation.subscribe({
+      next: () => this.dialogRef.close(true),
+      error: (err) => {
+        const serverMessage = err.error?.message;
+        const message = this.errorMessages[serverMessage] || serverMessage || 'Ocorreu um erro ao salvar a batelada.';
+        alert(message);
+      }
+    });
   }
 }
