@@ -62,23 +62,37 @@ export class DryingRoomListComponent implements OnInit {
   }
 
   openDryingRoomForm(dryingRoom?: DryingRoom): void {
-    const dialogRef = this.dialog.open(DryingRoomFormComponent, {
-      width: '700px',
-      data: { dryingRoom: dryingRoom }
-    });
+    if (dryingRoom) {
+      // EDIT MODE: Fetch full details first
+      this.dryingRoomService.getDryingRoom(dryingRoom.id).subscribe(fullDryingRoom => {
+        const dialogRef = this.dialog.open(DryingRoomFormComponent, {
+          width: '700px',
+          data: { dryingRoom: fullDryingRoom }
+        });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        if (dryingRoom) { // It was an edit
-          this.detailsCache.delete(dryingRoom.id);
-          // Collapse the row if it was expanded
-          if (this.expandedElement && this.expandedElement.id === dryingRoom.id) {
-            this.expandedElement = null;
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.detailsCache.delete(fullDryingRoom.id);
+            if (this.expandedElement && this.expandedElement.id === fullDryingRoom.id) {
+              this.expandedElement = null;
+            }
+            this.loadDryingRooms();
           }
+        });
+      });
+    } else {
+      // CREATE MODE
+      const dialogRef = this.dialog.open(DryingRoomFormComponent, {
+        width: '700px',
+        data: { dryingRoom: undefined } // Explicitly pass undefined
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.loadDryingRooms();
         }
-        this.loadDryingRooms();
-      }
-    });
+      });
+    }
   }
 
   openSessionList(dryingRoomId: string): void {
