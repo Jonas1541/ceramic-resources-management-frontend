@@ -69,6 +69,13 @@ export class DryingRoomListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        if (dryingRoom) { // It was an edit
+          this.detailsCache.delete(dryingRoom.id);
+          // Collapse the row if it was expanded
+          if (this.expandedElement && this.expandedElement.id === dryingRoom.id) {
+            this.expandedElement = null;
+          }
+        }
         this.loadDryingRooms();
       }
     });
