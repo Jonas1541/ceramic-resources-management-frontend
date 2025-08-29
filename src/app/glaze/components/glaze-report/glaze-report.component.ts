@@ -95,21 +95,21 @@ export class GlazeReportComponent implements OnInit {
       datasets: [
         {
           type: 'bar',
-          label: 'Entrada (kg)',
+          label: 'Quantidade de Entrada',
           data: report.months.map(m => m.incomingQty),
           backgroundColor: 'rgba(90, 164, 84, 0.7)',
           yAxisID: 'y',
         },
         {
           type: 'bar',
-          label: 'Saída (kg)',
+          label: 'Quantidade de Saída',
           data: report.months.map(m => m.outgoingQty),
           backgroundColor: 'rgba(63, 81, 181, 0.7)',
           yAxisID: 'y',
         },
         {
           type: 'line',
-          label: 'Custo de Entrada (R$)',
+          label: 'Custo de Entrada',
           data: report.months.map(m => m.incomingCost),
           borderColor: '#A10A28',
           backgroundColor: 'rgba(161, 10, 40, 0.3)',
