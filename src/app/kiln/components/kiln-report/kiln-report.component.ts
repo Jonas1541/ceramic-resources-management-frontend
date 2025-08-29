@@ -102,7 +102,7 @@ export class KilnReportComponent implements OnInit {
         },
         {
           type: 'line',
-          label: 'Custo Total (R$)',
+          label: 'Custo',
           data: report.months.map(m => m.incomingCost), // Mapeando para o custo das queimas
           borderColor: '#3f51b5',                       // Azul para custo
           backgroundColor: 'rgba(63, 81, 181, 0.3)',
