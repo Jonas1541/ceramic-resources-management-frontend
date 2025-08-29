@@ -7,11 +7,13 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { DryingSessionListComponent } from '../drying-session-list/drying-session-list.component';
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 import { DryingRoomReportComponent } from '../drying-room-report/drying-room-report.component';
+import { Machine } from '../../../machine/models/machine.model';
 
 @Component({
   selector: 'app-drying-room-list',
@@ -19,12 +21,21 @@ import { DryingRoomReportComponent } from '../drying-room-report/drying-room-rep
   imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './drying-room-list.component.html',
-  styleUrls: ['./drying-room-list.component.scss']
+  styleUrls: ['./drying-room-list.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class DryingRoomListComponent implements OnInit {
 
-  displayedColumns: string[] = ['name', 'gasConsumptionPerHour', 'uses', 'actions'];
+  displayedColumns: string[] = ['name', 'gasConsumptionPerHour', 'actions'];
   dryingRooms: DryingRoom[] = [];
+  expandedElement: DryingRoom | null = null;
+  detailsCache = new Map<string, Machine[]>();
 
   constructor(
     private dryingRoomService: DryingRoomService,
@@ -39,6 +50,15 @@ export class DryingRoomListComponent implements OnInit {
     this.dryingRoomService.getDryingRooms().subscribe(data => {
       this.dryingRooms = data;
     });
+  }
+
+  toggleDetails(element: DryingRoom): void {
+    this.expandedElement = this.expandedElement === element ? null : element;
+    if (this.expandedElement && !this.detailsCache.has(element.id)) {
+        this.dryingRoomService.getDryingRoom(element.id).subscribe(detailedDryingRoom => {
+            this.detailsCache.set(element.id, detailedDryingRoom.machines);
+        });
+    }
   }
 
   openDryingRoomForm(dryingRoom?: DryingRoom): void {
