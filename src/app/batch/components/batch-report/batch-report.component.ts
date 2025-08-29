@@ -92,14 +92,14 @@ export class BatchReportComponent implements OnInit {
       datasets: [
         {
           type: 'bar',
-          label: 'Qtd. de Recursos Usada (kg)',
+          label: 'Qtd. de Recursos Usada',
           data: report.months.map(m => m.incomingQty),
           backgroundColor: 'rgba(90, 164, 84, 0.7)',
           yAxisID: 'y',
         },
         {
           type: 'line',
-          label: 'Custo Final das Bateladas',
+          label: 'Custo Mensal',
           data: report.months.map(m => m.incomingCost),
           borderColor: '#795548',
           backgroundColor: 'rgba(121, 85, 72, 0.3)',
