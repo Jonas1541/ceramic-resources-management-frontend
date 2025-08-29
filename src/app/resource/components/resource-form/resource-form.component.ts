@@ -64,15 +64,19 @@ export class ResourceFormComponent implements OnInit {
     }
 
     const formData = this.resourceForm.value;
+    const operation = this.isEditMode
+      ? this.resourceService.updateResource(this.data.resource.id, formData)
+      : this.resourceService.createResource(formData);
 
-    if (this.isEditMode) {
-      this.resourceService.updateResource(this.data.resource.id, formData).subscribe(() => {
-        this.dialogRef.close(true);
-      });
-    } else {
-      this.resourceService.createResource(formData).subscribe(() => {
-        this.dialogRef.close(true);
-      });
-    }
+    operation.subscribe({
+      next: () => this.dialogRef.close(true),
+      error: (err) => {
+        if (err.status === 409 && err.error?.message) {
+          alert(err.error.message); // Exibe a mensagem específica do backend
+        } else {
+          alert('Ocorreu um erro ao salvar o recurso.'); // Mensagem genérica
+        }
+      }
+    });
   }
 }
