@@ -91,14 +91,19 @@ export class DryingRoomFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.dryingRoomForm.value;
+    const formValue = this.dryingRoomForm.value;
+    const payload: Partial<DryingRoom> = {
+      name: formValue.name,
+      gasConsumptionPerHour: formValue.gasConsumptionPerHour,
+      machines: formValue.machineIds.map((id: string) => Number(id))
+    };
 
     if (this.isEditMode) {
-      this.dryingRoomService.updateDryingRoom(this.data.dryingRoom.id, formData).subscribe(() => {
+      this.dryingRoomService.updateDryingRoom(this.data.dryingRoom.id, payload).subscribe(() => {
         this.dialogRef.close(true);
       });
     } else {
-      this.dryingRoomService.createDryingRoom(formData).subscribe(() => {
+      this.dryingRoomService.createDryingRoom(payload).subscribe(() => {
         this.dialogRef.close(true);
       });
     }
