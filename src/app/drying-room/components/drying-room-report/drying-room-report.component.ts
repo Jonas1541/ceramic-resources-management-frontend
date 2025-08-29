@@ -102,7 +102,7 @@ export class DryingRoomReportComponent implements OnInit {
         },
         {
           type: 'line',
-          label: 'Custo Total (R$)',
+          label: 'Custo Total',
           data: report.months.map(m => m.incomingCost),
           borderColor: '#009688', // Ciano/Verde-azulado para o custo
           backgroundColor: 'rgba(0, 150, 136, 0.3)',
