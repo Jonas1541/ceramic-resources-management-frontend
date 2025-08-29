@@ -48,7 +48,7 @@ export class GlazeReportComponent implements OnInit {
               if (context.dataset.type === 'line') {
                 label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
               } else {
-                label += `${context.parsed.y} kg`;
+                label += new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(context.parsed.y) + ' kg';
               }
             }
             return label;

@@ -16,7 +16,7 @@
       <table class="summary-table">
         <tr>
           <td>Entrada Total:</td>
-          <td>{{ selectedReport.totalIncomingQty }} kg</td>
+          <td>{{ selectedReport.totalIncomingQty | number: '1.0-2' }} kg</td>
         </tr>
         <tr>
           <td>Custo Total das Entradas:</td>
@@ -24,7 +24,7 @@
         </tr>
         <tr>
           <td>Saída Total:</td>
-          <td>{{ selectedReport.totalOutgoingQty }} kg</td>
+          <td>{{ selectedReport.totalOutgoingQty | number: '1.0-2' }} kg</td>
         </tr>
       </table>
     </div>
