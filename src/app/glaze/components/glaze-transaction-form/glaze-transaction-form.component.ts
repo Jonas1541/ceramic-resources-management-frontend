@@ -52,15 +52,19 @@ export class GlazeTransactionFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.transactionForm.value;
+    const formValue = this.transactionForm.value;
+    const payload = {
+      ...formValue,
+      quantity: parseFloat(String(formValue.quantity).replace(',', '.'))
+    };
 
     if (this.isEditMode) {
-      this.glazeService.updateGlazeTransaction(this.data.glazeId, this.data.transaction.id, formData).subscribe({
+      this.glazeService.updateGlazeTransaction(this.data.glazeId, this.data.transaction.id, payload).subscribe({
         next: () => this.dialogRef.close(true),
         error: (err: any) => alert(err.error?.message || 'Ocorreu um erro ao atualizar a transação.')
       });
     } else {
-      this.glazeService.createGlazeTransaction(this.data.glazeId, formData).subscribe({
+      this.glazeService.createGlazeTransaction(this.data.glazeId, payload).subscribe({
         next: () => this.dialogRef.close(true),
         error: (err) => alert(err.error?.message || 'Ocorreu um erro ao criar a transação.')
       });

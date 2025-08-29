@@ -10,11 +10,12 @@ import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 
 import { ResourceTransaction } from '../../models/resource-transaction.model';
+import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
 
 @Component({
   selector: 'app-resource-transaction-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule, DecimalMaskDirective],
   templateUrl: './resource-transaction-form.component.html',
   styleUrls: ['./resource-transaction-form.component.scss']
 })
@@ -52,15 +53,19 @@ export class ResourceTransactionFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.transactionForm.value;
+    const formValue = this.transactionForm.value;
+    const payload = {
+      ...formValue,
+      quantity: parseFloat(String(formValue.quantity).replace(',', '.'))
+    };
 
     if (this.isEditMode) {
-      this.resourceService.updateResourceTransaction(this.data.resourceId, String(this.data.transaction.id), formData).subscribe({
+      this.resourceService.updateResourceTransaction(this.data.resourceId, String(this.data.transaction.id), payload).subscribe({
         next: () => this.dialogRef.close(true),
         error: (err) => alert(err.error?.message || 'Ocorreu um erro ao atualizar a transação.')
       });
     } else {
-      this.resourceService.createResourceTransaction(this.data.resourceId, formData).subscribe({
+      this.resourceService.createResourceTransaction(this.data.resourceId, payload).subscribe({
         next: () => this.dialogRef.close(true),
         error: (err) => alert(err.error?.message || 'Ocorreu um erro ao criar a transação.')
       });
