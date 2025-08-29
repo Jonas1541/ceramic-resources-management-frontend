@@ -96,21 +96,21 @@ export class ProductReportComponent implements OnInit {
         {
           type: 'bar',
           label: 'Produção',
-          data: report.months.map(m => m.incomingQty), // Mapeando para produção
+          data: report.months.map(m => m.incomingQty),
           backgroundColor: 'rgba(90, 164, 84, 0.7)',
           yAxisID: 'y',
         },
         {
           type: 'bar',
-          label: 'Vendas',
-          data: report.months.map(m => m.outgoingQty), // Mapeando para vendas
+          label: 'Saídas',
+          data: report.months.map(m => m.outgoingQty),
           backgroundColor: 'rgba(63, 81, 181, 0.7)',
           yAxisID: 'y',
         },
         {
           type: 'line',
           label: 'Lucro',
-          data: report.months.map(m => m.outgoingProfit), // Mapeando para lucro
+          data: report.months.map(m => m.outgoingProfit),
           borderColor: '#FB8C00',
           backgroundColor: 'rgba(251, 140, 0, 0.3)',
           yAxisID: 'y1',
