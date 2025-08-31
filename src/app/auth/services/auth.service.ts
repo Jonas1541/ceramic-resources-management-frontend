@@ -51,4 +51,12 @@ export class AuthService {
   getOwnDeletionStatus(): Observable<any> {
     return this.http.get(`${this.apiUrl}/companies/me/deletion-status`);
   }
+
+  forgotPassword(data: { email: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/forgot-password`, data);
+  }
+
+  resetPassword(data: { token: string, password: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/reset-password`, data);
+  }
 }
