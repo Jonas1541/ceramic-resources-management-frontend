@@ -20,6 +20,7 @@ import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 export class GeneralReportComponent implements OnInit {
 
   reports: GeneralReport[] = [];
+  isLoading: boolean = true;
 
   public lineChartData: ChartConfiguration<'line'>['data'][] = [];
   public annualChartData: ChartConfiguration<'bar'>['data'][] = [];
@@ -85,6 +86,7 @@ export class GeneralReportComponent implements OnInit {
     this.reportService.getGeneralReport().subscribe((data: GeneralReport[]) => {
       this.reports = data;
       this.prepareChartData();
+      this.isLoading = false;
     });
   }
 

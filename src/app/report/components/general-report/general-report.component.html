@@ -33,7 +33,11 @@
 
   </ng-container>
 
-  <div *ngIf="reports.length === 0">
+  <div *ngIf="isLoading">
     <p>Carregando relatório...</p>
+  </div>
+
+  <div *ngIf="!isLoading && reports.length === 0">
+    <p>Não há dados para exibir no momento.</p>
   </div>
 </div>
