@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 import { Resource, ResourceRequest } from '../models/resource.model';
 import { ResourceTransaction, ResourceTransactionRequest } from '../models/resource-transaction.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ResourceService {
 
-  private apiUrl = 'http://localhost:8080/resources'; // TODO: Mover para arquivo de ambiente
+  private apiUrl = `${environment.apiUrl}/resources`;
 
   constructor(private http: HttpClient) { }
 

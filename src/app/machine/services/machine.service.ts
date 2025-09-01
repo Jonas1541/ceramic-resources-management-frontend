@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Machine } from '../models/machine.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class MachineService {
 
-  private apiUrl = 'http://localhost:8080/machines'; // TODO: Mover para arquivo de ambiente
+  private apiUrl = `${environment.apiUrl}/machines`;
 
   constructor(private http: HttpClient) { }
 

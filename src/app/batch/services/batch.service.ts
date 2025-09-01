@@ -6,12 +6,14 @@ import { BatchList } from '../models/batch-list.model';
 import { BatchTransaction } from '../models/batch-transaction.model';
 import { YearReport } from '../../report/models/year-report.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class BatchService {
 
-  private apiUrl = 'http://localhost:8080/batches'; // TODO: Mover para arquivo de ambiente
+  private apiUrl = `${environment.apiUrl}/batches`;
 
   constructor(private http: HttpClient) { }
 

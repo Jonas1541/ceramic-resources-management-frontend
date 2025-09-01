@@ -6,12 +6,14 @@ import { DryingRoom } from '../models/drying-room.model';
 import { DryingSession } from '../models/drying-session.model';
 import { YearReport } from '../../report/models/year-report.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class DryingRoomService {
 
-  private apiUrl = 'http://localhost:8080/drying-rooms'; // TODO: Mover para arquivo de ambiente
+  private apiUrl = `${environment.apiUrl}/drying-rooms`;
 
   constructor(private http: HttpClient) { }
 

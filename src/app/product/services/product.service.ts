@@ -5,12 +5,14 @@ import { Product } from '../models/product.model';
 import { ProductTransaction } from '../models/product-transaction.model';
 import { YearReport } from '../../report/models/year-report.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  private apiUrl = 'http://localhost:8080/products'; // TODO: Mover para arquivo de ambiente
+  private apiUrl = `${environment.apiUrl}/products`;
 
   constructor(private http: HttpClient) { }
 

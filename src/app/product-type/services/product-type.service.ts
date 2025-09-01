@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ProductType } from '../models/product-type.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProductTypeService {
 
-  private apiUrl = 'http://localhost:8080/product-types'; // TODO: Mover para arquivo de ambiente
+  private apiUrl = `${environment.apiUrl}/product-types`;
 
   constructor(private http: HttpClient) { }
 

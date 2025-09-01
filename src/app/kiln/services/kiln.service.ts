@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 import { Kiln } from '../models/kiln.model';
 import { YearReport } from '../../report/models/year-report.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class KilnService {
 
-  private apiUrl = 'http://localhost:8080/kilns'; // TODO: Mover para arquivo de ambiente
+  private apiUrl = `${environment.apiUrl}/kilns`;
 
   constructor(private http: HttpClient) { }
 

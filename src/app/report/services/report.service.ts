@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { GeneralReport } from '../models/general-report.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ReportService {
 
-  private apiUrl = 'http://localhost:8080/general-report'; // TODO: Mover para arquivo de ambiente
+  private apiUrl = `${environment.apiUrl}/general-report`;
 
   constructor(private http: HttpClient) { }
 

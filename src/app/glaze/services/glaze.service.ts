@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 import { Glaze } from '../models/glaze.model';
 import { GlazeTransaction } from '../models/glaze-transaction.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class GlazeService {
 
-  private apiUrl = 'http://localhost:8080/glazes'; // TODO: Mover para arquivo de ambiente
+  private apiUrl = `${environment.apiUrl}/glazes`;
 
   constructor(private http: HttpClient) { }
 
