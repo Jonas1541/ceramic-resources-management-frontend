@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://sua-api-de-producao.com' // TODO: Substitua pela URL da sua API de produção
+  apiUrl: '/api' // A URL agora é relativa, o Nginx cuidará do resto
 };
