@@ -30,6 +30,9 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> Ações </th>
       <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="accent" (click)="openGlazeDetails(element.id)" title="Ver Detalhes">
+          <mat-icon>visibility</mat-icon>
+        </button>
         <button mat-icon-button color="primary" (click)="openGlazeForm(element)" title="Editar Glaze">
           <mat-icon>edit</mat-icon>
         </button>

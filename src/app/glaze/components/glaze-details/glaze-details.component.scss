@@ -1,0 +1,60 @@
+.details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.info-section {
+  margin-bottom: 16px;
+}
+
+.table-section {
+  margin-bottom: 16px;
+}
+
+.costs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.cost-item {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cost-label {
+  color: #616161;
+  font-size: 0.9em;
+  margin-bottom: 4px;
+}
+
+.cost-value {
+  font-weight: 500;
+  font-size: 1.2em;
+}
+
+.final-cost {
+  background-color: #ffebee; /* Vermelho claro para destacar */
+  border: 1px solid #ef9a9a;
+}
+
+.final-cost .cost-value {
+  font-weight: bold;
+  color: #c62828; /* Vermelho escuro para o valor final */
+}
+
+.profit-item {
+  background-color: #e8f5e9; /* Verde claro para destacar */
+  border: 1px solid #a5d6a7;
+}
+
+.profit-item .cost-value {
+  font-weight: bold;
+  color: #2e7d32; /* Verde escuro para o valor */
+}

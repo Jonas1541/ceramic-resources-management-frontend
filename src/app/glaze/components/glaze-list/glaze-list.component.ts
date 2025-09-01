@@ -14,6 +14,9 @@ import { GlazeTransactionListComponent } from '../glaze-transaction-list/glaze-t
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
 import { GlazeReportComponent } from '../glaze-report/glaze-report.component';
+import { RouterModule } from '@angular/router';
+
+import { GlazeDetailsComponent } from '../glaze-details/glaze-details.component';
 
 @Component({
   selector: 'app-glaze-list',
@@ -76,6 +79,14 @@ export class GlazeListComponent implements OnInit {
     });
   }
 
+  openGlazeDetails(glazeId: string): void {
+    this.dialog.open(GlazeDetailsComponent, {
+      minWidth: '80vw',
+      maxWidth: '95vw',
+      data: { glazeId: glazeId }
+    });
+  }
+
   deleteGlaze(id: string): void {
     if (confirm('Tem certeza que deseja excluir esta glasura?')) {
       this.glazeService.deleteGlaze(id).subscribe({
@@ -89,3 +100,4 @@ export class GlazeListComponent implements OnInit {
     }
   }
 }
+

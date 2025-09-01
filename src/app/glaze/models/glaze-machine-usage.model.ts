@@ -1,7 +1,5 @@
-import { Machine } from "../../machine/models/machine.model";
-
 export interface GlazeMachineUsage {
-    id: string;
+    machineId: number;
+    machineName: string;
     usageTime: number;
-    machine: Machine;
 }
