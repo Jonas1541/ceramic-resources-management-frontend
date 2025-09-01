@@ -18,3 +18,16 @@ th.mat-mdc-header-cell {
   z-index: 1;
   background-color: white;
 }
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Alinha os itens ao topo */
+  min-height: 100vh;
+  padding-top: 20vh; /* Espaçamento do topo */
+  box-sizing: border-box;
+}
+
+.auth-container .container {
+  text-align: center;
+}
