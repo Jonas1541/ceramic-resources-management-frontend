@@ -91,7 +91,11 @@ export class DryingRoomFormComponent implements OnInit {
       return;
     }
 
-    const formValue = this.dryingRoomForm.value;
+    const formValue = { ...this.dryingRoomForm.value };
+    if (typeof formValue.gasConsumptionPerHour === 'string') {
+      formValue.gasConsumptionPerHour = parseFloat(formValue.gasConsumptionPerHour.replace(',', '.'));
+    }
+
     const payload: Partial<DryingRoom> = {
       name: formValue.name,
       gasConsumptionPerHour: formValue.gasConsumptionPerHour,

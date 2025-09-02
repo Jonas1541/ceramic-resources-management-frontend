@@ -138,7 +138,27 @@ export class BisqueFiringFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.bisqueFiringForm.value;
+    const formData = { ...this.bisqueFiringForm.value };
+
+    // Converte campos numéricos
+    if (typeof formData.temperature === 'string') {
+      formData.temperature = parseFloat(formData.temperature.replace(',', '.'));
+    }
+    if (typeof formData.burnTime === 'string') {
+      formData.burnTime = parseFloat(formData.burnTime.replace(',', '.'));
+    }
+    if (typeof formData.coolingTime === 'string') {
+      formData.coolingTime = parseFloat(formData.coolingTime.replace(',', '.'));
+    }
+    if (typeof formData.gasConsumption === 'string') {
+      formData.gasConsumption = parseFloat(formData.gasConsumption.replace(',', '.'));
+    }
+
+    // Converte usageTime dentro de machineUsages
+    formData.machineUsages = formData.machineUsages.map((usage: any) => ({
+      ...usage,
+      usageTime: typeof usage.usageTime === 'string' ? parseFloat(usage.usageTime.replace(',', '.')) : usage.usageTime
+    }));
 
     if (this.isEditMode) {
       this.bisqueFiringService.updateBisqueFiring(this.data.kilnId, this.data.bisqueFiring!.id, formData).subscribe({

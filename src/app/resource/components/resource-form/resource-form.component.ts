@@ -63,7 +63,11 @@ export class ResourceFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.resourceForm.value;
+    const formData = { ...this.resourceForm.value };
+    if (typeof formData.unitValue === 'string') {
+      formData.unitValue = parseFloat(formData.unitValue.replace(',', '.'));
+    }
+
     const operation = this.isEditMode
       ? this.resourceService.updateResource(this.data.resource.id, formData)
       : this.resourceService.createResource(formData);

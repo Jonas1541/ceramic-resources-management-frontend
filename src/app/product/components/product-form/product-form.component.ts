@@ -90,7 +90,19 @@ export class ProductFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.productForm.value;
+    const formData = { ...this.productForm.value };
+    if (typeof formData.price === 'string') {
+      formData.price = parseFloat(formData.price.replace(',', '.'));
+    }
+    if (typeof formData.height === 'string') {
+      formData.height = parseFloat(formData.height.replace(',', '.'));
+    }
+    if (typeof formData.length === 'string') {
+      formData.length = parseFloat(formData.length.replace(',', '.'));
+    }
+    if (typeof formData.width === 'string') {
+      formData.width = parseFloat(formData.width.replace(',', '.'));
+    }
 
     if (this.isEditMode) {
       this.productService.updateProduct(this.data.product.id, formData).subscribe({

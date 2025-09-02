@@ -51,7 +51,10 @@ export class MachineFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.machineForm.value;
+    const formData = { ...this.machineForm.value };
+    if (typeof formData.power === 'string') {
+      formData.power = parseFloat(formData.power.replace(',', '.'));
+    }
 
     if (this.isEditMode) {
       this.machineService.updateMachine(this.data.machine.id, formData).subscribe(() => {

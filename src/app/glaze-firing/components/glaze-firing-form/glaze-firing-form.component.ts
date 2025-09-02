@@ -193,7 +193,33 @@ export class GlazeFiringFormComponent implements OnInit {
             return;
         }
 
-        const formData = this.glazeFiringForm.value;
+        const formData = { ...this.glazeFiringForm.value };
+
+        // Converte campos numéricos
+        if (typeof formData.temperature === 'string') {
+            formData.temperature = parseFloat(formData.temperature.replace(',', '.'));
+        }
+        if (typeof formData.burnTime === 'string') {
+            formData.burnTime = parseFloat(formData.burnTime.replace(',', '.'));
+        }
+        if (typeof formData.coolingTime === 'string') {
+            formData.coolingTime = parseFloat(formData.coolingTime.replace(',', '.'));
+        }
+        if (typeof formData.gasConsumption === 'string') {
+            formData.gasConsumption = parseFloat(formData.gasConsumption.replace(',', '.'));
+        }
+
+        // Converte quantity dentro de glosts
+        formData.glosts = formData.glosts.map((glost: any) => ({
+            ...glost,
+            quantity: typeof glost.quantity === 'string' ? parseFloat(glost.quantity.replace(',', '.')) : glost.quantity
+        }));
+
+        // Converte usageTime dentro de machineUsages
+        formData.machineUsages = formData.machineUsages.map((usage: any) => ({
+            ...usage,
+            usageTime: typeof usage.usageTime === 'string' ? parseFloat(usage.usageTime.replace(',', '.')) : usage.usageTime
+        }));
 
         if (this.isEditMode) {
             this.glazeFiringService.updateGlazeFiring(this.data.kilnId, this.data.glazeFiring!.id, formData).subscribe(() => {

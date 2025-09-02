@@ -51,7 +51,10 @@ export class KilnFormComponent implements OnInit {
       return;
     }
 
-    const formData = this.kilnForm.value;
+    const formData = { ...this.kilnForm.value };
+    if (typeof formData.power === 'string') {
+      formData.power = parseFloat(formData.power.replace(',', '.'));
+    }
 
     if (this.isEditMode) {
       this.kilnService.updateKiln(this.data.kiln.id, formData).subscribe(() => {
