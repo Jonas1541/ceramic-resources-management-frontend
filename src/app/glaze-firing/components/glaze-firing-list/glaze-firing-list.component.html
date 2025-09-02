@@ -1,8 +1,6 @@
 <h1 mat-dialog-title>Queimas de Glasura</h1>
 
 <div mat-dialog-content class="dialog-content">
-  <button mat-raised-button color="primary" (click)="openGlazeFiringForm()">Adicionar Queima de Glasura</button>
-
   <table mat-table [dataSource]="glazeFirings" class="mat-elevation-z8">
 
     <!-- Colunas de Dados -->
@@ -78,5 +76,6 @@
 </div>
 
 <div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="openGlazeFiringForm()">Adicionar Queima de Glasura</button>
   <button mat-button (click)="onClose()">Fechar</button>
 </div>

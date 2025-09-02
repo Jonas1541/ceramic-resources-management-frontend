@@ -1,8 +1,6 @@
 <div class="container">
   <h1>Tipos de Produto</h1>
 
-  <button mat-raised-button color="primary" (click)="openProductTypeForm()">Adicionar Tipo de Produto</button>
-
   <table mat-table [dataSource]="productTypes" class="mat-elevation-z8">
 
     <!-- Colunas de Dados -->
@@ -30,5 +28,6 @@
 </div>
 
 <div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="openProductTypeForm()">Adicionar Tipo de Produto</button>
   <button mat-button (click)="onClose()">Fechar</button>
 </div>

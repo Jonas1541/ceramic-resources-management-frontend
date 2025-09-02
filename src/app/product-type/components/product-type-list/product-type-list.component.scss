@@ -1,7 +1,14 @@
 .container {
   padding: 24px;
+  text-align: center; /* Centraliza o título */
 
   @media (max-width: 599px) {
     padding: 10px;
   }
+}
+
+.mat-mdc-dialog-actions {
+  justify-content: flex-end; /* Alinha os botões à direita */
+  gap: 8px; /* Espaçamento entre os botões */
+  align-items: center; /* Centraliza verticalmente os botões */
 }

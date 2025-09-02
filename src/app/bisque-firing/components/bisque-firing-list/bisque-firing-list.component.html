@@ -1,8 +1,6 @@
 <h1 mat-dialog-title>Queimas de Biscoito</h1>
 
 <div mat-dialog-content class="dialog-content">
-  <button mat-raised-button color="primary" (click)="openBisqueFiringForm()">Adicionar Queima de Biscoito</button>
-
   <table mat-table [dataSource]="bisqueFirings" class="mat-elevation-z8">
 
     <!-- Colunas de Dados -->
@@ -22,8 +20,7 @@
         <span *ngIf="element.updatedAt !== element.createdAt">
           {{element.updatedAt | date:'short'}}
         </span>
-      </td>
-    </ng-container>
+      </ng-container>
 
     <ng-container matColumnDef="temperature">
       <th mat-header-cell *matHeaderCellDef> Temperatura </th>
@@ -78,5 +75,6 @@
 </div>
 
 <div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="openBisqueFiringForm()">Adicionar Queima de Biscoito</button>
   <button mat-button (click)="onClose()">Fechar</button>
 </div>
