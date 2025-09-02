@@ -2,7 +2,7 @@
   <mat-sidenav-container class="sidenav-container">
     <!-- Sidenav (Barra Lateral) -->
     <mat-sidenav #sidenav [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
-      <mat-toolbar>Ceramic Management</mat-toolbar>
+      <mat-toolbar>Gestor Cerâmico</mat-toolbar>
       <mat-nav-list>
         <a mat-list-item routerLink="/resources" (click)="closeSidenavIfHandset()">Recursos</a>
         <a mat-list-item routerLink="/machines" (click)="closeSidenavIfHandset()">Máquinas</a>
