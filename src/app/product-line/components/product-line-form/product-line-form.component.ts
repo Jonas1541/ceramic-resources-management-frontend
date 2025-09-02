@@ -52,12 +52,26 @@ export class ProductLineFormComponent implements OnInit {
     const formData = this.productLineForm.value;
 
     if (this.isEditMode) {
-      this.productLineService.updateProductLine(this.data.productLine.id, formData).subscribe(() => {
-        this.dialogRef.close(true);
+      this.productLineService.updateProductLine(this.data.productLine.id, formData).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          if (err.status === 409 && err.error?.message) {
+            alert(err.error.message); // Repassa a mensagem do backend
+          } else {
+            alert('Ocorreu um erro ao atualizar a linha de produto.'); // Mensagem genérica
+          }
+        }
       });
     } else {
-      this.productLineService.createProductLine(formData).subscribe(() => {
-        this.dialogRef.close(true);
+      this.productLineService.createProductLine(formData).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          if (err.status === 409 && err.error?.message) {
+            alert(err.error.message); // Repassa a mensagem do backend
+          } else {
+            alert('Ocorreu um erro ao criar a linha de produto.'); // Mensagem genérica
+          }
+        }
       });
     }
   }

@@ -52,12 +52,26 @@ export class ProductTypeFormComponent implements OnInit {
     const formData = this.productTypeForm.value;
 
     if (this.isEditMode) {
-      this.productTypeService.updateProductType(this.data.productType.id, formData).subscribe(() => {
-        this.dialogRef.close(true);
+      this.productTypeService.updateProductType(this.data.productType.id, formData).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          if (err.status === 409 && err.error?.message) {
+            alert(err.error.message); // Repassa a mensagem do backend
+          } else {
+            alert('Ocorreu um erro ao atualizar o tipo de produto.'); // Mensagem genérica
+          }
+        }
       });
     } else {
-      this.productTypeService.createProductType(formData).subscribe(() => {
-        this.dialogRef.close(true);
+      this.productTypeService.createProductType(formData).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          if (err.status === 409 && err.error?.message) {
+            alert(err.error.message); // Repassa a mensagem do backend
+          } else {
+            alert('Ocorreu um erro ao criar o tipo de produto.'); // Mensagem genérica
+          }
+        }
       });
     }
   }

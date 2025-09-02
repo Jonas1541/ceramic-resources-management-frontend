@@ -57,12 +57,26 @@ export class MachineFormComponent implements OnInit {
     }
 
     if (this.isEditMode) {
-      this.machineService.updateMachine(this.data.machine.id, formData).subscribe(() => {
-        this.dialogRef.close(true);
+      this.machineService.updateMachine(this.data.machine.id, formData).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          if (err.status === 409 && err.error?.message) {
+            alert(err.error.message); // Repassa a mensagem do backend
+          } else {
+            alert('Ocorreu um erro ao atualizar a máquina.'); // Mensagem genérica
+          }
+        }
       });
     } else {
-      this.machineService.createMachine(formData).subscribe(() => {
-        this.dialogRef.close(true);
+      this.machineService.createMachine(formData).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          if (err.status === 409 && err.error?.message) {
+            alert(err.error.message); // Repassa a mensagem do backend
+          } else {
+            alert('Ocorreu um erro ao criar a máquina.'); // Mensagem genérica
+          }
+        }
       });
     }
   }

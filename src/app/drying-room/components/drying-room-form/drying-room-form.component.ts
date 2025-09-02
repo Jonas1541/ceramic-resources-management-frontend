@@ -103,12 +103,26 @@ export class DryingRoomFormComponent implements OnInit {
     };
 
     if (this.isEditMode) {
-      this.dryingRoomService.updateDryingRoom(this.data.dryingRoom.id, payload).subscribe(() => {
-        this.dialogRef.close(true);
+      this.dryingRoomService.updateDryingRoom(this.data.dryingRoom.id, payload).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          if (err.status === 409 && err.error?.message) {
+            alert(err.error.message); // Repassa a mensagem do backend
+          } else {
+            alert('Ocorreu um erro ao atualizar a estufa.'); // Mensagem genérica
+          }
+        }
       });
     } else {
-      this.dryingRoomService.createDryingRoom(payload).subscribe(() => {
-        this.dialogRef.close(true);
+      this.dryingRoomService.createDryingRoom(payload).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          if (err.status === 409 && err.error?.message) {
+            alert(err.error.message); // Repassa a mensagem do backend
+          } else {
+            alert('Ocorreu um erro ao criar a estufa.'); // Mensagem genérica
+          }
+        }
       });
     }
   }
