@@ -1,22 +1,42 @@
-<mat-toolbar color="primary">
-  <span>Ceramic Management</span>
-  <span class="spacer"></span>
-  <ng-container *ngIf="(authService.isLoggedIn$ | async) as isLoggedIn">
-    <a mat-button routerLink="/resources">Recursos</a>
-    <a mat-button routerLink="/machines">Máquinas</a>
-    <a mat-button routerLink="/batches">Bateladas</a>
-    <a mat-button routerLink="/glazes">Glasuras</a>
-    <a mat-button routerLink="/products">Produtos</a>
-    <a mat-button routerLink="/kilns">Fornos</a>
-    <a mat-button routerLink="/drying-rooms">Estufas</a>
-    <a mat-button routerLink="/reports">Relatório Geral</a>
-    <a mat-button routerLink="/account">Minha Conta</a>
-    <button mat-button (click)="authService.logout()">Sair</button>
-  </ng-container>
-  <ng-container *ngIf="!(authService.isLoggedIn$ | async)">
-    <a mat-button routerLink="/login">Login</a>
-    <a mat-button routerLink="/register">Cadastro</a>
-  </ng-container>
-</mat-toolbar>
+<ng-container *ngIf="showMainLayout; else authLayout">
+  <mat-sidenav-container class="sidenav-container">
+    <!-- Sidenav (Barra Lateral) -->
+    <mat-sidenav #sidenav [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+      <mat-toolbar>Ceramic Management</mat-toolbar>
+      <mat-nav-list>
+        <a mat-list-item routerLink="/resources" (click)="closeSidenavIfHandset()">Recursos</a>
+        <a mat-list-item routerLink="/machines" (click)="closeSidenavIfHandset()">Máquinas</a>
+        <a mat-list-item routerLink="/batches" (click)="closeSidenavIfHandset()">Bateladas</a>
+        <a mat-list-item routerLink="/glazes" (click)="closeSidenavIfHandset()">Glasuras</a>
+        <a mat-list-item routerLink="/products" (click)="closeSidenavIfHandset()">Produtos</a>
+        <a mat-list-item routerLink="/kilns" (click)="closeSidenavIfHandset()">Fornos</a>
+        <a mat-list-item routerLink="/drying-rooms" (click)="closeSidenavIfHandset()">Estufas</a>
+        <a mat-list-item routerLink="/reports" (click)="closeSidenavIfHandset()">Relatório Geral</a>
+        <a mat-list-item routerLink="/account" (click)="closeSidenavIfHandset()">Minha Conta</a>
+        <a mat-list-item (click)="authService.logout(); closeSidenavIfHandset()" *ngIf="authService.isLoggedIn$ | async">Sair</a>
+      </mat-nav-list>
+    </mat-sidenav>
 
-<router-outlet></router-outlet>
+    <!-- Conteúdo Principal -->
+    <mat-sidenav-content>
+      <mat-toolbar color="primary">
+        <button
+          type="button"
+          aria-label="Toggle sidenav"
+          mat-icon-button
+          (click)="sidenav.toggle()"
+          *ngIf="isHandset$ | async">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+        <!-- O título da aplicação e o botão de sair foram movidos para a sidenav -->
+      </mat-toolbar>
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</ng-container>
+
+<ng-template #authLayout>
+  <router-outlet></router-outlet>
+</ng-template>

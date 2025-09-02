@@ -1,7 +1,9 @@
 <div class="container">
   <h1>Recursos</h1>
 
-  <button mat-raised-button color="primary" (click)="openResourceForm()" class="add-button">Adicionar Recurso</button>
+  <div class="add-button-wrapper">
+    <button mat-raised-button color="primary" (click)="openResourceForm()" class="add-button">Adicionar Recurso</button>
+  </div>
 
   <h2>Recursos Básicos</h2>
   <table mat-table [dataSource]="basicResources" class="mat-elevation-z8 resource-table">

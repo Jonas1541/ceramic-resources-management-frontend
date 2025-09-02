@@ -1,7 +1,9 @@
 <div class="container">
   <h1>Estufas</h1>
 
-  <button mat-raised-button color="primary" (click)="openDryingRoomForm()" class="add-button">Adicionar Estufa</button>
+  <div class="add-button-wrapper">
+    <button mat-raised-button color="primary" (click)="openDryingRoomForm()" class="add-button">Adicionar Estufa</button>
+  </div>
 
   <table mat-table [dataSource]="dryingRooms" multiTemplateDataRows class="mat-elevation-z8">
 

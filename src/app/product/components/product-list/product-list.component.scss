@@ -1,11 +1,23 @@
 .container {
   padding: 24px 48px;
+
+  @media (max-width: 599px) {
+    padding: 10px;
+  }
 }
 
 .button-row {
   display: flex;
   gap: 16px;
   margin-bottom: 16px;
+  padding: 10px 0;
+
+  @media (max-width: 599px) {
+    flex-direction: column; /* Empilha os botões em mobile */
+    align-items: center; /* Centraliza os botões empilhados */
+    gap: 10px; /* Espaçamento entre os botões empilhados */
+    justify-content: center; /* Centraliza apenas em mobile */
+  }
 }
 
 h1 {

@@ -15,7 +15,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 th.mat-mdc-header-cell {
   position: sticky !important;
   top: 0;
-  z-index: 1;
+  z-index: 100; /* Aumentado para garantir que fique acima de outros elementos */
   background-color: white;
 }
 
@@ -30,4 +30,28 @@ th.mat-mdc-header-cell {
 
 .auth-container .container {
   text-align: center;
+}
+
+/* Estilos globais para padronizar a altura dos botões */
+.mat-mdc-button, .mat-mdc-raised-button {
+  min-height: 40px; /* Altura padrão para botões de texto e elevados */
+  line-height: 40px; /* Garante alinhamento vertical do texto */
+}
+
+.mat-mdc-icon-button {
+  width: 40px; /* Garante que o botão de ícone seja quadrado */
+  height: 40px;
+  line-height: 40px;
+
+  .mat-icon {
+    font-size: 24px; /* Tamanho padrão do ícone */
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 599px) {
+  h1 {
+    text-align: center;
+  }
 }

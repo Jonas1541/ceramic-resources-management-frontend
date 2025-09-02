@@ -1,7 +1,9 @@
 <div class="container">
   <h1>Glasuras</h1>
 
-  <button mat-raised-button color="primary" (click)="openGlazeForm()" class="add-button">Adicionar Glasura</button>
+  <div class="button-container">
+    <button mat-raised-button color="primary" (click)="openGlazeForm()" class="add-button">Adicionar Glasura</button>
+  </div>
 
   <table mat-table [dataSource]="glazes" class="mat-elevation-z8">
 

@@ -1,9 +1,28 @@
 .container {
   padding: 24px 48px;
+
+  @media (max-width: 599px) {
+    padding: 10px;
+  }
 }
 
 .add-button {
   margin-bottom: 16px;
+
+  @media (max-width: 599px) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.button-container {
+  padding: 10px 0;
+
+  @media (max-width: 599px) {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
 }
 
 h1 {

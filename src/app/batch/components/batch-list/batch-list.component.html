@@ -1,12 +1,13 @@
 <div class="container">
   <h1>Bateladas</h1>
 
-  <button mat-raised-button color="primary" (click)="openBatchForm()" class="add-button">Adicionar Batelada</button>
-
-  <button mat-raised-button color="accent" (click)="openBatchReport()" class="report-button">
-    <mat-icon>analytics</mat-icon>
-    Ver Relatório Geral das Bateladas
-  </button>
+  <div class="button-group">
+    <button mat-raised-button color="primary" (click)="openBatchForm()" class="add-button">Adicionar Batelada</button>
+    <button mat-raised-button color="accent" (click)="openBatchReport()" class="report-button">
+      <mat-icon>analytics</mat-icon>
+      Ver Relatório Geral das Bateladas
+    </button>
+  </div>
 
   <table mat-table [dataSource]="batches" class="mat-elevation-z8">
 

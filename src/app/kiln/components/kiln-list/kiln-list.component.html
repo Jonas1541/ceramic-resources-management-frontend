@@ -1,7 +1,9 @@
 <div class="container">
   <h1>Fornos</h1>
 
-  <button mat-raised-button color="primary" (click)="openKilnForm()" class="add-button">Adicionar Forno</button>
+  <div class="button-container">
+    <button mat-raised-button color="primary" (click)="openKilnForm()" class="add-button">Adicionar Forno</button>
+  </div>
 
   <table mat-table [dataSource]="kilns" class="mat-elevation-z8">
 

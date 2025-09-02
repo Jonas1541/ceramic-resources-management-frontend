@@ -1,9 +1,36 @@
 .container {
   padding: 24px 48px;
+
+  @media (max-width: 599px) {
+    padding: 10px;
+  }
+}
+
+.add-button-wrapper {
+  display: flex;
+  margin-bottom: 16px;
+
+  @media (max-width: 599px) {
+    justify-content: center; /* Centraliza apenas em mobile */
+  }
 }
 
 .add-button {
-  margin-bottom: 16px;
+  /* Removido display: flex e justify-content: center daqui */
+}
+
+.button-container {
+  position: sticky;
+  top: 50px; /* Abaixo do h1 */
+  background-color: white;
+  z-index: 101;
+  padding: 10px 0;
+
+  @media (max-width: 599px) {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
 }
 
 h1 {
