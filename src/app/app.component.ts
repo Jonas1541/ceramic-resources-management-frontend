@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
   private breakpointObserver = inject(BreakpointObserver);
   showMainLayout: boolean = true; // Controla a visibilidade do layout principal
 
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe('(max-width: 1240px)')
     .pipe(
       map(result => {
         console.log('isHandset:', result.matches);

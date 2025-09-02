@@ -41,7 +41,7 @@ mat-sidenav-content {
 }
 
 /* Media query para esconder o botão do menu em telas grandes */
-@media (min-width: 600px) {
+@media (min-width: 1240px) {
   mat-toolbar button[aria-label='Toggle sidenav'] {
     display: none;
   }
