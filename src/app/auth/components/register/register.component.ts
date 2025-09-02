@@ -64,8 +64,26 @@ export class RegisterComponent implements OnInit {
     console.log('Form value:', this.registerForm.value);
     // Envia apenas o campo 'password', não 'confirmPassword'
     const { confirmPassword, ...formDataToSend } = this.registerForm.value;
-    this.authService.register(formDataToSend).subscribe(() => {
-      this.router.navigate(['/login']);
+    this.authService.register(formDataToSend).subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        if (err.status === 409 && err.error && err.error.message) {
+          const backendMessage = err.error.message;
+          if (backendMessage.includes('Este email já está cadastrado.')) {
+            alert('Este e-mail já está cadastrado. Por favor, use outro.');
+          } else if (backendMessage.includes('Já existe um tenant registrado com o nome')) {
+            alert('Já existe uma empresa com esse nome. Por favor, escolha outro.');
+          } else if (backendMessage.includes('Este CNPJ já está cadastrado.')) {
+            alert('Este CNPJ já está cadastrado. Por favor, verifique os dados.');
+          } else {
+            alert('Ocorreu um erro ao registrar. Por favor, tente novamente.');
+          }
+        } else {
+          alert('Ocorreu um erro inesperado. Por favor, tente novamente.');
+        }
+      }
     });
   }
 }
