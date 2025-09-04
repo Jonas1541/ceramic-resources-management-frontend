@@ -31,7 +31,7 @@ export class MachineFormComponent implements OnInit {
   ) {
     this.machineForm = this.fb.group({
       name: ['', Validators.required],
-      power: ['', [Validators.required, Validators.min(0.01)]]
+      power: ['', [Validators.required]]
     });
 
     if (data && data.machine) {

@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
+import { integerValidator } from '../../../shared/validators/integer.validator';
+
 @Component({
   selector: 'app-product-transaction-form',
   standalone: true,
@@ -25,7 +27,7 @@ export class ProductTransactionFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { productId: string }
   ) {
     this.transactionForm = this.fb.group({
-      quantity: [1, [Validators.required, Validators.min(1), Validators.pattern(/^[1-9]\d*$/)]]
+      quantity: [1, [Validators.required, Validators.min(1), integerValidator()]]
     });
   }
 

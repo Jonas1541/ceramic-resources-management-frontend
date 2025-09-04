@@ -135,7 +135,7 @@ export class GlazeFiringFormComponent implements OnInit {
         const glostForm = this.fb.group({
             productTransactionId: ['', Validators.required],
             glazeId: ['', Validators.required],
-            quantity: ['', [Validators.required, Validators.min(0.01)]]
+            quantity: ['', [Validators.required]]
         });
         this.glosts.push(glostForm);
     }

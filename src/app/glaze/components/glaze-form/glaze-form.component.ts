@@ -48,7 +48,7 @@ export class GlazeFormComponent implements OnInit {
   ) {
     this.glazeForm = this.fb.group({
       color: ['', Validators.required],
-      unitValue: ['', [Validators.required, Validators.min(0.01)]],
+      unitValue: ['', [Validators.required]],
       resourceUsages: this.fb.array([], [Validators.required, Validators.minLength(1)]),
       machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });

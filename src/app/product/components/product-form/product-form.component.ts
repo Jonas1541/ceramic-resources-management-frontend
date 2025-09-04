@@ -44,7 +44,7 @@ export class ProductFormComponent implements OnInit {
       price: ['', [Validators.required, Validators.min(0.01)]],
       height: ['', [Validators.required, Validators.min(0.01)]],
       length: ['', [Validators.required, Validators.min(0.01)]],
-      width: ['', [Validators.required, Validators.min(0.01)]],
+      width: ['', [Validators.required]],
       typeId: ['', Validators.required],
       lineId: ['', Validators.required]
     });

@@ -43,7 +43,7 @@ export class ResourceFormComponent implements OnInit {
     this.resourceForm = this.fb.group({
       name: ['', Validators.required],
       category: ['', Validators.required],
-      unitValue: ['', [Validators.required, Validators.min(0.01)]]
+      unitValue: ['', [Validators.required]]
     });
 
     if (data && data.resource) {

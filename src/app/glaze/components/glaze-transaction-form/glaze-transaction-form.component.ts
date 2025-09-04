@@ -32,7 +32,7 @@ export class GlazeTransactionFormComponent implements OnInit {
   ) {
     this.transactionForm = this.fb.group({
       type: ['', Validators.required],
-      quantity: ['', [Validators.required, Validators.min(0.01)]]
+      quantity: ['', [Validators.required]]
     });
 
     if (data && data.transaction) {

@@ -27,7 +27,7 @@ export class BatchTransactionFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { batchId: string }
   ) {
     this.transactionForm = this.fb.group({
-      quantity: ['', [Validators.required, Validators.min(0.01)]]
+      quantity: ['', [Validators.required]]
     });
   }
 
