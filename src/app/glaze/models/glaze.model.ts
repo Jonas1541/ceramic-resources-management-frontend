@@ -6,7 +6,6 @@ export interface Glaze {
     createdAt: string;
     updatedAt: string;
     color: string;
-    unitValue: number;
     resourceUsages: GlazeResourceUsage[];
     machineUsages: GlazeMachineUsage[];
     unitCost: number;

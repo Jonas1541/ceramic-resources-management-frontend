@@ -28,7 +28,7 @@ import { GlazeDetailsComponent } from '../glaze-details/glaze-details.component'
 })
 export class GlazeListComponent implements OnInit {
 
-  displayedColumns: string[] = ['color', 'unitValue', 'currentQuantity', 'unitCost', 'actions'];
+  displayedColumns: string[] = ['color', 'currentQuantity', 'unitCost', 'actions'];
   glazes: Glaze[] = [];
 
   constructor(

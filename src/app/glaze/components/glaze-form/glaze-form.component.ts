@@ -48,7 +48,6 @@ export class GlazeFormComponent implements OnInit {
   ) {
     this.glazeForm = this.fb.group({
       color: ['', Validators.required],
-      unitValue: ['', [Validators.required]],
       resourceUsages: this.fb.array([], [Validators.required, Validators.minLength(1)]),
       machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
@@ -142,7 +141,6 @@ export class GlazeFormComponent implements OnInit {
     const formValue = this.glazeForm.value;
     const payload = {
       ...formValue,
-      unitValue: parseFloat(String(formValue.unitValue).replace(',', '.')),
       resourceUsages: formValue.resourceUsages.map((usage: any) => ({
         ...usage,
         quantity: parseFloat(String(usage.quantity).replace(',', '.'))
