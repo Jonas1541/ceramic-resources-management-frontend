@@ -109,7 +109,7 @@ export class ProductReportComponent implements OnInit {
         },
         {
           type: 'line',
-          label: 'Lucro',
+          label: 'Faturamento',
           data: report.months.map(m => m.outgoingProfit),
           borderColor: '#FB8C00',
           backgroundColor: 'rgba(251, 140, 0, 0.3)',

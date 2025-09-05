@@ -103,7 +103,7 @@ export class GeneralReportComponent implements OnInit {
           },
           {
             data: report.months.map(m => m.outgoingProfit),
-            label: 'Lucro',
+            label: 'Faturamento',
             borderColor: '#5AA454',
             backgroundColor: 'rgba(90, 164, 84, 0.3)'
           }
@@ -122,10 +122,10 @@ export class GeneralReportComponent implements OnInit {
             label: 'Custo Total', // Legenda correta
             backgroundColor: '#A10A28'
           },
-          // Dataset #2: Apenas para o Lucro
+          // Dataset #2: Apenas para o Faturamento
           {
             data: [report.totalOutgoingProfit],
-            label: 'Lucro Total', // Legenda correta
+            label: 'Faturamento Total', // Legenda correta
             backgroundColor: '#5AA454'
           }
         ]
