@@ -175,7 +175,11 @@ export class BisqueFiringFormComponent implements OnInit {
       this.bisqueFiringService.createBisqueFiring(this.data.kilnId, formData).subscribe({
         next: () => this.dialogRef.close(true),
         error: (err) => {
-          alert('Ocorreu um erro ao criar a queima de biscoito.');
+          if (err.status === 404 && err.error.message) {
+            alert(err.error.message);
+          } else {
+            alert('Ocorreu um erro ao criar a queima de biscoito.');
+          }
         }
       });
     }
