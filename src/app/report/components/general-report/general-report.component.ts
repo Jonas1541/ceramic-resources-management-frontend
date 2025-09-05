@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { ReportService } from '../../services/report.service';
 import { GeneralReport } from '../../models/general-report.model';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,7 +13,7 @@ import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 @Component({
   selector: 'app-general-report',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatFormFieldModule, MatInputModule, FormsModule, BaseChartDirective, CurrencyPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatFormFieldModule, MatInputModule, FormsModule, BaseChartDirective],
   templateUrl: './general-report.component.html',
   styleUrls: ['./general-report.component.scss']
 })

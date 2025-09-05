@@ -3,7 +3,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ResourceService } from '../../services/resource.service';
 import { Resource } from '../../models/resource.model';
 import { ResourceFormComponent } from '../resource-form/resource-form.component';
-import { ResourceTransactionFormComponent } from '../resource-transaction-form/resource-transaction-form.component';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
@@ -20,7 +19,7 @@ import { ResourceReportComponent } from '../resource-report/resource-report.comp
 @Component({
   selector: 'app-resource-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, CurrencyPipe, TranslateResourceCategoryPipe, DecimalFormatPipe, ResourceReportComponent],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, CurrencyPipe, TranslateResourceCategoryPipe, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './resource-list.component.html',
   styleUrls: ['./resource-list.component.scss']

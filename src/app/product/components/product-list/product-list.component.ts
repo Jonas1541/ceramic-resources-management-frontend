@@ -23,10 +23,9 @@ import { ProductReportComponent } from '../product-report/product-report.compone
     MatIconModule,
     MatDialogModule,
     CurrencyPipe,
-    DecimalFormatPipe,
-    ProductReportComponent // <-- 1. Adicionado aqui para que o dialog seja reconhecido
+    DecimalFormatPipe
 ],
-  providers: [ DecimalPipe ], // <-- 2. Adicionado aqui para resolver o NullInjectorError
+  providers: [ DecimalPipe ],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })

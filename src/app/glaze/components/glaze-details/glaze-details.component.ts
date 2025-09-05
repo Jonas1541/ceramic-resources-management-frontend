@@ -11,7 +11,7 @@ import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 @Component({
   selector: 'app-glaze-details',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, MatIconModule, CurrencyPipe, DecimalFormatPipe, PercentPipe],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, MatIconModule, CurrencyPipe, DecimalFormatPipe],
   providers: [DecimalPipe, PercentPipe],
   templateUrl: './glaze-details.component.html',
   styleUrls: ['./glaze-details.component.scss']

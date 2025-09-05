@@ -14,14 +14,13 @@ import { GlazeTransactionListComponent } from '../glaze-transaction-list/glaze-t
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
 import { GlazeReportComponent } from '../glaze-report/glaze-report.component';
-import { RouterModule } from '@angular/router';
 
 import { GlazeDetailsComponent } from '../glaze-details/glaze-details.component';
 
 @Component({
   selector: 'app-glaze-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, CurrencyPipe, DecimalFormatPipe, GlazeReportComponent],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, CurrencyPipe, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './glaze-list.component.html',
   styleUrls: ['./glaze-list.component.scss']
