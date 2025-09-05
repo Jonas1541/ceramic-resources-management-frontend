@@ -161,27 +161,27 @@ export class GlazeFiringFormComponent implements OnInit {
     }
 
     getAvailableProducts(currentIndex: number): ProductTransaction[] {
-    const selectedIds = this.glosts.controls
-        .map((c, i) => i === currentIndex ? null : c.get('productTransactionId')?.value)
-        .filter(Boolean);
+        const selectedIds = this.glosts.controls
+            .map((c, i) => i === currentIndex ? null : c.get('productTransactionId')?.value)
+            .filter(Boolean);
 
-    return this.productTransactions.filter(t => !selectedIds.includes(t.id));
+        return this.productTransactions.filter(t => !selectedIds.includes(t.id));
     }
 
     getAvailableGlazes(currentIndex: number): Glaze[] {
-    const selectedIds = this.glosts.controls
-        .map((c, i) => i === currentIndex ? null : c.get('glazeId')?.value)
-        .filter(Boolean);
+        const selectedIds = this.glosts.controls
+            .map((c, i) => i === currentIndex ? null : c.get('glazeId')?.value)
+            .filter(Boolean);
 
-    return this.glazes.filter(g => !selectedIds.includes(g.id));
+        return this.glazes.filter(g => !selectedIds.includes(g.id));
     }
 
     getAvailableMachines(currentIndex: number): Machine[] {
-    const selectedIds = this.machineUsages.controls
-        .map((c, i) => i === currentIndex ? null : c.get('machineId')?.value)
-        .filter(Boolean);
+        const selectedIds = this.machineUsages.controls
+            .map((c, i) => i === currentIndex ? null : c.get('machineId')?.value)
+            .filter(Boolean);
 
-    return this.machines.filter(m => !selectedIds.includes(m.id));
+        return this.machines.filter(m => !selectedIds.includes(m.id));
     }
 
     onCancel(): void {
@@ -226,8 +226,11 @@ export class GlazeFiringFormComponent implements OnInit {
                 this.dialogRef.close(true);
             });
         } else {
-            this.glazeFiringService.createGlazeFiring(this.data.kilnId, formData).subscribe(() => {
-                this.dialogRef.close(true);
+            this.glazeFiringService.createGlazeFiring(this.data.kilnId, formData).subscribe({
+                next: () => this.dialogRef.close(true),
+                error: (err) => {
+                    alert(err.error?.message || 'Ocorreu um erro ao criar a queima de esmalte.');
+                }
             });
         }
     }
