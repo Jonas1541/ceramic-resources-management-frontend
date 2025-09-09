@@ -1,5 +1,4 @@
 import { Kiln } from "../../kiln/models/kiln.model";
-import { FiringMachineUsage } from "./firing-machine-usage.model";
 import { ProductTransaction } from "../../product/models/product-transaction.model";
 
 export interface BisqueFiring {
@@ -12,6 +11,5 @@ export interface BisqueFiring {
     gasConsumption: number;
     kilnName: string;
     biscuits: ProductTransaction[]; // Assumindo que são ProductTransactions
-    machineUsages: FiringMachineUsage[];
     cost: number;
 }

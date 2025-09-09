@@ -20,7 +20,6 @@ export class BisqueFiringDetailsComponent implements OnInit {
 
   bisqueFiring: BisqueFiring | null = null;
   biscuitsColumns: string[] = ['product']; // Colunas para exibir os produtos
-  machineUsagesColumns: string[] = ['machineName', 'usageTime']; // Colunas para exibir o uso de máquinas
 
   constructor(
     private bisqueFiringService: BisqueFiringService,

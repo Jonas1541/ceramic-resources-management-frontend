@@ -4,10 +4,8 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { BisqueFiringService } from '../../services/bisque-firing.service';
 import { BisqueFiring } from '../../models/bisque-firing.model';
 import { Kiln } from '../../../kiln/models/kiln.model';
-import { Machine } from '../../../machine/models/machine.model';
 import { ProductTransaction } from '../../../product/models/product-transaction.model';
 import { KilnService } from '../../../kiln/services/kiln.service';
-import { MachineService } from '../../../machine/services/machine.service';
 import { ProductService } from '../../../product/services/product.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,13 +30,11 @@ export class BisqueFiringFormComponent implements OnInit {
   bisqueFiringForm: FormGroup;
     isEditMode = false;
   kilns: Kiln[] = [];
-  machines: Machine[] = [];
   productTransactions: ProductTransaction[] = [];
 
   constructor(
     private fb: FormBuilder,
     private bisqueFiringService: BisqueFiringService,
-    private machineService: MachineService,
     private productService: ProductService,
     public dialogRef: MatDialogRef<BisqueFiringFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { bisqueFiring?: BisqueFiring, kilnId: string },
@@ -50,17 +46,14 @@ export class BisqueFiringFormComponent implements OnInit {
       burnTime: [this.data.bisqueFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
       coolingTime: [this.data.bisqueFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
       gasConsumption: [this.data.bisqueFiring?.gasConsumption || '', [Validators.required, Validators.min(0)]],
-      biscuits: this.fb.array([], [Validators.required, Validators.minLength(1)]),
-      machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
+      biscuits: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
   }
 
   ngOnInit(): void {
     forkJoin({
-      machines: this.machineService.getMachines(),
       greenwareProducts: this.productService.getProductTransactions('1', 'GREENWARE')
-    }).subscribe(({ machines, greenwareProducts }) => {
-      this.machines = machines;
+    }).subscribe(({ greenwareProducts }) => {
       this.productTransactions = greenwareProducts;
 
       if (this.isEditMode && this.data.bisqueFiring) {
@@ -73,12 +66,6 @@ export class BisqueFiringFormComponent implements OnInit {
         // Preencher os FormArrays com os dados existentes
         this.data.bisqueFiring.biscuits.forEach(biscuit => {
           this.biscuits.push(new FormControl<string>(biscuit.id, { nonNullable: true }));
-        });
-        this.data.bisqueFiring.machineUsages.forEach(usage => {
-            this.machineUsages.push(this.fb.group({
-                machineId: [usage.machineId, Validators.required],
-                usageTime: [usage.usageTime, Validators.required]
-            }));
         });
       }
     });
@@ -95,31 +82,6 @@ export class BisqueFiringFormComponent implements OnInit {
 
   removeBiscuit(index: number): void {
     this.biscuits.removeAt(index);
-  }
-
-  get machineUsages(): FormArray {
-    return this.bisqueFiringForm.get('machineUsages') as FormArray;
-  }
-
-  addMachineUsage(): void {
-    setTimeout(() => {
-      const machineUsageForm = this.fb.group({
-        machineId: ['', Validators.required],
-        usageTime: ['', Validators.required]
-      });
-      this.machineUsages.push(machineUsageForm);
-    });
-  }
-
-  removeMachineUsage(index: number): void {
-    this.machineUsages.removeAt(index);
-  }
-
-  getAvailableMachines(currentIndex: number): Machine[] {
-    const selectedMachineIds = this.machineUsages.controls
-      .map((control, index) => index === currentIndex ? null : control.get('machineId')?.value)
-      .filter(id => id !== null);
-    return this.machines.filter(machine => !selectedMachineIds.includes(machine.id));
   }
 
   getAvailableProducts(currentIndex: number): ProductTransaction[] {
@@ -153,12 +115,6 @@ export class BisqueFiringFormComponent implements OnInit {
     if (typeof formData.gasConsumption === 'string') {
       formData.gasConsumption = parseFloat(formData.gasConsumption.replace(',', '.'));
     }
-
-    // Converte usageTime dentro de machineUsages
-    formData.machineUsages = formData.machineUsages.map((usage: any) => ({
-      ...usage,
-      usageTime: typeof usage.usageTime === 'string' ? parseFloat(usage.usageTime.replace(',', '.')) : usage.usageTime
-    }));
 
     if (this.isEditMode) {
       this.bisqueFiringService.updateBisqueFiring(this.data.kilnId, this.data.bisqueFiring!.id, formData).subscribe({

@@ -1,5 +1,4 @@
 import { Kiln } from "../../kiln/models/kiln.model";
-import { FiringMachineUsage } from "../../bisque-firing/models/firing-machine-usage.model";
 
 export interface Glost {
     productId: string;
@@ -20,6 +19,5 @@ export interface GlazeFiring {
     gasConsumption: number;
     kilnName: string;
     glosts: Glost[];
-    machineUsages: FiringMachineUsage[];
     cost: number;
 }

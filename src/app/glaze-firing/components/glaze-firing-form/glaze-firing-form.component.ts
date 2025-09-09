@@ -3,8 +3,6 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } fr
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { GlazeFiringService } from '../../services/glaze-firing.service';
 import { GlazeFiring } from '../../models/glaze-firing.model';
-import { Machine } from '../../../machine/models/machine.model';
-import { MachineService } from '../../../machine/services/machine.service';
 import { ProductTransaction } from '../../../product/models/product-transaction.model';
 import { ProductService } from '../../../product/services/product.service';
 import { Glaze } from '../../../glaze/models/glaze.model';
@@ -30,14 +28,12 @@ export class GlazeFiringFormComponent implements OnInit {
 
     glazeFiringForm: FormGroup;
     isEditMode = false;
-    machines: Machine[] = [];
     productTransactions: ProductTransaction[] = [];
     glazes: Glaze[] = [];
 
     constructor(
         private fb: FormBuilder,
         private glazeFiringService: GlazeFiringService,
-        private machineService: MachineService,
         private productService: ProductService,
         private glazeService: GlazeService,
         public dialogRef: MatDialogRef<GlazeFiringFormComponent>,
@@ -50,19 +46,16 @@ export class GlazeFiringFormComponent implements OnInit {
             burnTime: [this.data.glazeFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
             coolingTime: [this.data.glazeFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
             gasConsumption: [this.data.glazeFiring?.gasConsumption || '', [Validators.required, Validators.min(0)]],
-            glosts: this.fb.array([], [Validators.required, Validators.minLength(1)]),
-            machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
+            glosts: this.fb.array([], [Validators.required, Validators.minLength(1)])
         });
     }
 
     ngOnInit(): void {
-        // 1. Busca os dados iniciais (máquinas, glasuras e produtos 'BISCUIT' que podem ser adicionados)
+        // 1. Busca os dados iniciais (glasuras e produtos 'BISCUIT' que podem ser adicionados)
         forkJoin({
-            machines: this.machineService.getMachines(),
             biscuitProducts: this.productService.getProductTransactions('1', 'BISCUIT'),
             glazes: this.glazeService.getGlazes()
-        }).subscribe(({ machines, biscuitProducts, glazes }) => {
-            this.machines = machines;
+        }).subscribe(({ biscuitProducts, glazes }) => {
             this.glazes = glazes;
             // Define a lista inicial de produtos selecionáveis
             this.productTransactions = biscuitProducts;
@@ -117,13 +110,6 @@ export class GlazeFiringFormComponent implements OnInit {
             }));
         });
 
-        // Popula o FormArray de 'machineUsages'
-        this.data.glazeFiring.machineUsages.forEach(usage => {
-            this.machineUsages.push(this.fb.group({
-                machineId: [usage.machineId, Validators.required],
-                usageTime: [usage.usageTime, Validators.required]
-            }));
-        });
         this.cdr.detectChanges(); // Forçar detecção de alterações
     }
 
@@ -144,22 +130,6 @@ export class GlazeFiringFormComponent implements OnInit {
         this.glosts.removeAt(index);
     }
 
-    get machineUsages(): FormArray {
-        return this.glazeFiringForm.get('machineUsages') as FormArray;
-    }
-
-    addMachineUsage(): void {
-        const machineUsageForm = this.fb.group({
-            machineId: ['', Validators.required],
-            usageTime: ['', Validators.required]
-        });
-        this.machineUsages.push(machineUsageForm);
-    }
-
-    removeMachineUsage(index: number): void {
-        this.machineUsages.removeAt(index);
-    }
-
     getAvailableProducts(currentIndex: number): ProductTransaction[] {
         const selectedIds = this.glosts.controls
             .map((c, i) => i === currentIndex ? null : c.get('productTransactionId')?.value)
@@ -174,14 +144,6 @@ export class GlazeFiringFormComponent implements OnInit {
             .filter(Boolean);
 
         return this.glazes.filter(g => !selectedIds.includes(g.id));
-    }
-
-    getAvailableMachines(currentIndex: number): Machine[] {
-        const selectedIds = this.machineUsages.controls
-            .map((c, i) => i === currentIndex ? null : c.get('machineId')?.value)
-            .filter(Boolean);
-
-        return this.machines.filter(m => !selectedIds.includes(m.id));
     }
 
     onCancel(): void {
@@ -213,12 +175,6 @@ export class GlazeFiringFormComponent implements OnInit {
         formData.glosts = formData.glosts.map((glost: any) => ({
             ...glost,
             quantity: typeof glost.quantity === 'string' ? parseFloat(glost.quantity.replace(',', '.')) : glost.quantity
-        }));
-
-        // Converte usageTime dentro de machineUsages
-        formData.machineUsages = formData.machineUsages.map((usage: any) => ({
-            ...usage,
-            usageTime: typeof usage.usageTime === 'string' ? parseFloat(usage.usageTime.replace(',', '.')) : usage.usageTime
         }));
 
         if (this.isEditMode) {
