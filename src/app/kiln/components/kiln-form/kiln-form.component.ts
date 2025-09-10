@@ -13,11 +13,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TrimDirective } from '../../../shared/directives/trim.directive';
+import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
 
 @Component({
   selector: 'app-kiln-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule, MatIconModule, TrimDirective],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule, MatIconModule, TrimDirective, DecimalMaskDirective],
   templateUrl: './kiln-form.component.html',
   styleUrls: ['./kiln-form.component.scss']
 })
@@ -35,29 +36,28 @@ export class KilnFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { kiln: Kiln },
     private cdr: ChangeDetectorRef
   ) {
+    this.isEditMode = !!this.data.kiln;
     this.kilnForm = this.fb.group({
       name: ['', Validators.required],
       gasConsumptionPerHour: ['', Validators.required],
       machineIds: this.fb.array([])
     });
-
-    if (data && data.kiln) {
-      this.isEditMode = true;
-      this.kilnForm.patchValue({
-        name: data.kiln.name,
-        gasConsumptionPerHour: data.kiln.gasConsumptionPerHour
-      });
-    }
   }
 
   ngOnInit(): void {
     this.machineService.getMachines().subscribe((machines) => {
       this.machines = machines;
-      if (this.isEditMode && this.data.kiln.machines) {
-        this.data.kiln.machines.forEach(machine => {
-          this.machineIds.push(new FormControl<string>(machine.id, { nonNullable: true }));
+      if (this.isEditMode && this.data.kiln) {
+        this.kilnService.getKiln(this.data.kiln.id).subscribe(kilnDetails => {
+          this.kilnForm.patchValue({
+            name: kilnDetails.name,
+            gasConsumptionPerHour: kilnDetails.gasConsumptionPerHour
+          });
+          kilnDetails.machines.forEach(machine => {
+            this.machineIds.push(new FormControl<string>(machine.id, { nonNullable: true }));
+          });
+          this.cdr.detectChanges();
         });
-        this.cdr.detectChanges();
       }
     });
   }
@@ -91,25 +91,20 @@ export class KilnFormComponent implements OnInit {
       return;
     }
 
-    const formValue = { ...this.kilnForm.value };
-    if (typeof formValue.gasConsumptionPerHour === 'string') {
-      formValue.gasConsumptionPerHour = parseFloat(formValue.gasConsumptionPerHour.replace(',', '.'));
-    }
+    const formValue = this.kilnForm.getRawValue();
 
     const payload = {
-      name: formValue.name,
-      gasConsumptionPerHour: formValue.gasConsumptionPerHour,
+      ...formValue,
+      gasConsumptionPerHour: parseFloat(String(formValue.gasConsumptionPerHour).replace(',', '.')),
       machines: formValue.machineIds.map((id: string) => Number(id))
     };
 
-    if (this.isEditMode) {
-      this.kilnService.updateKiln(this.data.kiln.id, payload).subscribe(() => {
-        this.dialogRef.close(true);
-      });
-    } else {
-      this.kilnService.createKiln(payload).subscribe(() => {
-        this.dialogRef.close(true);
-      });
-    }
+    const operation = this.isEditMode
+      ? this.kilnService.updateKiln(this.data.kiln.id, payload)
+      : this.kilnService.createKiln(payload);
+
+    operation.subscribe(() => {
+      this.dialogRef.close(true);
+    });
   }
 }

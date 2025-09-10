@@ -13,23 +13,24 @@
 
   <!-- Seção de Máquinas Associadas -->
   <h2 class="section-title">Máquinas Associadas</h2>
-    <div formArrayName="machineIds">
+  <div formArrayName="machineIds">
     <div *ngFor="let machineIdControl of machineIds.controls; let i=index" class="form-array-item-container">
-        <div class="form-array-item-row">
+      <div class="form-array-item-row">
         <button mat-icon-button color="warn" (click)="removeMachineId(i)" title="Remover Máquina">
-            <mat-icon>remove_circle</mat-icon>
+          <mat-icon>remove_circle</mat-icon>
         </button>
         <mat-form-field appearance="fill">
-            <mat-label>Máquina</mat-label>
-            <mat-select [formControl]="machineIdControl" required>
+          <mat-label>Máquina</mat-label>
+          <mat-select [formControl]="machineIdControl" required>
             <mat-option *ngIf="getAvailableMachines(i).length === 0" disabled>Não há mais máquinas para selecionar</mat-option>
             <mat-option *ngFor="let machine of getAvailableMachines(i)" [value]="machine.id">{{ machine.name }}</mat-option>
-            </mat-select>
+          </mat-select>
         </mat-form-field>
-        </div>
+      </div>
     </div>
-    </div>
+  </div>
   <button mat-stroked-button color="primary" (click)="addMachineId()" class="add-machine-button">Adicionar Máquina</button>
+
 </div>
 
 <div mat-dialog-actions>
