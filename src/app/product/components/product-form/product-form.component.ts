@@ -14,7 +14,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
-
 import { TrimDirective } from '../../../shared/directives/trim.directive';
 
 @Component({
@@ -41,10 +40,11 @@ export class ProductFormComponent implements OnInit {
   ) {
     this.productForm = this.fb.group({
       name: ['', Validators.required],
-      price: ['', [Validators.required, Validators.min(0.01)]],
-      height: ['', [Validators.required, Validators.min(0.01)]],
-      length: ['', [Validators.required, Validators.min(0.01)]],
+      price: ['', [Validators.required]],
+      height: ['', [Validators.required]],
+      length: ['', [Validators.required]],
       width: ['', [Validators.required]],
+      glazeQuantityPerUnit: ['', [Validators.required]],
       typeId: ['', Validators.required],
       lineId: ['', Validators.required]
     });
@@ -71,6 +71,7 @@ export class ProductFormComponent implements OnInit {
               height: productDetails.height,
               length: productDetails.length,
               width: productDetails.width,
+              glazeQuantityPerUnit: productDetails.glazeQuantityPerUnit,
               typeId: selectedType ? selectedType.id : '',
               lineId: selectedLine ? selectedLine.id : ''
             });
@@ -102,6 +103,9 @@ export class ProductFormComponent implements OnInit {
     }
     if (typeof formData.width === 'string') {
       formData.width = parseFloat(formData.width.replace(',', '.'));
+    }
+    if (typeof formData.glazeQuantityPerUnit === 'string') {
+      formData.glazeQuantityPerUnit = parseFloat(formData.glazeQuantityPerUnit.replace(',', '.'));
     }
 
     if (this.isEditMode) {

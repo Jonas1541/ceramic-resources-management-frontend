@@ -30,8 +30,13 @@
     </ng-container>
 
     <ng-container matColumnDef="width">
-      <th mat-header-cell *matHeaderCellDef> Largura </th>
-      <td mat-cell *matCellDef="let element"> {{element.width | decimalFormat}} cm </td>
+      <th mat-header-cell *matHeaderCellDef> Largura (cm) </th>
+      <td mat-cell *matCellDef="let element"> {{element.width | decimalFormat}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="glazeQuantityPerUnit">
+      <th mat-header-cell *matHeaderCellDef> Qtd. de Glasura </th>
+      <td mat-cell *matCellDef="let element"> {{element.glazeQuantityPerUnit | decimalFormat}} kg </td>
     </ng-container>
 
     <ng-container matColumnDef="createdAt">

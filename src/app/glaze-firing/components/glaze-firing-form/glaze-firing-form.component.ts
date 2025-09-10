@@ -88,8 +88,7 @@ export class GlazeFiringFormComponent implements OnInit {
             const glaze = this.glazes.find(g => g.color === glost.glazeColor);
             this.glosts.push(this.fb.group({
                 productTransactionId: [glost.productTxId, Validators.required],
-                glazeId: [glaze ? glaze.id : '', Validators.required],
-                quantity: [glost.quantity, [Validators.required, Validators.min(0.01)]]
+                glazeId: [glaze ? glaze.id : '', Validators.required]
             }));
         });
         this.cdr.detectChanges();
@@ -102,8 +101,7 @@ export class GlazeFiringFormComponent implements OnInit {
     addGlost(): void {
         const glostForm = this.fb.group({
             productTransactionId: ['', Validators.required],
-            glazeId: ['', Validators.required],
-            quantity: ['', [Validators.required]]
+            glazeId: ['', Validators.required]
         });
         this.glosts.push(glostForm);
     }

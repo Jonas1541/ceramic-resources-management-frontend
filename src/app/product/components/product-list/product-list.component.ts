@@ -31,7 +31,7 @@ import { ProductReportComponent } from '../product-report/product-report.compone
 })
 export class ProductListComponent implements OnInit {
 
-  displayedColumns: string[] = ['name', 'price', 'height', 'length', 'width', 'type', 'line', 'productStock', 'createdAt', 'updatedAt', 'actions'];
+  displayedColumns: string[] = ['name', 'price', 'height', 'length', 'width', 'glazeQuantityPerUnit', 'type', 'line', 'actions'];
   products: Product[] = [];
 
   constructor(
