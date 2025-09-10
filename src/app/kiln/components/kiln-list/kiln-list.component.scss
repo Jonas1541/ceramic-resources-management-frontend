@@ -6,26 +6,47 @@
   }
 }
 
-.add-button {
+.button-container {
+  display: flex;
   margin-bottom: 16px;
 
   @media (max-width: 599px) {
-    display: flex;
     justify-content: center;
-  }
-}
-
-.button-container {
-  padding: 10px 0;
-
-  @media (max-width: 599px) {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 16px;
   }
 }
 
 h1 {
   margin-top: 0px;
-  margin-bottom: 16px; /* Reduz a margem inferior do título */
+  margin-bottom: 16px;
+}
+
+// Estilos para a linha expansível
+tr.detail-row {
+  height: 0;
+}
+
+.element-row:not(.expanded-row):hover {
+  background: whitesmoke;
+}
+
+.element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.details-container {
+  padding: 16px;
+  background-color: #f9f9f9;
+  width: 100%;
+}
+
+.details-container h4 {
+  margin-top: 0;
+  font-weight: 500;
+}
+
+.details-container ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 0;
 }
