@@ -1,3 +1,4 @@
+
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -45,63 +46,45 @@ export class GlazeFiringFormComponent implements OnInit {
             temperature: [this.data.glazeFiring?.temperature || '', [Validators.required, Validators.min(0)]],
             burnTime: [this.data.glazeFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
             coolingTime: [this.data.glazeFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
-            gasConsumption: [this.data.glazeFiring?.gasConsumption || '', [Validators.required, Validators.min(0)]],
             glosts: this.fb.array([], [Validators.required, Validators.minLength(1)])
         });
     }
 
     ngOnInit(): void {
-        // 1. Busca os dados iniciais (glasuras e produtos 'BISCUIT' que podem ser adicionados)
         forkJoin({
             biscuitProducts: this.productService.getProductTransactions('1', 'BISCUIT'),
             glazes: this.glazeService.getGlazes()
         }).subscribe(({ biscuitProducts, glazes }) => {
             this.glazes = glazes;
-            // Define a lista inicial de produtos selecionáveis
             this.productTransactions = biscuitProducts;
 
-            // 2. Se estiver no modo de edição, busca os dados completos dos produtos já existentes na queima
             if (this.isEditMode && this.data.glazeFiring) {
-
-                // Popula os campos simples do formulário
                 this.glazeFiringForm.patchValue({
                     temperature: this.data.glazeFiring.temperature,
                     burnTime: this.data.glazeFiring.burnTime,
-                    coolingTime: this.data.glazeFiring.coolingTime,
-                    gasConsumption: this.data.glazeFiring.gasConsumption,
+                    coolingTime: this.data.glazeFiring.coolingTime
                 });
 
-                // Prepara as chamadas para buscar cada produto 'GLAZED' pelo seu ID
                 const existingGlazedProductObservables = this.data.glazeFiring.glosts.map(glost =>
                     this.productService.getProductTransactionById(glost.productId, glost.productTxId)
                 );
 
-                // Se houver produtos para buscar, executa todas as chamadas em paralelo
                 if (existingGlazedProductObservables.length > 0) {
                     forkJoin(existingGlazedProductObservables).subscribe(existingGlazedProducts => {
-
-                        // 3. Combina a lista de produtos 'BISCUIT' com os 'GLAZED' que acabamos de buscar
                         this.productTransactions = [...this.productTransactions, ...existingGlazedProducts];
-
-                        // 4. Agora, com a lista de produtos completa, popula os FormArrays
                         this.populateFormArrays();
                     });
                 } else {
-                    // Se não houver produtos na queima, apenas popula os outros FormArrays
                     this.populateFormArrays();
                 }
-
             }
         });
     }
 
-    // MÉTODO AUXILIAR PARA MANTER O CÓDIGO LIMPO
     private populateFormArrays(): void {
         if (!this.data.glazeFiring) return;
 
-        // Popula o FormArray de 'glosts'
         this.data.glazeFiring.glosts.forEach(glost => {
-
             const glaze = this.glazes.find(g => g.color === glost.glazeColor);
             this.glosts.push(this.fb.group({
                 productTransactionId: [glost.productTxId, Validators.required],
@@ -109,8 +92,7 @@ export class GlazeFiringFormComponent implements OnInit {
                 quantity: [glost.quantity, [Validators.required, Validators.min(0.01)]]
             }));
         });
-
-        this.cdr.detectChanges(); // Forçar detecção de alterações
+        this.cdr.detectChanges();
     }
 
     get glosts(): FormArray {
@@ -134,7 +116,6 @@ export class GlazeFiringFormComponent implements OnInit {
         const selectedIds = this.glosts.controls
             .map((c, i) => i === currentIndex ? null : c.get('productTransactionId')?.value)
             .filter(Boolean);
-
         return this.productTransactions.filter(t => !selectedIds.includes(t.id));
     }
 
@@ -142,7 +123,6 @@ export class GlazeFiringFormComponent implements OnInit {
         const selectedIds = this.glosts.controls
             .map((c, i) => i === currentIndex ? null : c.get('glazeId')?.value)
             .filter(Boolean);
-
         return this.glazes.filter(g => !selectedIds.includes(g.id));
     }
 
@@ -157,7 +137,6 @@ export class GlazeFiringFormComponent implements OnInit {
 
         const formData = { ...this.glazeFiringForm.value };
 
-        // Converte campos numéricos
         if (typeof formData.temperature === 'string') {
             formData.temperature = parseFloat(formData.temperature.replace(',', '.'));
         }
@@ -167,19 +146,18 @@ export class GlazeFiringFormComponent implements OnInit {
         if (typeof formData.coolingTime === 'string') {
             formData.coolingTime = parseFloat(formData.coolingTime.replace(',', '.'));
         }
-        if (typeof formData.gasConsumption === 'string') {
-            formData.gasConsumption = parseFloat(formData.gasConsumption.replace(',', '.'));
-        }
 
-        // Converte quantity dentro de glosts
         formData.glosts = formData.glosts.map((glost: any) => ({
             ...glost,
             quantity: typeof glost.quantity === 'string' ? parseFloat(glost.quantity.replace(',', '.')) : glost.quantity
         }));
 
         if (this.isEditMode) {
-            this.glazeFiringService.updateGlazeFiring(this.data.kilnId, this.data.glazeFiring!.id, formData).subscribe(() => {
-                this.dialogRef.close(true);
+            this.glazeFiringService.updateGlazeFiring(this.data.kilnId, this.data.glazeFiring!.id, formData).subscribe({
+                next: () => this.dialogRef.close(true),
+                error: (err) => {
+                    alert(err.error?.message || 'Ocorreu um erro ao atualizar a queima de esmalte.');
+                }
             });
         } else {
             this.glazeFiringService.createGlazeFiring(this.data.kilnId, formData).subscribe({

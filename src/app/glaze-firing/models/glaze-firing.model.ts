@@ -11,13 +11,12 @@ export interface Glost {
 
 export interface GlazeFiring {
     id: string;
-    createdAt: string;
-    updatedAt: string;
     temperature: number;
     burnTime: number;
     coolingTime: number;
+    glosts: any[];
     gasConsumption: number;
-    kilnName: string;
-    glosts: Glost[];
     cost: number;
+    createdAt: Date;
+    updatedAt: Date;
 }

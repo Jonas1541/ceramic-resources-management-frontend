@@ -1,11 +1,10 @@
+
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { BisqueFiringService } from '../../services/bisque-firing.service';
 import { BisqueFiring } from '../../models/bisque-firing.model';
-import { Kiln } from '../../../kiln/models/kiln.model';
 import { ProductTransaction } from '../../../product/models/product-transaction.model';
-import { KilnService } from '../../../kiln/services/kiln.service';
 import { ProductService } from '../../../product/services/product.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,8 +27,7 @@ import { forkJoin } from 'rxjs';
 export class BisqueFiringFormComponent implements OnInit {
 
   bisqueFiringForm: FormGroup;
-    isEditMode = false;
-  kilns: Kiln[] = [];
+  isEditMode = false;
   productTransactions: ProductTransaction[] = [];
 
   constructor(
@@ -45,25 +43,26 @@ export class BisqueFiringFormComponent implements OnInit {
       temperature: [this.data.bisqueFiring?.temperature || '', [Validators.required, Validators.min(0)]],
       burnTime: [this.data.bisqueFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
       coolingTime: [this.data.bisqueFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
-      gasConsumption: [this.data.bisqueFiring?.gasConsumption || '', [Validators.required, Validators.min(0)]],
       biscuits: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
   }
 
   ngOnInit(): void {
-    forkJoin({
-      greenwareProducts: this.productService.getProductTransactions('1', 'GREENWARE')
-    }).subscribe(({ greenwareProducts }) => {
+    this.productService.getProductTransactions('1', 'GREENWARE').subscribe(greenwareProducts => {
       this.productTransactions = greenwareProducts;
 
       if (this.isEditMode && this.data.bisqueFiring) {
-        // Adiciona os produtos BISCUIT que já estão na queima, se não estiverem na lista de greenware
+        this.bisqueFiringForm.patchValue({
+          temperature: this.data.bisqueFiring.temperature,
+          burnTime: this.data.bisqueFiring.burnTime,
+          coolingTime: this.data.bisqueFiring.coolingTime
+        });
+
         const existingBiscuitProducts = this.data.bisqueFiring.biscuits.filter(biscuit =>
           !this.productTransactions.some(pt => pt.id === biscuit.id)
         );
         this.productTransactions = [...this.productTransactions, ...existingBiscuitProducts];
 
-        // Preencher os FormArrays com os dados existentes
         this.data.bisqueFiring.biscuits.forEach(biscuit => {
           this.biscuits.push(new FormControl<string>(biscuit.id, { nonNullable: true }));
         });
@@ -102,7 +101,6 @@ export class BisqueFiringFormComponent implements OnInit {
 
     const formData = { ...this.bisqueFiringForm.value };
 
-    // Converte campos numéricos
     if (typeof formData.temperature === 'string') {
       formData.temperature = parseFloat(formData.temperature.replace(',', '.'));
     }
@@ -111,9 +109,6 @@ export class BisqueFiringFormComponent implements OnInit {
     }
     if (typeof formData.coolingTime === 'string') {
       formData.coolingTime = parseFloat(formData.coolingTime.replace(',', '.'));
-    }
-    if (typeof formData.gasConsumption === 'string') {
-      formData.gasConsumption = parseFloat(formData.gasConsumption.replace(',', '.'));
     }
 
     if (this.isEditMode) {

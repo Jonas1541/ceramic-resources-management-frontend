@@ -34,7 +34,7 @@ import { Machine } from '../../../machine/models/machine.model';
 })
 export class KilnListComponent implements OnInit {
 
-  displayedColumns: string[] = ['name', 'power', 'actions'];
+  displayedColumns: string[] = ['name', 'gasConsumptionPerHour', 'power', 'actions'];
   kilns: Kiln[] = [];
   expandedElement: Kiln | null = null;
   detailsCache = new Map<string, Machine[]>();

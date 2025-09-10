@@ -37,12 +37,16 @@ export class KilnFormComponent implements OnInit {
   ) {
     this.kilnForm = this.fb.group({
       name: ['', Validators.required],
+      gasConsumptionPerHour: ['', Validators.required],
       machineIds: this.fb.array([])
     });
 
     if (data && data.kiln) {
       this.isEditMode = true;
-      this.kilnForm.patchValue(data.kiln);
+      this.kilnForm.patchValue({
+        name: data.kiln.name,
+        gasConsumptionPerHour: data.kiln.gasConsumptionPerHour
+      });
     }
   }
 
@@ -88,8 +92,13 @@ export class KilnFormComponent implements OnInit {
     }
 
     const formValue = { ...this.kilnForm.value };
+    if (typeof formValue.gasConsumptionPerHour === 'string') {
+      formValue.gasConsumptionPerHour = parseFloat(formValue.gasConsumptionPerHour.replace(',', '.'));
+    }
+
     const payload = {
       name: formValue.name,
+      gasConsumptionPerHour: formValue.gasConsumptionPerHour,
       machines: formValue.machineIds.map((id: string) => Number(id))
     };
 

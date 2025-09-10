@@ -3,13 +3,12 @@ import { ProductTransaction } from "../../product/models/product-transaction.mod
 
 export interface BisqueFiring {
     id: string;
-    createdAt: string;
-    updatedAt: string;
     temperature: number;
     burnTime: number;
     coolingTime: number;
+    biscuits: any[];
     gasConsumption: number;
-    kilnName: string;
-    biscuits: ProductTransaction[]; // Assumindo que são ProductTransactions
     cost: number;
+    createdAt: Date;
+    updatedAt: Date;
 }
