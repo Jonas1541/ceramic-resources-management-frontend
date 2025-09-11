@@ -8,6 +8,7 @@ export interface ProductTransaction {
     productName: string;
     glazeColor: string;
     glazeQuantity: number;
+    cost: number;
     profit: number;
     bisqueFiringId: number | null;
     glazeFiringId: number | null;

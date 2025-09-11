@@ -27,10 +27,14 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill">
-        <mat-label>Qtd. de Glasura por Unidade (kg)</mat-label>
-        <input matInput type="text" formControlName="glazeQuantityPerUnit" appDecimalMask required>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
+          <mat-label>Qtd. de Glasura por Unidade (kg)</mat-label>
+          <input matInput type="text" formControlName="glazeQuantityPerUnit" appDecimalMask required>
+        </mat-form-field>
+    
+        <mat-form-field appearance="fill">
+          <mat-label>Peso (kg)</mat-label>
+          <input matInput type="text" formControlName="weight" appDecimalMask required>
+        </mat-form-field>    <mat-form-field appearance="fill">
         <mat-label>Tipo de Produto</mat-label>
         <mat-select formControlName="typeId" required>
             <mat-option *ngFor="let type of productTypes" [value]="type.id">{{ type.name }}</mat-option>

@@ -27,7 +27,7 @@ import { TranslateOutgoingReasonPipe } from '../../../shared/pipes/translate-out
 export class ProductTransactionListComponent implements OnInit {
 
   transactions: ProductTransaction[] = [];
-  displayedColumns: string[] = ['id', 'state', 'productName', 'glazeColor', 'glazeQuantity', 'profit', 'createdAt', 'outgoingAt', 'outgoingReason', 'actions'];
+  displayedColumns: string[] = ['id', 'state', 'productName', 'glazeColor', 'glazeQuantity', 'cost', 'profit', 'createdAt', 'outgoingAt', 'outgoingReason', 'actions'];
 
   constructor(
     private productService: ProductService,

@@ -1,3 +1,4 @@
+
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -45,6 +46,7 @@ export class ProductFormComponent implements OnInit {
       length: ['', [Validators.required]],
       width: ['', [Validators.required]],
       glazeQuantityPerUnit: ['', [Validators.required]],
+      weight: ['', [Validators.required]],
       typeId: ['', Validators.required],
       lineId: ['', Validators.required]
     });
@@ -72,6 +74,7 @@ export class ProductFormComponent implements OnInit {
               length: productDetails.length,
               width: productDetails.width,
               glazeQuantityPerUnit: productDetails.glazeQuantityPerUnit,
+              weight: productDetails.weight,
               typeId: selectedType ? selectedType.id : '',
               lineId: selectedLine ? selectedLine.id : ''
             });
@@ -106,6 +109,9 @@ export class ProductFormComponent implements OnInit {
     }
     if (typeof formData.glazeQuantityPerUnit === 'string') {
       formData.glazeQuantityPerUnit = parseFloat(formData.glazeQuantityPerUnit.replace(',', '.'));
+    }
+    if (typeof formData.weight === 'string') {
+      formData.weight = parseFloat(formData.weight.replace(',', '.'));
     }
 
     if (this.isEditMode) {

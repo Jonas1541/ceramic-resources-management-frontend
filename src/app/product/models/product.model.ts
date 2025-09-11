@@ -5,6 +5,7 @@ export interface Product {
     height: number;
     length: number;
     width: number;
+    weight: number;
     glazeQuantityPerUnit: number;
     type: string;
     line: string;
