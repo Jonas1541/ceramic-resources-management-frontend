@@ -7,6 +7,8 @@ import { YearReport } from '../../report/models/year-report.model';
 
 import { environment } from '../../../environments/environment';
 
+import { HttpParams } from '@angular/common/http';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,6 +17,8 @@ export class ProductService {
   private apiUrl = `${environment.apiUrl}/products`;
 
   constructor(private http: HttpClient) { }
+
+  // Métodos para Produtos
 
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl);
@@ -36,35 +40,54 @@ export class ProductService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-    getProductTransactionById(productId: string, transactionId: number | string): Observable<ProductTransaction> {
-        return this.http.get<ProductTransaction>(`${this.apiUrl}/${productId}/transactions/${transactionId}`);
-    }
+  // Métodos para Transações de Produtos
 
   getProductTransactions(productId: string, state?: string): Observable<ProductTransaction[]> {
-    let url = `${this.apiUrl}/${productId}/transactions`;
+    let params = new HttpParams();
     if (state) {
-      url += `?state=${state}`;
+      params = params.set('state', state);
     }
-    return this.http.get<ProductTransaction[]>(url);
+    return this.http.get<ProductTransaction[]>(`${this.apiUrl}/${productId}/transactions`, { params });
   }
 
-  createProductTransaction(productId: string, quantity: number): Observable<ProductTransaction> {
-    return this.http.post<ProductTransaction>(`${this.apiUrl}/${productId}/transactions?quantity=${quantity}`, {});
+  getProductTransactionById(productId: string, transactionId: string): Observable<ProductTransaction> {
+    return this.http.get<ProductTransaction>(`${this.apiUrl}/${productId}/transactions/${transactionId}`);
   }
 
-  outgoingProductTransaction(productId: string, transactionId: string, outgoingReason: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${productId}/transactions/${transactionId}?outgoingReason=${outgoingReason}`, {});
+  createProductTransaction(productId: string, quantity: number): Observable<ProductTransaction[]> {
+    const params = new HttpParams().set('quantity', quantity.toString());
+    return this.http.post<ProductTransaction[]>(`${this.apiUrl}/${productId}/transactions`, {}, { params });
   }
 
   deleteProductTransaction(productId: string, transactionId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${productId}/transactions/${transactionId}`);
   }
 
-  cancelOutgoingProductTransaction(productId: string, transactionId: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${productId}/transactions/${transactionId}`, {});
+  outgoingProductTransaction(productId: string, transactionId: string, outgoingReason: string): Observable<ProductTransaction> {
+    const params = new HttpParams().set('outgoingReason', outgoingReason);
+    return this.http.patch<ProductTransaction>(`${this.apiUrl}/${productId}/transactions/${transactionId}`, {}, { params });
   }
 
-  getYearlyReport(productId: string): Observable<YearReport[]> {
-    return this.http.get<YearReport[]>(`${this.apiUrl}/${productId}/yearly-report`);
+  cancelOutgoingProductTransaction(productId: string, transactionId: string): Observable<ProductTransaction> {
+    return this.http.patch<ProductTransaction>(`${this.apiUrl}/${productId}/transactions/${transactionId}`, {});
+  }
+
+  outgoingByQuantity(productId: string, quantity: number, state: string, outgoingReason: string): Observable<ProductTransaction[]> {
+    const params = new HttpParams()
+      .set('quantity', quantity.toString())
+      .set('state', state)
+      .set('outgoingReason', outgoingReason);
+    return this.http.patch<ProductTransaction[]>(`${this.apiUrl}/${productId}/transactions/outgoing-by-quantity`, {}, { params });
+  }
+
+  cancelOutgoingByQuantity(productId: string, quantity: number, state: string): Observable<ProductTransaction[]> {
+    const params = new HttpParams()
+      .set('quantity', quantity.toString())
+      .set('state', state);
+    return this.http.patch<ProductTransaction[]>(`${this.apiUrl}/${productId}/transactions/cancel-outgoing-by-quantity`, {}, { params });
+  }
+
+  getYearlyReport(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/yearly-report`);
   }
 }

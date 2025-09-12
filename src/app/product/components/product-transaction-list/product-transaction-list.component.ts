@@ -16,6 +16,9 @@ import { TranslateProductStatePipe } from '../../../shared/pipes/translate-produ
 
 import { TranslateOutgoingReasonPipe } from '../../../shared/pipes/translate-outgoing-reason.pipe';
 
+import { ProductTransactionBulkCancelFormComponent } from '../product-transaction-bulk-cancel-form/product-transaction-bulk-cancel-form.component';
+import { ProductTransactionBulkOutgoingFormComponent } from '../product-transaction-bulk-outgoing-form/product-transaction-bulk-outgoing-form.component';
+
 @Component({
   selector: 'app-product-transaction-list',
   standalone: true,
@@ -27,7 +30,7 @@ import { TranslateOutgoingReasonPipe } from '../../../shared/pipes/translate-out
 export class ProductTransactionListComponent implements OnInit {
 
   transactions: ProductTransaction[] = [];
-  displayedColumns: string[] = ['id', 'state', 'productName', 'glazeColor', 'glazeQuantity', 'cost', 'profit', 'createdAt', 'outgoingAt', 'outgoingReason', 'actions'];
+  displayedColumns: string[] = ['id', 'productName', 'state', 'glazeColor', 'glazeQuantity', 'cost', 'profit', 'createdAt', 'outgoingAt', 'outgoingReason', 'actions'];
 
   constructor(
     private productService: ProductService,
@@ -81,6 +84,32 @@ export class ProductTransactionListComponent implements OnInit {
 
   openTransactionForm(): void {
     const dialogRef = this.dialog.open(ProductTransactionFormComponent, {
+      width: '400px',
+      data: { productId: this.data.productId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadTransactions();
+      }
+    });
+  }
+
+  openBulkOutgoingForm(): void {
+    const dialogRef = this.dialog.open(ProductTransactionBulkOutgoingFormComponent, {
+      width: '400px',
+      data: { productId: this.data.productId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadTransactions();
+      }
+    });
+  }
+
+  openBulkCancelForm(): void {
+    const dialogRef = this.dialog.open(ProductTransactionBulkCancelFormComponent, {
       width: '400px',
       data: { productId: this.data.productId }
     });

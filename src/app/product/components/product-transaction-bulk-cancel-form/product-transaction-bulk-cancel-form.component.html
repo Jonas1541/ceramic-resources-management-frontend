@@ -1,0 +1,21 @@
+
+<h1 mat-dialog-title>Cancelar Saída de Produtos em Lote</h1>
+
+<div mat-dialog-content [formGroup]="form">
+  <mat-form-field appearance="fill">
+    <mat-label>Quantidade</mat-label>
+    <input matInput type="number" formControlName="quantity" min="1">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Estado do Produto a Reverter</mat-label>
+    <mat-select formControlName="state">
+      <mat-option *ngFor="let state of productStates" [value]="state">{{ state | translateProductState }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">Confirmar Cancelamento</button>
+</div>
