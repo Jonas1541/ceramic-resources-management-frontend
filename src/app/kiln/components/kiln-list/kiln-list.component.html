@@ -39,6 +39,9 @@
         <button mat-icon-button color="accent" (click)="openGlazeFiringList(element.id)" title="Ver Queimas de Glasura">
           <mat-icon>local_fire_department</mat-icon>
         </button>
+        <button mat-icon-button (click)="openReport(element.id)" title="Ver Relatório">
+          <mat-icon>bar_chart</mat-icon>
+        </button>
         <button mat-icon-button (click)="toggleDetails(element)" [title]="expandedElement === element ? 'Esconder detalhes' : 'Ver máquinas'">
           <mat-icon>{{expandedElement === element ? 'expand_less' : 'expand_more'}}</mat-icon>
         </button>
