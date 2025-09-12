@@ -115,14 +115,7 @@ export class GlazeFiringFormComponent implements OnInit {
             .map((c, i) => i === currentIndex ? null : c.get('productTransactionId')?.value)
             .filter(Boolean);
         return this.productTransactions.filter(t => !selectedIds.includes(t.id));
-    }
-
-    getAvailableGlazes(currentIndex: number): Glaze[] {
-        const selectedIds = this.glosts.controls
-            .map((c, i) => i === currentIndex ? null : c.get('glazeId')?.value)
-            .filter(Boolean);
-        return this.glazes.filter(g => !selectedIds.includes(g.id));
-    }
+    }  
 
     onCancel(): void {
         this.dialogRef.close();

@@ -36,8 +36,7 @@
           <mat-form-field appearance="fill">
             <mat-label>Glasura</mat-label>
             <mat-select formControlName="glazeId" required>
-              <mat-option *ngIf="getAvailableGlazes(i).length === 0" disabled>Não há mais glasuras para selecionar</mat-option>
-              <mat-option *ngFor="let glaze of getAvailableGlazes(i)" [value]="glaze.id">{{ glaze.color }}</mat-option>
+              <mat-option *ngFor="let glaze of glazes" [value]="glaze.id">{{ glaze.color }}</mat-option>
             </mat-select>
           </mat-form-field>
                   </div>
