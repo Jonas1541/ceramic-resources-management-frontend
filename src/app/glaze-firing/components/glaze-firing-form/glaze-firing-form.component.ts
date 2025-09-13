@@ -1,6 +1,5 @@
-
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { GlazeFiringService } from '../../services/glaze-firing.service';
 import { GlazeFiring } from '../../models/glaze-firing.model';
@@ -13,15 +12,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
 import { forkJoin } from 'rxjs';
 
 @Component({
     selector: 'app-glaze-firing-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatOptionModule, MatIconModule, DecimalMaskDirective],
+    imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatExpansionModule, MatCheckboxModule, DecimalMaskDirective],
     templateUrl: './glaze-firing-form.component.html',
     styleUrls: ['./glaze-firing-form.component.scss']
 })
@@ -29,8 +28,10 @@ export class GlazeFiringFormComponent implements OnInit {
 
     glazeFiringForm: FormGroup;
     isEditMode = false;
-    productTransactions: ProductTransaction[] = [];
+    groupedProducts = new Map<string, ProductTransaction[]>();
     glazes: Glaze[] = [];
+    productTransactions: ProductTransaction[] = [];
+    glazeAssignments = new Map<string, string>(); // transactionId -> glazeId
 
     constructor(
         private fb: FormBuilder,
@@ -38,15 +39,14 @@ export class GlazeFiringFormComponent implements OnInit {
         private productService: ProductService,
         private glazeService: GlazeService,
         public dialogRef: MatDialogRef<GlazeFiringFormComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { glazeFiring?: GlazeFiring, kilnId: string },
-        private cdr: ChangeDetectorRef
+        @Inject(MAT_DIALOG_DATA) public data: { glazeFiring?: GlazeFiring, kilnId: string }
     ) {
         this.isEditMode = !!this.data.glazeFiring;
         this.glazeFiringForm = this.fb.group({
             temperature: [this.data.glazeFiring?.temperature || '', [Validators.required, Validators.min(0)]],
             burnTime: [this.data.glazeFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
             coolingTime: [this.data.glazeFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
-            glosts: this.fb.array([], [Validators.required, Validators.minLength(1)])
+            productTransactionIds: [[] as string[], [Validators.required, Validators.minLength(1)]]
         });
     }
 
@@ -58,105 +58,131 @@ export class GlazeFiringFormComponent implements OnInit {
             this.glazes = glazes;
             this.productTransactions = biscuitProducts;
 
-            if (this.isEditMode && this.data.glazeFiring) {
-                this.glazeFiringForm.patchValue({
-                    temperature: this.data.glazeFiring.temperature,
-                    burnTime: this.data.glazeFiring.burnTime,
-                    coolingTime: this.data.glazeFiring.coolingTime
-                });
-
-                const existingGlazedProductObservables = this.data.glazeFiring.glosts.map(glost =>
-                    this.productService.getProductTransactionById(glost.productId, glost.productTxId)
+            if (this.isEditMode && this.data.glazeFiring && this.data.glazeFiring.glosts.length > 0) {
+                const existingProducts$ = forkJoin(
+                    this.data.glazeFiring.glosts.map(g => this.productService.getProductTransactionById(g.productId, g.productTxId))
                 );
 
-                if (existingGlazedProductObservables.length > 0) {
-                    forkJoin(existingGlazedProductObservables).subscribe(existingGlazedProducts => {
-                        this.productTransactions = [...this.productTransactions, ...existingGlazedProducts];
-                        this.populateFormArrays();
-                    });
-                } else {
-                    this.populateFormArrays();
-                }
+                existingProducts$.subscribe(existingProducts => {
+                    const allProducts = [...this.productTransactions, ...existingProducts];
+                    this.productTransactions = Array.from(new Map(allProducts.map(p => [p.id, p])).values());
+                    
+                    this.groupProducts(this.productTransactions);
+                    this.populateFormForEdit();
+                });
+            } else {
+                this.groupProducts(this.productTransactions);
             }
         });
     }
 
-    private populateFormArrays(): void {
+    private populateFormForEdit(): void {
         if (!this.data.glazeFiring) return;
+        this.glazeFiringForm.patchValue({
+            temperature: this.data.glazeFiring.temperature,
+            burnTime: this.data.glazeFiring.burnTime,
+            coolingTime: this.data.glazeFiring.coolingTime
+        });
+        this.productIdsControl.setValue(this.data.glazeFiring.glosts.map(g => g.productTxId));
 
         this.data.glazeFiring.glosts.forEach(glost => {
-            const glaze = this.glazes.find(g => g.color === glost.glazeColor);
-            this.glosts.push(this.fb.group({
-                productTransactionId: [glost.productTxId, Validators.required],
-                glazeId: [glaze ? glaze.id : '', Validators.required]
-            }));
+            this.glazeAssignments.set(glost.productTxId, glost.glazeId);
         });
-        this.cdr.detectChanges();
     }
 
-    get glosts(): FormArray {
-        return this.glazeFiringForm.get('glosts') as FormArray;
-    }
-
-    addGlost(): void {
-        const glostForm = this.fb.group({
-            productTransactionId: ['', Validators.required],
-            glazeId: ['', Validators.required]
+    private groupProducts(transactions: ProductTransaction[]): void {
+        this.groupedProducts.clear();
+        transactions.forEach(transaction => {
+            const key = transaction.productName;
+            if (!this.groupedProducts.has(key)) {
+                this.groupedProducts.set(key, []);
+            }
+            this.groupedProducts.get(key)!.push(transaction);
         });
-        this.glosts.push(glostForm);
     }
 
-    removeGlost(index: number): void {
-        this.glosts.removeAt(index);
+    setGlazeForAllInGroup(productGroup: ProductTransaction[], glazeId: string): void {
+        productGroup.forEach(transaction => {
+            this.glazeAssignments.set(transaction.id, glazeId);
+        });
     }
 
-    getAvailableProducts(currentIndex: number): ProductTransaction[] {
-        const selectedIds = this.glosts.controls
-            .map((c, i) => i === currentIndex ? null : c.get('productTransactionId')?.value)
-            .filter(Boolean);
-        return this.productTransactions.filter(t => !selectedIds.includes(t.id));
-    }  
-
-    onCancel(): void {
-        this.dialogRef.close();
+    get productIdsControl(): FormControl {
+        return this.glazeFiringForm.get('productTransactionIds') as FormControl;
     }
+
+    isAllSelected(productGroup: ProductTransaction[]): boolean {
+        const selectedIds = this.productIdsControl.value as string[];
+        return productGroup.every(p => selectedIds.includes(p.id));
+    }
+
+    isSomeSelected(productGroup: ProductTransaction[]): boolean {
+        const selectedIds = this.productIdsControl.value as string[];
+        const groupIds = productGroup.map(p => p.id);
+        const intersection = groupIds.filter(id => selectedIds.includes(id));
+        return intersection.length > 0 && intersection.length < groupIds.length;
+    }
+
+    toggleAllForGroup(productGroup: ProductTransaction[], event: any): void {
+        const selectedIds = new Set<string>(this.productIdsControl.value);
+        const groupIds = productGroup.map(p => p.id);
+        if (event.checked) {
+            groupIds.forEach(id => selectedIds.add(id));
+        } else {
+            groupIds.forEach(id => selectedIds.delete(id));
+        }
+        this.productIdsControl.setValue(Array.from(selectedIds));
+    }
+
+    toggleSelection(transactionId: string, event: any): void {
+        const selectedIds = new Set<string>(this.productIdsControl.value);
+        if (event.checked) {
+            selectedIds.add(transactionId);
+        } else {
+            selectedIds.delete(transactionId);
+        }
+        this.productIdsControl.setValue(Array.from(selectedIds));
+    }
+
+    asIsOrder(a: any, b: any): number { return 1; }
+
+    onCancel(): void { this.dialogRef.close(); }
 
     onSubmit(): void {
-        if (this.glazeFiringForm.invalid) {
+        if (this.glazeFiringForm.invalid) return;
+
+        const formValue = this.glazeFiringForm.value;
+        const glostsPayload: { productTransactionId: string; glazeId: string }[] = [];
+
+        formValue.productTransactionIds.forEach((transactionId: string) => {
+            const glazeId = this.glazeAssignments.get(transactionId);
+            if (glazeId) {
+                glostsPayload.push({ productTransactionId: transactionId, glazeId: glazeId });
+            } 
+        });
+
+        if (glostsPayload.length !== formValue.productTransactionIds.length) {
+            alert('Todas os produtos selecionados devem ter uma glasura atribuída.');
             return;
         }
 
-        const formData = { ...this.glazeFiringForm.value };
+        const payload = {
+            temperature: parseFloat(String(formValue.temperature).replace(',', '.')),
+            burnTime: parseFloat(String(formValue.burnTime).replace(',', '.')),
+            coolingTime: parseFloat(String(formValue.coolingTime).replace(',', '.')),
+            glosts: glostsPayload
+        };
 
-        if (typeof formData.temperature === 'string') {
-            formData.temperature = parseFloat(formData.temperature.replace(',', '.'));
-        }
-        if (typeof formData.burnTime === 'string') {
-            formData.burnTime = parseFloat(formData.burnTime.replace(',', '.'));
-        }
-        if (typeof formData.coolingTime === 'string') {
-            formData.coolingTime = parseFloat(formData.coolingTime.replace(',', '.'));
-        }
+        const operation = this.isEditMode
+            ? this.glazeFiringService.updateGlazeFiring(this.data.kilnId, this.data.glazeFiring!.id, payload)
+            : this.glazeFiringService.createGlazeFiring(this.data.kilnId, payload);
 
-        formData.glosts = formData.glosts.map((glost: any) => ({
-            ...glost,
-            quantity: typeof glost.quantity === 'string' ? parseFloat(glost.quantity.replace(',', '.')) : glost.quantity
-        }));
-
-        if (this.isEditMode) {
-            this.glazeFiringService.updateGlazeFiring(this.data.kilnId, this.data.glazeFiring!.id, formData).subscribe({
-                next: () => this.dialogRef.close(true),
-                error: (err) => {
-                    alert(err.error?.message || 'Ocorreu um erro ao atualizar a queima de esmalte.');
-                }
-            });
-        } else {
-            this.glazeFiringService.createGlazeFiring(this.data.kilnId, formData).subscribe({
-                next: () => this.dialogRef.close(true),
-                error: (err) => {
-                    alert(err.error?.message || 'Ocorreu um erro ao criar a queima de esmalte.');
-                }
-            });
-        }
+        operation.subscribe({
+            next: () => this.dialogRef.close(true),
+            error: (err) => {
+                const message = err.error?.message || (this.isEditMode ? 'Ocorreu um erro ao atualizar a queima.' : 'Ocorreu um erro ao criar a queima.');
+                alert(message);
+            }
+        });
     }
 }

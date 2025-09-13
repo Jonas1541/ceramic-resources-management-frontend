@@ -16,26 +16,35 @@
     <input matInput type="text" formControlName="coolingTime" appDecimalMask required>
   </mat-form-field>
 
-  
-  <!-- Seção de Produtos -->
   <h2 class="section-title">Produtos</h2>
-  <div formArrayName="biscuits">
-    <div *ngFor="let biscuitControl of biscuits.controls; let i=index" class="form-array-item">
-      <div class="form-array-item-row">
-        <button mat-icon-button color="warn" (click)="removeBiscuit(i)" title="Remover Produto">
-          <mat-icon>remove_circle</mat-icon>
-        </button>
-        <mat-form-field appearance="fill">
-          <mat-label>Produto</mat-label>
-          <mat-select [formControl]="biscuitControl" required>
-            <mat-option *ngIf="getAvailableProducts(i).length === 0" disabled>Não há mais produtos para selecionar</mat-option>
-            <mat-option *ngFor="let transaction of getAvailableProducts(i)" [value]="transaction.id">{{ transaction.productName }} - ID: {{ transaction.id }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+  <mat-accordion multi>
+    <mat-expansion-panel *ngFor="let group of groupedProducts | keyvalue: asIsOrder">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-checkbox 
+            [checked]="isAllSelected(group.value)" 
+            [indeterminate]="isSomeSelected(group.value)"
+            (change)="toggleAllForGroup(group.value, $event)"
+            (click)="$event.stopPropagation()">
+          </mat-checkbox>
+          {{ group.key }} ({{ group.value.length }} unidades)
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div *ngFor="let transaction of group.value" class="checkbox-item">
+        <mat-checkbox 
+          [checked]="biscuitControl.value.includes(transaction.id)"
+          (change)="toggleSelection(transaction.id, $event)">
+          ID: {{ transaction.id }}
+        </mat-checkbox>
       </div>
-    </div>
-  </div>
-  <button mat-stroked-button color="primary" (click)="addBiscuit()" class="add-button">Adicionar Produto</button>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+  <mat-error *ngIf="biscuitControl.hasError('required') && biscuitControl.touched">
+    Pelo menos um produto deve ser selecionado.
+  </mat-error>
+
 </div>
 
 <div mat-dialog-actions>
