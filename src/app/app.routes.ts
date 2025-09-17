@@ -42,6 +42,14 @@ export const routes: Routes = [
       {
         path: 'account',
         loadComponent: () => import('./account-management/components/account-management.component').then(m => m.AccountManagementComponent)
+      },
+      {
+        path: 'employee-categories',
+        loadComponent: () => import('./employee-category/components/employee-category-list/employee-category-list.component').then(m => m.EmployeeCategoryListComponent)
+      },
+      {
+        path: 'employees',
+        loadComponent: () => import('./employee/components/employee-list/employee-list.component').then(m => m.EmployeeListComponent)
       }
     ]
   },

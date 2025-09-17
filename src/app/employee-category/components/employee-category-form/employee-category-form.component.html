@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>{{ isEditMode ? 'Editar Categoria de Funcionário' : 'Adicionar Categoria de Funcionário' }}</h1>
+
+<div mat-dialog-content [formGroup]="employeeCategoryForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Nome</mat-label>
+    <input matInput formControlName="name" required appTrim>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="employeeCategoryForm.invalid">Salvar</button>
+</div>

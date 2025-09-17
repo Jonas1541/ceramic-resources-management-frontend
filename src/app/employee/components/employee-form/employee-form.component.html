@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>{{ isEditMode ? 'Editar Funcionário' : 'Adicionar Funcionário' }}</h1>
+
+<div mat-dialog-content [formGroup]="employeeForm">
+    <mat-form-field appearance="fill">
+        <mat-label>Nome</mat-label>
+        <input matInput formControlName="name" required appTrim>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Custo por Hora (R$)</mat-label>
+        <input matInput type="text" formControlName="costPerHour" appDecimalMask required>
+    </mat-form-field>
+    
+    <mat-form-field appearance="fill">
+        <mat-label>Categoria</mat-label>
+        <mat-select formControlName="categoryId" required>
+            <mat-option *ngFor="let category of employeeCategories" [value]="category.id">{{ category.name }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="employeeForm.invalid">Salvar</button>
+</div>

@@ -1,0 +1,26 @@
+.action-buttons-container {
+  display: flex;
+}
+
+.container {
+  padding: 24px;
+
+  @media (max-width: 599px) {
+    padding: 10px;
+  }
+}
+
+/*
+  Esta é a correção principal.
+  - `:host ::ng-deep` garante que o estilo seja aplicado ao componente do Material Dialog.
+  - `display: flex` força o container a alinhar os filhos (botões) em uma linha.
+  - A vírgula seleciona tanto a classe antiga (`.mat-dialog-actions`) quanto a nova (`.mat-mdc-dialog-actions`),
+    tornando o código compatível com qualquer versão do Angular Material.
+*/
+:host ::ng-deep .mat-mdc-dialog-actions,
+:host ::ng-deep .mat-dialog-actions {
+  display: flex; /* Garante o alinhamento horizontal */
+  justify-content: flex-end; /* Alinha os botões à direita */
+  gap: 8px; /* Espaçamento entre os botões */
+  padding: 8px 24px; /* Espaçamento interno */
+}
