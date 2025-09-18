@@ -76,6 +76,22 @@
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="machineUsagesColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: machineUsagesColumns;"></tr>
+</table>
+  </div>
+
+  <div class="table-section">
+    <h2>Uso de Funcionários</h2>
+    <table mat-table [dataSource]="glaze.employeeUsages" class="mat-elevation-z8">
+      <ng-container matColumnDef="employeeName">
+        <th mat-header-cell *matHeaderCellDef> Nome </th>
+        <td mat-cell *matCellDef="let element"> {{element.employeeName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="usageTime">
+        <th mat-header-cell *matHeaderCellDef> Tempo de Uso </th>
+        <td mat-cell *matCellDef="let element"> {{element.usageTime | decimalFormat}} h </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="employeeUsagesColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: employeeUsagesColumns;"></tr>
     </table>
   </div>
 </div>

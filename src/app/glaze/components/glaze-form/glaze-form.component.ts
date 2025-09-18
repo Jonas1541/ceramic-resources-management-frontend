@@ -1,22 +1,23 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { GlazeService } from '../../services/glaze.service';
-import { Glaze } from '../../models/glaze.model';
-import { Resource } from '../../../resource/models/resource.model';
-import { Machine } from '../../../machine/models/machine.model';
-import { ResourceService } from '../../../resource/services/resource.service';
-import { MachineService } from '../../../machine/services/machine.service';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
+import { Employee } from '../../../employee/models/employee.model';
+import { EmployeeService } from '../../../employee/services/employee.service';
+import { Machine } from '../../../machine/models/machine.model';
+import { MachineService } from '../../../machine/services/machine.service';
+import { ResourceService } from '../../../resource/services/resource.service';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
-
 import { TrimDirective } from '../../../shared/directives/trim.directive';
+import { Glaze } from '../../models/glaze.model';
+import { GlazeService } from '../../services/glaze.service';
+import { Resource } from '../../../resource/models/resource.model';
 
 @Component({
   selector: 'app-glaze-form',
@@ -31,6 +32,7 @@ export class GlazeFormComponent implements OnInit {
   isEditMode = false;
   resources: Resource[] = [];
   machines: Machine[] = [];
+  employees: Employee[] = [];
 
   errorMessages: { [key: string]: string } = {
     'ELECTRICITY resource not found': 'Recurso ELETRICIDADE não encontrado. Por favor, cadastre-o primeiro.',
@@ -43,13 +45,15 @@ export class GlazeFormComponent implements OnInit {
     private glazeService: GlazeService,
     private resourceService: ResourceService,
     private machineService: MachineService,
+    private employeeService: EmployeeService,
     public dialogRef: MatDialogRef<GlazeFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { glaze: Glaze }
   ) {
     this.glazeForm = this.fb.group({
       color: ['', Validators.required],
       resourceUsages: this.fb.array([], [Validators.required, Validators.minLength(1)]),
-      machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
+      machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)]),
+      employeeUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
 
     if (data && data.glaze) {
@@ -62,6 +66,9 @@ export class GlazeFormComponent implements OnInit {
         glazeDetails.machineUsages.forEach(usage => {
           this.machineUsages.push(this.fb.group(usage));
         });
+        glazeDetails.employeeUsages.forEach(usage => {
+          this.employeeUsages.push(this.fb.group(usage));
+        });
       });
     }
   }
@@ -69,17 +76,24 @@ export class GlazeFormComponent implements OnInit {
   ngOnInit(): void {
     this.loadResources();
     this.loadMachines();
+    this.loadEmployees();
   }
 
   loadResources(): void {
     this.resourceService.getResources().subscribe(data => {
-      this.resources = data.filter(resource => resource.category === 'COMPONENT');
+      this.resources = data;
     });
   }
 
   loadMachines(): void {
     this.machineService.getMachines().subscribe(data => {
       this.machines = data;
+    });
+  }
+
+  loadEmployees(): void {
+    this.employeeService.getEmployees().subscribe(data => {
+      this.employees = data;
     });
   }
 
@@ -115,6 +129,22 @@ export class GlazeFormComponent implements OnInit {
     this.machineUsages.removeAt(index);
   }
 
+  get employeeUsages(): FormArray {
+    return this.glazeForm.get('employeeUsages') as FormArray;
+  }
+
+  addEmployeeUsage(): void {
+    const employeeUsageForm = this.fb.group({
+      employeeId: ['', Validators.required],
+      usageTime: ['', Validators.required]
+    });
+    this.employeeUsages.push(employeeUsageForm);
+  }
+
+  removeEmployeeUsage(index: number): void {
+    this.employeeUsages.removeAt(index);
+  }
+
   getAvailableResources(currentIndex: number): Resource[] {
     const selectedResourceIds = this.resourceUsages.controls
       .map((control, index) => index === currentIndex ? null : control.get('resourceId')?.value)
@@ -127,6 +157,13 @@ export class GlazeFormComponent implements OnInit {
       .map((control, index) => index === currentIndex ? null : control.get('machineId')?.value)
       .filter(id => id !== null);
     return this.machines.filter(machine => !selectedMachineIds.includes(machine.id));
+  }
+
+  getAvailableEmployees(currentIndex: number): Employee[] {
+    const selectedEmployeeIds = this.employeeUsages.controls
+      .map((control, index) => index === currentIndex ? null : control.get('employeeId')?.value)
+      .filter(id => id !== null);
+    return this.employees.filter(employee => !selectedEmployeeIds.includes(employee.id));
   }
 
   onCancel(): void {
@@ -146,6 +183,10 @@ export class GlazeFormComponent implements OnInit {
         quantity: parseFloat(String(usage.quantity).replace(',', '.'))
       })),
       machineUsages: formValue.machineUsages.map((usage: any) => ({
+        ...usage,
+        usageTime: parseFloat(String(usage.usageTime).replace(',', '.'))
+      })),
+      employeeUsages: formValue.employeeUsages.map((usage: any) => ({
         ...usage,
         usageTime: parseFloat(String(usage.usageTime).replace(',', '.'))
       }))

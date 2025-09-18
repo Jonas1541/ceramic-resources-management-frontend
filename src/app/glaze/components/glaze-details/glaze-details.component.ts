@@ -21,6 +21,7 @@ export class GlazeDetailsComponent implements OnInit {
   glaze: Glaze | null = null;
   resourceUsagesColumns: string[] = ['resourceName', 'quantity'];
   machineUsagesColumns: string[] = ['machineName', 'usageTime'];
+  employeeUsagesColumns: string[] = ['employeeName', 'usageTime'];
 
   constructor(
     private glazeService: GlazeService,
