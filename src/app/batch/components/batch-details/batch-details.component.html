@@ -1,115 +1,135 @@
 <h1 mat-dialog-title>Detalhes da Batelada</h1>
 
 <div mat-dialog-content *ngIf="batch" class="details-container">
-  <div class="info-section">
-    <h2>Informações Gerais</h2>
-    <div class="costs-grid">
-      <div class="cost-item">
-        <span class="cost-label">ID:</span>
-        <span class="cost-value">{{ batch.id }}</span>
-      </div>
-      <div class="cost-item">
-        <span class="cost-label">Criado Em:</span>
-        <span class="cost-value">{{ batch.createdAt | date:'short' }}</span>
-      </div>
-      <div class="cost-item">
-        <span class="cost-label">Atualizado Em:</span>
-        <span class="cost-value">{{ batch.updatedAt | date:'short' }}</span>
-      </div>
+    <div class="info-section">
+        <h2>Informações Gerais</h2>
+        <div class="costs-grid">
+            <div class="cost-item">
+                <span class="cost-label">ID:</span>
+                <span class="cost-value">{{ batch.id }}</span>
+            </div>
+            <div class="cost-item">
+                <span class="cost-label">Criado Em:</span>
+                <span class="cost-value">{{ batch.createdAt | date:'short' }}</span>
+            </div>
+            <div class="cost-item">
+                <span class="cost-label">Atualizado Em:</span>
+                <span class="cost-value">{{ batch.updatedAt | date:'short' }}</span>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="info-section">
-    <h2>Custos e Consumo</h2>
-    <div class="costs-grid">
-      <div class="cost-item">
-        <span class="cost-label">Água Total da Batelada:</span>
-        <span class="cost-value">{{ batch.batchTotalWater | decimalFormat }} L</span>
-      </div>
-      <div class="cost-item">
-        <span class="cost-label">Custo Total da Água:</span>
-        <span class="cost-value">{{ batch.batchTotalWaterCost | currency:'BRL' }}</span>
-      </div>
-      <div class="cost-item">
-        <span class="cost-label">Quantidade Total de Recursos:</span>
-        <span class="cost-value">{{ batch.resourceTotalQuantity | decimalFormat }} kg</span>
-      </div>
-      <div class="cost-item">
-        <span class="cost-label">Custo Total dos Recursos:</span>
-        <span class="cost-value">{{ batch.resourceTotalCost | currency:'BRL' }}</span>
-      </div>
-      <div class="cost-item">
-        <span class="cost-label">Consumo de Energia das Máquinas:</span>
-        <span class="cost-value">{{ batch.machinesEnergyConsumption | decimalFormat }} kWh</span>
-      </div>
-      <div class="cost-item">
-        <span class="cost-label">Custo de Energia das Máquinas:</span>
-        <span class="cost-value">{{ batch.machinesEnergyConsumptionCost | currency:'BRL' }}</span>
-      </div>
-      <div class="cost-item final-cost">
-        <span class="cost-label">Custo Final da Batelada:</span>
-        <span class="cost-value">{{ batch.batchFinalCost | currency:'BRL' }}</span>
-      </div>
+    <div class="info-section">
+        <h2>Custos e Consumo</h2>
+        <div class="costs-grid">
+            <div class="cost-item">
+                <span class="cost-label">Água Total da Batelada:</span>
+                <span class="cost-value">{{ batch.batchTotalWater | decimalFormat }} L</span>
+            </div>
+            <div class="cost-item">
+                <span class="cost-label">Custo Total da Água:</span>
+                <span class="cost-value">{{ batch.batchTotalWaterCost | currency:'BRL' }}</span>
+            </div>
+            <div class="cost-item">
+                <span class="cost-label">Quantidade Total de Recursos:</span>
+                <span class="cost-value">{{ batch.resourceTotalQuantity | decimalFormat }} kg</span>
+            </div>
+            <div class="cost-item">
+                <span class="cost-label">Custo Total dos Recursos:</span>
+                <span class="cost-value">{{ batch.resourceTotalCost | currency:'BRL' }}</span>
+            </div>
+            <div class="cost-item">
+                <span class="cost-label">Consumo de Energia das Máquinas:</span>
+                <span class="cost-value">{{ batch.machinesEnergyConsumption | decimalFormat }} kWh</span>
+            </div>
+            <div class="cost-item">
+                <span class="cost-label">Custo Total de Funcionários:</span>
+                <span class="cost-value">{{ batch.employeeTotalCost| currency:'BRL' }}</span>
+            </div>
+            <div class="cost-item">
+                <span class="cost-label">Custo de Energia das Máquinas:</span>
+                <span class="cost-value">{{ batch.machinesEnergyConsumptionCost | currency:'BRL' }}</span>
+            </div>
+            <div class="cost-item final-cost">
+                <span class="cost-label">Custo Final da Batelada:</span>
+                <span class="cost-value">{{ batch.batchFinalCost | currency:'BRL' }}</span>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="table-section">
-    <h2>Uso de Recursos</h2>
-    <table mat-table [dataSource]="batch.resourceUsages" class="mat-elevation-z8">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef> Nome </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-      </ng-container>
-      <ng-container matColumnDef="initialQuantity">
-        <th mat-header-cell *matHeaderCellDef> Qtd. Inicial </th>
-        <td mat-cell *matCellDef="let element"> {{element.initialQuantity | decimalFormat}} kg </td>
-      </ng-container>
-      <ng-container matColumnDef="umidity">
-        <th mat-header-cell *matHeaderCellDef> Umidade </th>
-        <td mat-cell *matCellDef="let element"> {{element.umidity | percent:'1.0-2':'pt-BR'}} </td>
-      </ng-container>
-      <ng-container matColumnDef="addedQuantity">
-        <th mat-header-cell *matHeaderCellDef> Qtd. Adicionada </th>
-        <td mat-cell *matCellDef="let element"> {{element.addedQuantity | decimalFormat}} kg </td>
-      </ng-container>
-      <ng-container matColumnDef="totalQuantity">
-        <th mat-header-cell *matHeaderCellDef> Qtd. Total </th>
-        <td mat-cell *matCellDef="let element"> {{element.totalQuantity | decimalFormat}} kg </td>
-      </ng-container>
-      <ng-container matColumnDef="totalWater">
-        <th mat-header-cell *matHeaderCellDef> Água Total </th>
-        <td mat-cell *matCellDef="let element"> {{element.totalWater | decimalFormat}} L </td>
-      </ng-container>
-      <ng-container matColumnDef="totalCost">
-        <th mat-header-cell *matHeaderCellDef> Custo Total </th>
-        <td mat-cell *matCellDef="let element"> {{element.totalCost | currency:'BRL'}} </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="resourceUsagesColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: resourceUsagesColumns;"></tr>
-    </table>
-  </div>
+    <div class="table-section">
+        <h2>Uso de Recursos</h2>
+        <table mat-table [dataSource]="batch.resourceUsages" class="mat-elevation-z8">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Nome </th>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+            <ng-container matColumnDef="initialQuantity">
+                <th mat-header-cell *matHeaderCellDef> Qtd. Inicial </th>
+                <td mat-cell *matCellDef="let element"> {{element.initialQuantity | decimalFormat}} kg </td>
+            </ng-container>
+            <ng-container matColumnDef="umidity">
+                <th mat-header-cell *matHeaderCellDef> Umidade </th>
+                <td mat-cell *matCellDef="let element"> {{element.umidity | percent:'1.0-2':'pt-BR'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="addedQuantity">
+                <th mat-header-cell *matHeaderCellDef> Qtd. Adicionada </th>
+                <td mat-cell *matCellDef="let element"> {{element.addedQuantity | decimalFormat}} kg </td>
+            </ng-container>
+            <ng-container matColumnDef="totalQuantity">
+                <th mat-header-cell *matHeaderCellDef> Qtd. Total </th>
+                <td mat-cell *matCellDef="let element"> {{element.totalQuantity | decimalFormat}} kg </td>
+            </ng-container>
+            <ng-container matColumnDef="totalWater">
+                <th mat-header-cell *matHeaderCellDef> Água Total </th>
+                <td mat-cell *matCellDef="let element"> {{element.totalWater | decimalFormat}} L </td>
+            </ng-container>
+            <ng-container matColumnDef="totalCost">
+                <th mat-header-cell *matHeaderCellDef> Custo Total </th>
+                <td mat-cell *matCellDef="let element"> {{element.totalCost | currency:'BRL'}} </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="resourceUsagesColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: resourceUsagesColumns;"></tr>
+        </table>
+    </div>
 
-  <div class="table-section">
-    <h2>Uso de Máquinas</h2>
-    <table mat-table [dataSource]="batch.machineUsages" class="mat-elevation-z8">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef> Nome </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-      </ng-container>
-      <ng-container matColumnDef="usageTime">
-        <th mat-header-cell *matHeaderCellDef> Tempo de Uso </th>
-        <td mat-cell *matCellDef="let element"> {{element.usageTime | decimalFormat}} h </td>
-      </ng-container>
-      <ng-container matColumnDef="energyConsumption">
-        <th mat-header-cell *matHeaderCellDef> Consumo de Energia </th>
-        <td mat-cell *matCellDef="let element"> {{element.energyConsumption | decimalFormat}} kWh </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="machineUsagesColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: machineUsagesColumns;"></tr>
-    </table>
-  </div>
+    <div class="table-section">
+        <h2>Uso de Máquinas</h2>
+        <table mat-table [dataSource]="batch.machineUsages" class="mat-elevation-z8">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Nome </th>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+            <ng-container matColumnDef="usageTime">
+                <th mat-header-cell *matHeaderCellDef> Tempo de Uso </th>
+                <td mat-cell *matCellDef="let element"> {{element.usageTime | decimalFormat}} h </td>
+            </ng-container>
+            <ng-container matColumnDef="energyConsumption">
+                <th mat-header-cell *matHeaderCellDef> Consumo de Energia </th>
+                <td mat-cell *matCellDef="let element"> {{element.energyConsumption | decimalFormat}} kWh </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="machineUsagesColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: machineUsagesColumns;"></tr>
+        </table>
+    </div>
+
+    <div class="table-section">
+        <h2>Uso de Funcionários</h2>
+        <table mat-table [dataSource]="batch.employeeUsages" class="mat-elevation-z8">
+            <ng-container matColumnDef="employeeName">
+                <th mat-header-cell *matHeaderCellDef> Nome </th>
+                <td mat-cell *matCellDef="let element"> {{element.employeeName}} </td>
+            </ng-container>
+            <ng-container matColumnDef="usageTime">
+                <th mat-header-cell *matHeaderCellDef> Tempo de Trabalho </th>
+                <td mat-cell *matCellDef="let element"> {{element.usageTime}} </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="employeeUsagesColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: employeeUsagesColumns;"></tr>
+        </table>
+    </div>
 </div>
 
 <div mat-dialog-actions>
-  <button mat-button (click)="onClose()">Fechar</button>
+    <button mat-button (click)="onClose()">Fechar</button>
 </div>

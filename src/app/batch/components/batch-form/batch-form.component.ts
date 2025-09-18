@@ -1,20 +1,22 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { BatchService } from '../../services/batch.service';
-import { Batch } from '../../models/batch.model';
-import { Resource } from '../../../resource/models/resource.model';
-import { Machine } from '../../../machine/models/machine.model';
-import { ResourceService } from '../../../resource/services/resource.service';
-import { MachineService } from '../../../machine/services/machine.service';
+import { Employee } from '../../../employee/models/employee.model';
+import { EmployeeService } from '../../../employee/services/employee.service';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
+import { Resource } from '../../../resource/models/resource.model';
+import { Machine } from '../../../machine/models/machine.model';
+import { BatchService } from '../../services/batch.service';
+import { ResourceService } from '../../../resource/services/resource.service';
+import { MachineService } from '../../../machine/services/machine.service';
+import { Batch } from '../../models/batch.model';
 
 @Component({
   selector: 'app-batch-form',
@@ -29,6 +31,7 @@ export class BatchFormComponent implements OnInit {
   isEditMode = false;
   resources: Resource[] = [];
   machines: Machine[] = [];
+  employees: Employee[] = [];
 
   errorMessages: { [key: string]: string } = {
     'ELECTRICITY resource not found': 'Recurso ELETRICIDADE não encontrado. Por favor, cadastre-o primeiro.',
@@ -42,12 +45,14 @@ export class BatchFormComponent implements OnInit {
     private batchService: BatchService,
     private resourceService: ResourceService,
     private machineService: MachineService,
+    private employeeService: EmployeeService,
     public dialogRef: MatDialogRef<BatchFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { batch: Batch }
   ) {
     this.batchForm = this.fb.group({
       resourceUsages: this.fb.array([], [Validators.required, Validators.minLength(1)]),
-      machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
+      machineUsages: this.fb.array([], [Validators.required, Validators.minLength(1)]),
+      employeeUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
 
     if (data && data.batch) {
@@ -66,12 +71,19 @@ export class BatchFormComponent implements OnInit {
           usageTime: [usage.usageTime, Validators.required]
         }));
       });
+      data.batch.employeeUsages.forEach(usage => {
+        this.employeeUsages.push(this.fb.group({
+          employeeId: [usage.employeeId, Validators.required],
+          usageTime: [usage.usageTime, Validators.required]
+        }));
+      });
     }
   }
 
   ngOnInit(): void {
     this.loadResources();
     this.loadMachines();
+    this.loadEmployees();
   }
 
   loadResources(): void {
@@ -83,6 +95,12 @@ export class BatchFormComponent implements OnInit {
   loadMachines(): void {
     this.machineService.getMachines().subscribe(data => {
       this.machines = data;
+    });
+  }
+
+  loadEmployees(): void {
+    this.employeeService.getEmployees().subscribe(data => {
+      this.employees = data;
     });
   }
 
@@ -120,6 +138,22 @@ export class BatchFormComponent implements OnInit {
     this.machineUsages.removeAt(index);
   }
 
+  get employeeUsages(): FormArray {
+    return this.batchForm.get('employeeUsages') as FormArray;
+  }
+
+  addEmployeeUsage(): void {
+    const employeeUsageForm = this.fb.group({
+      employeeId: ['', Validators.required],
+      usageTime: ['', Validators.required]
+    });
+    this.employeeUsages.push(employeeUsageForm);
+  }
+
+  removeEmployeeUsage(index: number): void {
+    this.employeeUsages.removeAt(index);
+  }
+
   getAvailableResources(currentIndex: number): Resource[] {
     const selectedResourceIds = this.resourceUsages.controls
       .map((control, index) => index === currentIndex ? null : control.get('resourceId')?.value)
@@ -134,6 +168,13 @@ export class BatchFormComponent implements OnInit {
     return this.machines.filter(machine => !selectedMachineIds.includes(machine.id));
   }
 
+  getAvailableEmployees(currentIndex: number): Employee[] {
+    const selectedEmployeeIds = this.employeeUsages.controls
+      .map((control, index) => index === currentIndex ? null : control.get('employeeId')?.value)
+      .filter(id => id !== null);
+    return this.employees.filter(employee => !selectedEmployeeIds.includes(employee.id));
+  }
+
   onCancel(): void {
     this.dialogRef.close();
   }
@@ -145,7 +186,6 @@ export class BatchFormComponent implements OnInit {
 
     const formValue = this.batchForm.value;
 
-    // Convert comma-strings to numbers and adjust umidity
     const payload = {
       ...formValue,
       resourceUsages: formValue.resourceUsages.map((usage: any) => ({
@@ -155,6 +195,10 @@ export class BatchFormComponent implements OnInit {
         addedQuantity: parseFloat(String(usage.addedQuantity).replace(',', '.'))
       })),
       machineUsages: formValue.machineUsages.map((usage: any) => ({
+        ...usage,
+        usageTime: parseFloat(String(usage.usageTime).replace(',', '.'))
+      })),
+      employeeUsages: formValue.employeeUsages.map((usage: any) => ({
         ...usage,
         usageTime: parseFloat(String(usage.usageTime).replace(',', '.'))
       }))
