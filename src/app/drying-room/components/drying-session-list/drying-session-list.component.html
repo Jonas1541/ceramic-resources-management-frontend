@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Usos da Estufa</h1>
 
 <div mat-dialog-content>
-  <table mat-table [dataSource]="sessions" class="mat-elevation-z8">
+  <table mat-table [dataSource]="sessions" multiTemplateDataRows class="mat-elevation-z8">
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef> ID </th>
       <td mat-cell *matCellDef="let element"> {{element.id}} </td>
@@ -32,13 +32,37 @@
         <button mat-icon-button color="primary" (click)="openSessionForm(element)" title="Editar Uso">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="warn" (click)="deleteSession(element.id)" title="Excluir Uso">
+<button mat-icon-button (click)="deleteSession(element.id)" title="Excluir Uso">
           <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button (click)="toggleDetails(element)" [title]="expandedElement === element ? 'Esconder detalhes' : 'Ver funcionários'">
+          <mat-icon>{{expandedElement === element ? 'expand_less' : 'expand_more'}}</mat-icon>
         </button>
       </td>
     </ng-container>
+
+    <!-- Linha de Detalhes Expandida -->
+    <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+            <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                <div *ngIf="element.employeeUsages && element.employeeUsages.length > 0; else noEmployees">
+                    <h4>Funcionários na Sessão</h4>
+                    <ul>
+                        <li *ngFor="let usage of element.employeeUsages">{{usage.employeeName}} - {{usage.usageTime | decimalFormat}}h</li>
+                    </ul>
+                </div>
+                <ng-template #noEmployees>
+                    <p>Nenhum funcionário associado a esta sessão.</p>
+                </ng-template>
+            </div>
+        </td>
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;" 
+        class="element-row" 
+        [class.expanded-row]="expandedElement === element"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
   </table>
 </div>
 

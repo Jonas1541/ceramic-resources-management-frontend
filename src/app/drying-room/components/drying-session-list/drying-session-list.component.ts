@@ -10,18 +10,28 @@ import { DryingSessionFormComponent } from '../drying-session-form/drying-sessio
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
+import { trigger, state, style, transition, animate } from '@angular/animations';
+
 @Component({
   selector: 'app-drying-session-list',
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, MatIconModule, CurrencyPipe, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './drying-session-list.component.html',
-  styleUrls: ['./drying-session-list.component.scss']
+  styleUrls: ['./drying-session-list.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class DryingSessionListComponent implements OnInit {
 
   sessions: DryingSession[] = [];
   displayedColumns: string[] = ['id', 'hours', 'createdAt', 'updatedAt', 'costAtTime', 'actions'];
+  expandedElement: DryingSession | null = null;
 
   constructor(
     private dryingRoomService: DryingRoomService,
@@ -38,6 +48,10 @@ export class DryingSessionListComponent implements OnInit {
     this.dryingRoomService.getDryingSessions(this.data.dryingRoomId).subscribe(data => {
       this.sessions = data;
     });
+  }
+
+  toggleDetails(element: DryingSession): void {
+    this.expandedElement = this.expandedElement === element ? null : element;
   }
 
   openSessionForm(session?: DryingSession): void {
