@@ -1,5 +1,6 @@
 export interface BisqueFiringEmployeeUsage {
     employeeId: string,
     employeeName: string,
-    usageTime: number
+    usageTime: number,
+    employeeCost: number;
 }

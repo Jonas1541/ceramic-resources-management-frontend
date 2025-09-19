@@ -6,5 +6,6 @@ export interface DryingSession {
   createdAt: Date;
   updatedAt: Date;
   employeeUsages: DryingSessionEmployeeUsage[];
+  employeeTotalCost: number;
   costAtTime: number;
 }

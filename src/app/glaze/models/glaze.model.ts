@@ -10,6 +10,7 @@ export interface Glaze {
     resourceUsages: GlazeResourceUsage[];
     machineUsages: GlazeMachineUsage[];
     employeeUsages: GlazeEmployeeUsage[];
+    employeeTotalCost: number;
     unitCost: number;
     currentQuantity: number;
     currentQuantityPrice: number;

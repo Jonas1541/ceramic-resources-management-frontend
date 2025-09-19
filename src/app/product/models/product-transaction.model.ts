@@ -1,3 +1,5 @@
+import { ProductTransactionEmployeeUsage } from "./product-transaction-employee-usage.model";
+
 export interface ProductTransaction {
     id: string;
     createdAt: string;
@@ -8,6 +10,8 @@ export interface ProductTransaction {
     productName: string;
     glazeColor: string;
     glazeQuantity: number;
+    employeeUsages: ProductTransactionEmployeeUsage[];
+    employeeTotalCost: number;
     cost: number;
     profit: number;
     bisqueFiringId: number | null;

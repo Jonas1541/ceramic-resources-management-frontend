@@ -9,6 +9,7 @@ export interface BisqueFiring {
     coolingTime: number;
     biscuits: any[];
     employeeUsages: BisqueFiringEmployeeUsage[];
+    employeeTotalCost: number;
     gasConsumption: number;
     cost: number;
     createdAt: Date;

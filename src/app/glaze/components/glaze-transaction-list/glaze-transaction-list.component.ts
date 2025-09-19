@@ -22,7 +22,7 @@ import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 export class GlazeTransactionListComponent implements OnInit {
 
   transactions: GlazeTransaction[] = [];
-  displayedColumns: string[] = ['id', 'type', 'quantity', 'glazeColor', 'resourceTotalCostAtTime', 'machineEnergyConsumptionCostAtTime', 'glazeFinalCostAtTime', 'createdAt', 'actions'];
+  displayedColumns: string[] = ['id', 'type', 'quantity', 'glazeColor', 'resourceTotalCostAtTime', 'machineEnergyConsumptionCostAtTime', 'employeeTotalCostAtTime', 'glazeFinalCostAtTime', 'createdAt', 'actions'];
 
   constructor(
     private glazeService: GlazeService,

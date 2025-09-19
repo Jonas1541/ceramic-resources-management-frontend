@@ -19,6 +19,8 @@ import { TranslateOutgoingReasonPipe } from '../../../shared/pipes/translate-out
 import { ProductTransactionBulkCancelFormComponent } from '../product-transaction-bulk-cancel-form/product-transaction-bulk-cancel-form.component';
 import { ProductTransactionBulkOutgoingFormComponent } from '../product-transaction-bulk-outgoing-form/product-transaction-bulk-outgoing-form.component';
 
+import { ProductTransactionDetailsComponent } from '../product-transaction-details/product-transaction-details.component';
+
 @Component({
   selector: 'app-product-transaction-list',
   standalone: true,
@@ -30,7 +32,7 @@ import { ProductTransactionBulkOutgoingFormComponent } from '../product-transact
 export class ProductTransactionListComponent implements OnInit {
 
   transactions: ProductTransaction[] = [];
-  displayedColumns: string[] = ['id', 'productName', 'state', 'glazeColor', 'glazeQuantity', 'cost', 'profit', 'createdAt', 'outgoingAt', 'outgoingReason', 'actions'];
+  displayedColumns: string[] = ['id', 'productName', 'state', 'cost', 'createdAt', 'actions'];
 
   constructor(
     private productService: ProductService,
@@ -46,6 +48,13 @@ export class ProductTransactionListComponent implements OnInit {
   loadTransactions(): void {
     this.productService.getProductTransactions(this.data.productId).subscribe(data => {
       this.transactions = data;
+    });
+  }
+
+  openTransactionDetails(transactionId: string): void {
+    this.dialog.open(ProductTransactionDetailsComponent, {
+      width: '600px',
+      data: { productId: this.data.productId, transactionId: transactionId }
     });
   }
 

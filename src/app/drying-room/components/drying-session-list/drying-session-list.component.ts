@@ -30,7 +30,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 export class DryingSessionListComponent implements OnInit {
 
   sessions: DryingSession[] = [];
-  displayedColumns: string[] = ['id', 'hours', 'createdAt', 'updatedAt', 'costAtTime', 'actions'];
+  displayedColumns: string[] = ['id', 'hours', 'createdAt', 'updatedAt', 'employeeTotalCost', 'costAtTime', 'actions'];
   expandedElement: DryingSession | null = null;
 
   constructor(

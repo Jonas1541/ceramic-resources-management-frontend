@@ -21,7 +21,7 @@ export class BatchDetailsComponent implements OnInit {
   batch: Batch | null = null;
   resourceUsagesColumns: string[] = ['name', 'initialQuantity', 'umidity', 'addedQuantity', 'totalQuantity', 'totalWater', 'totalCost'];
   machineUsagesColumns: string[] = ['name', 'usageTime', 'energyConsumption'];
-  employeeUsagesColumns: string[] = ['employeeName', 'usageTime']
+  employeeUsagesColumns: string[] = ['employeeName', 'usageTime', 'employeeCost']
 
   constructor(
     private batchService: BatchService,

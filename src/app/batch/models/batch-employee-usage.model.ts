@@ -1,5 +1,6 @@
 export interface BatchEmployeeUsage {
     employeeId: string,
     employeeName: string,
-    usageTime: number
+    usageTime: number,
+    employeeCost: number;
 }

@@ -8,6 +8,7 @@ import { YearReport } from '../../report/models/year-report.model';
 import { environment } from '../../../environments/environment';
 
 import { HttpParams } from '@angular/common/http';
+import { ProductTransactionEmployeeUsage } from '../models/product-transaction-employee-usage.model';
 
 @Injectable({
   providedIn: 'root'
@@ -54,9 +55,9 @@ export class ProductService {
     return this.http.get<ProductTransaction>(`${this.apiUrl}/${productId}/transactions/${transactionId}`);
   }
 
-  createProductTransaction(productId: string, quantity: number): Observable<ProductTransaction[]> {
+  createProductTransaction(productId: string, quantity: number, payload: any): Observable<ProductTransaction[]> {
     const params = new HttpParams().set('quantity', quantity.toString());
-    return this.http.post<ProductTransaction[]>(`${this.apiUrl}/${productId}/transactions`, {}, { params });
+    return this.http.post<ProductTransaction[]>(`${this.apiUrl}/${productId}/transactions`, payload, { params });
   }
 
   deleteProductTransaction(productId: string, transactionId: string): Observable<void> {

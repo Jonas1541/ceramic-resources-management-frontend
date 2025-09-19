@@ -8,5 +8,6 @@ export interface GlazeTransaction {
     productTxId: number | null;
     resourceTotalCostAtTime: number;
     machineEnergyConsumptionCostAtTime: number;
+    employeeTotalCostAtTime: number;
     glazeFinalCostAtTime: number;
 }

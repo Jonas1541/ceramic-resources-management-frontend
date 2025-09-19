@@ -17,6 +17,7 @@ export interface GlazeFiring {
     coolingTime: number;
     glosts: any[];
     employeeUsages: GlazeFiringEmployeeUsage[];
+    employeeTotalCost: number;
     gasConsumption: number;
     cost: number;
     createdAt: Date;

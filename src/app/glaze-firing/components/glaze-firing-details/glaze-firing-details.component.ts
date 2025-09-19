@@ -20,7 +20,7 @@ export class GlazeFiringDetailsComponent implements OnInit {
 
   glazeFiring: GlazeFiring | null = null;
   glostsColumns: string[] = ['productName', 'glazeColor', 'quantity']; // Colunas para exibir os produtos glasurados
-  employeeUsagesColumns: string[] = ['employeeName', 'usageTime'];
+  employeeUsagesColumns: string[] = ['employeeName', 'usageTime', 'employeeCost'];
 
   constructor(
     private glazeFiringService: GlazeFiringService,
