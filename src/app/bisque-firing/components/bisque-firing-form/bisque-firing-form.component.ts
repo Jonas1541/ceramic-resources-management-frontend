@@ -1,24 +1,27 @@
 
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { BisqueFiringService } from '../../services/bisque-firing.service';
-import { BisqueFiring } from '../../models/bisque-firing.model';
-import { ProductTransaction } from '../../../product/models/product-transaction.model';
-import { ProductService } from '../../../product/services/product.service';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { Employee } from '../../../employee/models/employee.model';
+import { EmployeeService } from '../../../employee/services/employee.service';
+import { ProductTransaction } from '../../../product/models/product-transaction.model';
+import { ProductService } from '../../../product/services/product.service';
 import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
+import { BisqueFiring } from '../../models/bisque-firing.model';
+import { BisqueFiringService } from '../../services/bisque-firing.service';
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
   selector: 'app-bisque-firing-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatExpansionModule, MatCheckboxModule, DecimalMaskDirective],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatExpansionModule, MatCheckboxModule, DecimalMaskDirective, MatIconModule],
   templateUrl: './bisque-firing-form.component.html',
   styleUrls: ['./bisque-firing-form.component.scss']
 })
@@ -28,11 +31,13 @@ export class BisqueFiringFormComponent implements OnInit {
   isEditMode = false;
   groupedProducts = new Map<string, ProductTransaction[]>();
   productTransactions: ProductTransaction[] = [];
+  employees: Employee[] = [];
 
   constructor(
     private fb: FormBuilder,
     private bisqueFiringService: BisqueFiringService,
     private productService: ProductService,
+    private employeeService: EmployeeService,
     public dialogRef: MatDialogRef<BisqueFiringFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { bisqueFiring?: BisqueFiring, kilnId: string }
   ) {
@@ -41,11 +46,13 @@ export class BisqueFiringFormComponent implements OnInit {
       temperature: [this.data.bisqueFiring?.temperature || '', [Validators.required, Validators.min(0)]],
       burnTime: [this.data.bisqueFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
       coolingTime: [this.data.bisqueFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
-      biscuits: [[] as string[], [Validators.required, Validators.minLength(1)]]
+      biscuits: [[] as string[], [Validators.required, Validators.minLength(1)]],
+      employeeUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
   }
 
   ngOnInit(): void {
+    this.loadEmployees();
     this.productService.getProductTransactions('1', 'GREENWARE').subscribe(greenwareProducts => {
       this.productTransactions = greenwareProducts;
 
@@ -63,10 +70,23 @@ export class BisqueFiringFormComponent implements OnInit {
         
         this.groupProducts(this.productTransactions);
         this.biscuitControl.setValue(this.data.bisqueFiring.biscuits.map(b => b.id));
+
+        this.data.bisqueFiring.employeeUsages.forEach(usage => {
+            this.employeeUsages.push(this.fb.group({
+                employeeId: [usage.employeeId, Validators.required],
+                usageTime: [usage.usageTime, Validators.required]
+            }));
+        });
       }
       else {
         this.groupProducts(this.productTransactions);
       }
+    });
+  }
+
+  loadEmployees(): void {
+    this.employeeService.getEmployees().subscribe(data => {
+      this.employees = data;
     });
   }
 
@@ -83,6 +103,29 @@ export class BisqueFiringFormComponent implements OnInit {
 
   get biscuitControl(): FormControl {
     return this.bisqueFiringForm.get('biscuits') as FormControl;
+  }
+
+  get employeeUsages(): FormArray {
+    return this.bisqueFiringForm.get('employeeUsages') as FormArray;
+  }
+
+  addEmployeeUsage(): void {
+    const employeeUsageForm = this.fb.group({
+      employeeId: ['', Validators.required],
+      usageTime: ['', Validators.required]
+    });
+    this.employeeUsages.push(employeeUsageForm);
+  }
+
+  removeEmployeeUsage(index: number): void {
+    this.employeeUsages.removeAt(index);
+  }
+
+  getAvailableEmployees(currentIndex: number): Employee[] {
+    const selectedEmployeeIds = this.employeeUsages.controls
+      .map((control, index) => index === currentIndex ? null : control.get('employeeId')?.value)
+      .filter(id => id !== null);
+    return this.employees.filter(employee => !selectedEmployeeIds.includes(employee.id));
   }
 
   isAllSelected(productGroup: ProductTransaction[]): boolean {
@@ -129,6 +172,11 @@ export class BisqueFiringFormComponent implements OnInit {
     if (typeof formData.temperature === 'string') formData.temperature = parseFloat(formData.temperature.replace(',', '.'));
     if (typeof formData.burnTime === 'string') formData.burnTime = parseFloat(formData.burnTime.replace(',', '.'));
     if (typeof formData.coolingTime === 'string') formData.coolingTime = parseFloat(formData.coolingTime.replace(',', '.'));
+
+    formData.employeeUsages = formData.employeeUsages.map((usage: any) => ({
+        ...usage,
+        usageTime: parseFloat(String(usage.usageTime).replace(',', '.'))
+    }));
 
     const operation = this.isEditMode
       ? this.bisqueFiringService.updateBisqueFiring(this.data.kilnId, this.data.bisqueFiring!.id, formData)

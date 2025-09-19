@@ -20,6 +20,7 @@ export class BisqueFiringDetailsComponent implements OnInit {
 
   bisqueFiring: BisqueFiring | null = null;
   biscuitsColumns: string[] = ['product']; // Colunas para exibir os produtos
+  employeeUsagesColumns: string[] = ['employeeName', 'usageTime'];
 
   constructor(
     private bisqueFiringService: BisqueFiringService,
