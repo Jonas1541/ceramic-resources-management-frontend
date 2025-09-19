@@ -1,26 +1,29 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { GlazeFiringService } from '../../services/glaze-firing.service';
-import { GlazeFiring } from '../../models/glaze-firing.model';
-import { ProductTransaction } from '../../../product/models/product-transaction.model';
-import { ProductService } from '../../../product/services/product.service';
-import { Glaze } from '../../../glaze/models/glaze.model';
-import { GlazeService } from '../../../glaze/services/glaze.service';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
 import { forkJoin } from 'rxjs';
+import { Employee } from '../../../employee/models/employee.model';
+import { EmployeeService } from '../../../employee/services/employee.service';
+import { Glaze } from '../../../glaze/models/glaze.model';
+import { GlazeService } from '../../../glaze/services/glaze.service';
+import { ProductTransaction } from '../../../product/models/product-transaction.model';
+import { ProductService } from '../../../product/services/product.service';
+import { DecimalMaskDirective } from '../../../shared/directives/decimal-mask.directive';
+import { GlazeFiring } from '../../models/glaze-firing.model';
+import { GlazeFiringService } from '../../services/glaze-firing.service';
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
     selector: 'app-glaze-firing-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatExpansionModule, MatCheckboxModule, DecimalMaskDirective],
+    imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatExpansionModule, MatCheckboxModule, DecimalMaskDirective, MatIconModule],
     templateUrl: './glaze-firing-form.component.html',
     styleUrls: ['./glaze-firing-form.component.scss']
 })
@@ -31,6 +34,7 @@ export class GlazeFiringFormComponent implements OnInit {
     groupedProducts = new Map<string, ProductTransaction[]>();
     glazes: Glaze[] = [];
     productTransactions: ProductTransaction[] = [];
+    employees: Employee[] = [];
     glazeAssignments = new Map<string, string>(); // transactionId -> glazeId
 
     constructor(
@@ -38,6 +42,7 @@ export class GlazeFiringFormComponent implements OnInit {
         private glazeFiringService: GlazeFiringService,
         private productService: ProductService,
         private glazeService: GlazeService,
+        private employeeService: EmployeeService,
         public dialogRef: MatDialogRef<GlazeFiringFormComponent>,
         @Inject(MAT_DIALOG_DATA) public data: { glazeFiring?: GlazeFiring, kilnId: string }
     ) {
@@ -46,11 +51,13 @@ export class GlazeFiringFormComponent implements OnInit {
             temperature: [this.data.glazeFiring?.temperature || '', [Validators.required, Validators.min(0)]],
             burnTime: [this.data.glazeFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
             coolingTime: [this.data.glazeFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
-            productTransactionIds: [[] as string[], [Validators.required, Validators.minLength(1)]]
+            productTransactionIds: [[] as string[], [Validators.required, Validators.minLength(1)]],
+            employeeUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
         });
     }
 
     ngOnInit(): void {
+        this.loadEmployees();
         forkJoin({
             biscuitProducts: this.productService.getProductTransactions('1', 'BISCUIT'),
             glazes: this.glazeService.getGlazes()
@@ -76,6 +83,12 @@ export class GlazeFiringFormComponent implements OnInit {
         });
     }
 
+    loadEmployees(): void {
+        this.employeeService.getEmployees().subscribe(data => {
+            this.employees = data;
+        });
+    }
+
     private populateFormForEdit(): void {
         if (!this.data.glazeFiring) return;
         this.glazeFiringForm.patchValue({
@@ -87,6 +100,13 @@ export class GlazeFiringFormComponent implements OnInit {
 
         this.data.glazeFiring.glosts.forEach(glost => {
             this.glazeAssignments.set(glost.productTxId, glost.glazeId);
+        });
+
+        this.data.glazeFiring.employeeUsages.forEach(usage => {
+            this.employeeUsages.push(this.fb.group({
+                employeeId: [usage.employeeId, Validators.required],
+                usageTime: [usage.usageTime, Validators.required]
+            }));
         });
     }
 
@@ -109,6 +129,29 @@ export class GlazeFiringFormComponent implements OnInit {
 
     get productIdsControl(): FormControl {
         return this.glazeFiringForm.get('productTransactionIds') as FormControl;
+    }
+
+    get employeeUsages(): FormArray {
+        return this.glazeFiringForm.get('employeeUsages') as FormArray;
+    }
+
+    addEmployeeUsage(): void {
+        const employeeUsageForm = this.fb.group({
+            employeeId: ['', Validators.required],
+            usageTime: ['', Validators.required]
+        });
+        this.employeeUsages.push(employeeUsageForm);
+    }
+
+    removeEmployeeUsage(index: number): void {
+        this.employeeUsages.removeAt(index);
+    }
+
+    getAvailableEmployees(currentIndex: number): Employee[] {
+        const selectedEmployeeIds = this.employeeUsages.controls
+            .map((control, index) => index === currentIndex ? null : control.get('employeeId')?.value)
+            .filter(id => id !== null);
+        return this.employees.filter(employee => !selectedEmployeeIds.includes(employee.id));
     }
 
     isAllSelected(productGroup: ProductTransaction[]): boolean {
@@ -170,7 +213,11 @@ export class GlazeFiringFormComponent implements OnInit {
             temperature: parseFloat(String(formValue.temperature).replace(',', '.')),
             burnTime: parseFloat(String(formValue.burnTime).replace(',', '.')),
             coolingTime: parseFloat(String(formValue.coolingTime).replace(',', '.')),
-            glosts: glostsPayload
+            glosts: glostsPayload,
+            employeeUsages: formValue.employeeUsages.map((usage: any) => ({
+                ...usage,
+                usageTime: parseFloat(String(usage.usageTime).replace(',', '.'))
+            }))
         };
 
         const operation = this.isEditMode

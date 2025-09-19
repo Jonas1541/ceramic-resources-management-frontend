@@ -15,10 +15,22 @@ mat-form-field {
   color: rgba(0, 0, 0, 0.87);
 }
 
-.group-content {
-  padding-top: 16px;
+.form-array-item-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
+.form-array-item {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.group-content {
+    padding-top: 16px;
+}
 .glaze-selector {
   width: 100%;
   margin-bottom: 16px;

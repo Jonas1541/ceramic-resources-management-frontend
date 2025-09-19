@@ -1,4 +1,5 @@
 import { Kiln } from "../../kiln/models/kiln.model";
+import { GlazeFiringEmployeeUsage } from "./glaze-firing-employee-usage.model";
 
 export interface Glost {
     productId: string;
@@ -15,6 +16,7 @@ export interface GlazeFiring {
     burnTime: number;
     coolingTime: number;
     glosts: any[];
+    employeeUsages: GlazeFiringEmployeeUsage[];
     gasConsumption: number;
     cost: number;
     createdAt: Date;
