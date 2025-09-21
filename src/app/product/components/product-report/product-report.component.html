@@ -19,6 +19,10 @@
           <td>{{ selectedReport.totalIncomingQty }} unidades</td>
         </tr>
         <tr>
+          <td>Custo Total:</td>
+          <td>{{ selectedReport.totalIncomingCost | currency:'BRL' }}</td>
+        </tr>
+        <tr>
           <td>Saídas Totais:</td>
           <td>{{ selectedReport.totalOutgoingQty }} unidades</td>
         </tr>

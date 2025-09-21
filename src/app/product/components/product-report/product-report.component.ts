@@ -109,6 +109,15 @@ export class ProductReportComponent implements OnInit {
         },
         {
           type: 'line',
+          label: 'Custo',
+          data: report.months.map(m => m.incomingCost),
+          borderColor: '#E53935',
+          backgroundColor: 'rgba(229, 57, 53, 0.3)',
+          yAxisID: 'y1',
+          tension: 0.2
+        },
+        {
+          type: 'line',
           label: 'Faturamento',
           data: report.months.map(m => m.outgoingProfit),
           borderColor: '#FB8C00',
