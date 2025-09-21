@@ -12,7 +12,11 @@ export interface ProductTransaction {
     glazeQuantity: number;
     employeeUsages: ProductTransactionEmployeeUsage[];
     employeeTotalCost: number;
-    cost: number;
+    batchCost: number;
+    bisqueFiringCost: number;
+    glazeFiringCost: number;
+    glazeTransactionCost: number;
+    totalCost: number;
     profit: number;
     bisqueFiringId: number | null;
     glazeFiringId: number | null;

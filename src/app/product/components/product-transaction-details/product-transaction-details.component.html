@@ -27,7 +27,11 @@
     <h2>Financeiro</h2>
     <p><strong>Faturamento:</strong> {{ transaction.profit | currency:'BRL' }}</p>
     <p><strong>Custo de Funcionários:</strong> {{ transaction.employeeTotalCost | currency:'BRL' }}</p>
-    <p><strong>Custo Total:</strong> {{ transaction.cost | currency:'BRL' }}</p>
+    <p><strong>Custo de Batelada:</strong> {{ transaction.batchCost | currency:'BRL' }}</p>
+    <p><strong>Custo da Queima de Biscoito:</strong> {{ transaction.bisqueFiringCost | currency:'BRL' }}</p>
+    <p><strong>Custo da Queima de Glasura:</strong> {{ transaction.glazeFiringCost | currency:'BRL' }}</p>
+    <p><strong>Custo da Glasura aplicada no Produto:</strong> {{ transaction.glazeTransactionCost | currency:'BRL' }}</p>
+    <p><strong>Custo Total:</strong> {{ transaction.totalCost | currency:'BRL' }}</p>
   </div>
 
   <div class="info-section" *ngIf="transaction.bisqueFiringId || transaction.glazeFiringId">
