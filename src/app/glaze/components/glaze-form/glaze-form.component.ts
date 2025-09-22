@@ -81,7 +81,7 @@ export class GlazeFormComponent implements OnInit {
 
   loadResources(): void {
     this.resourceService.getResources().subscribe(data => {
-      this.resources = data;
+      this.resources = data.filter(r => r.category === 'COMPONENT');
     });
   }
 
