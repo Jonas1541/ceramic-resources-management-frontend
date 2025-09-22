@@ -6,6 +6,12 @@
   </div>
 
   <h2>Recursos Básicos</h2>
+  <div *ngIf="missingBasicResources.length > 0" class="legend">
+    <p><strong>Atenção:</strong> Para o correto funcionamento do sistema, é necessário cadastrar os seguintes recursos básicos:</p>
+    <ul>
+      <li *ngFor="let resource of missingBasicResources">{{ resource }}</li>
+    </ul>
+  </div>
   <table mat-table [dataSource]="basicResources" class="mat-elevation-z8 resource-table">
 
     <!-- Colunas de Dados -->

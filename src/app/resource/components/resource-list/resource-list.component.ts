@@ -30,6 +30,7 @@ export class ResourceListComponent implements OnInit {
   ceramicDisplayedColumns: string[] = ['name', 'category', 'unitValue', 'currentQuantity', 'currentQuantityPrice', 'actions'];
   basicResources: Resource[] = [];
   ceramicResources: Resource[] = [];
+  missingBasicResources: string[] = [];
 
   constructor(
     private resourceService: ResourceService,
@@ -56,7 +57,24 @@ export class ResourceListComponent implements OnInit {
           if (a.name > b.name) return 1;
           return 0;
         });
+
+      this.checkMissingBasicResources();
     });
+  }
+
+  checkMissingBasicResources(): void {
+    const basicCategories = ['ELECTRICITY', 'WATER', 'GAS'];
+    const existingCategories = this.basicResources.map(r => r.category);
+    this.missingBasicResources = basicCategories
+      .filter(c => !existingCategories.includes(c))
+      .map(c => {
+        switch (c) {
+          case 'ELECTRICITY': return 'Eletricidade';
+          case 'WATER': return 'Água';
+          case 'GAS': return 'Gás';
+          default: return '';
+        }
+      });
   }
 
   openResourceForm(resource?: Resource): void {
