@@ -37,6 +37,7 @@
         <mat-form-field appearance="fill" class="glaze-selector">
           <mat-label>Aplicar Glasura para TODO o Grupo</mat-label>
           <mat-select (selectionChange)="setGlazeForAllInGroup(group.value, $event.value)">
+            <mat-option *ngIf="glazes.length === 0" disabled>Não há glasuras cadastradas.</mat-option>
             <mat-option *ngFor="let glaze of glazes" [value]="glaze.id">{{ glaze.color }}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -52,6 +53,7 @@
             <mat-label>Glasura</mat-label>
             <mat-select [value]="glazeAssignments.get(transaction.id)" 
                         (selectionChange)="glazeAssignments.set(transaction.id, $event.value)">
+              <mat-option *ngIf="glazes.length === 0" disabled>Não há glasuras cadastradas.</mat-option>
               <mat-option *ngFor="let glaze of glazes" [value]="glaze.id">{{ glaze.color }}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -59,6 +61,7 @@
       </div>
 
     </mat-expansion-panel>
+    <mat-option *ngIf="productTransactions.length === 0" disabled>Não há produtos disponíveis para queima.</mat-option>
   </mat-accordion>
   <mat-error *ngIf="productIdsControl.hasError('required') && productIdsControl.touched">
     Pelo menos um produto deve ser selecionado.
@@ -74,8 +77,8 @@
         </button>
         <mat-form-field appearance="fill">
           <mat-label>Funcionário</mat-label>
-          <mat-select formControlName="employeeId" required>
-            <mat-option *ngIf="getAvailableEmployees(i).length === 0" disabled>Não há mais funcionários para selecionar</mat-option>
+<mat-select formControlName="employeeId" required>
+            <mat-option *ngIf="employees.length === 0" disabled>Não há funcionários cadastrados.</mat-option>
             <mat-option *ngFor="let employee of getAvailableEmployees(i)" [value]="employee.id">{{ employee.name }}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -86,7 +89,12 @@
       </div>
     </div>
   </div>
-  <button mat-stroked-button color="primary" (click)="addEmployeeUsage()">Adicionar Funcionário</button>
+  <ng-container *ngIf="employeeUsages.length < employees.length; else noMoreEmployees">
+    <button mat-stroked-button color="primary" (click)="addEmployeeUsage()">Adicionar Funcionário</button>
+  </ng-container>
+  <ng-template #noMoreEmployees>
+    <p class="info-message">Todos os funcionários já foram adicionados.</p>
+  </ng-template>
 
 </div>
 

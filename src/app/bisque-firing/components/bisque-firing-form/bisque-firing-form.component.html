@@ -40,6 +40,7 @@
       </div>
 
     </mat-expansion-panel>
+    <mat-option *ngIf="productTransactions.length === 0" disabled>Não há produtos disponíveis para queima.</mat-option>
   </mat-accordion>
   <mat-error *ngIf="biscuitControl.hasError('required') && biscuitControl.touched">
     Pelo menos um produto deve ser selecionado.
@@ -56,19 +57,22 @@
         <mat-form-field appearance="fill">
           <mat-label>Funcionário</mat-label>
           <mat-select formControlName="employeeId" required>
-            <mat-option *ngIf="getAvailableEmployees(i).length === 0" disabled>Não há mais funcionários para selecionar</mat-option>
-            <mat-option *ngFor="let employee of getAvailableEmployees(i)" [value]="employee.id">{{ employee.name }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Tempo de Uso (horas)</mat-label>
-          <input matInput type="text" formControlName="usageTime" appDecimalMask required>
-        </mat-form-field>
-      </div>
-    </div>
-  </div>
-  <button mat-stroked-button color="primary" (click)="addEmployeeUsage()">Adicionar Funcionário</button>
-
+                      <mat-option *ngIf="employees.length === 0" disabled>Não há funcionários cadastrados.</mat-option>
+                      <mat-option *ngFor="let employee of getAvailableEmployees(i)" [value]="employee.id">{{ employee.name }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="fill">
+                    <mat-label>Tempo de Uso (horas)</mat-label>
+                    <input matInput type="text" formControlName="usageTime" appDecimalMask required>
+                  </mat-form-field>                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="employeeUsages.length < employees.length; else noMoreEmployees">
+              <button mat-stroked-button color="primary" (click)="addEmployeeUsage()">Adicionar Funcionário</button>
+            </ng-container>
+            <ng-template #noMoreEmployees>
+              <p class="info-message">Todos os funcionários já foram adicionados.</p>
+            </ng-template>
 </div>
 
 <div mat-dialog-actions>
