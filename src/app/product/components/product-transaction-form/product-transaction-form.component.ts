@@ -89,7 +89,13 @@ export class ProductTransactionFormComponent implements OnInit {
 
     this.productService.createProductTransaction(this.data.productId, formValue.quantity, payload).subscribe({
       next: () => this.dialogRef.close(true),
-      error: (err: any) => alert(err.error.message || 'Ocorreu um erro ao criar a transação.')
+      error: (err: any) => {
+        if (err.status === 409) {
+          alert(err.error.message);
+        } else {
+          alert('Ocorreu um erro ao criar a transação.');
+        }
+      }
     });
   }
 }

@@ -88,9 +88,9 @@ export class BatchListComponent implements OnInit {
         next: () => this.loadBatches(),
         error: (err) => {
           if (err.status === 409) {
-            alert('Não é possível deletar esta batelada pois ela possui transações associadas.');
-          } else {
             alert(err.error.message);
+          } else {
+            alert('Ocorreu um erro ao deletar a batelada.');
           }
         }
       });
