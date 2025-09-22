@@ -6,51 +6,51 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
+import { TranslateOutgoingReasonPipe } from '../../../shared/pipes/translate-outgoing-reason.pipe';
 
 @Component({
   selector: 'app-product-transaction-outgoing-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatSelectModule, MatOptionModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatButtonModule, MatSelectModule, TranslateOutgoingReasonPipe],
   templateUrl: './product-transaction-outgoing-form.component.html',
-  styleUrls: ['./product-transaction-outgoing-form.component.scss']
 })
 export class ProductTransactionOutgoingFormComponent implements OnInit {
 
-  outgoingForm: FormGroup;
-  outgoingReasons = ['SOLD', 'DEFECT_DISPOSAL'];
-  reasonTranslations: { [key: string]: string } = {
-    'SOLD': 'Venda',
-    'DEFECT_DISPOSAL': 'Descarte por Defeito'
-  };
+  form: FormGroup;
+  outgoingReasons: string[] = [];
+  private allReasons = ['SOLD', 'DEFECT_DISPOSAL'];
 
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
     public dialogRef: MatDialogRef<ProductTransactionOutgoingFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { productId: string, transactionId: string }
+    @Inject(MAT_DIALOG_DATA) public data: { productId: string, transactionId: string, state: string }
   ) {
-    this.outgoingForm = this.fb.group({
+    this.form = this.fb.group({
       outgoingReason: ['', Validators.required]
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    if (this.data.state === 'GREENWARE') {
+      this.outgoingReasons = ['DEFECT_DISPOSAL'];
+    } else {
+      this.outgoingReasons = this.allReasons;
+    }
+  }
 
   onCancel(): void {
     this.dialogRef.close();
   }
 
   onSubmit(): void {
-    if (this.outgoingForm.invalid) {
+    if (this.form.invalid) {
       return;
     }
 
-    const outgoingReason = this.outgoingForm.value.outgoingReason;
-
-    this.productService.outgoingProductTransaction(this.data.productId, this.data.transactionId, outgoingReason).subscribe({
-      next: () => this.dialogRef.close(true),
-      error: (err) => alert(err.error.message || 'Ocorreu um erro ao registrar a saída.')
+    const { outgoingReason } = this.form.value;
+    this.productService.outgoingProductTransaction(this.data.productId, this.data.transactionId, outgoingReason).subscribe(() => {
+      this.dialogRef.close(true);
     });
   }
 }

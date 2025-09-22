@@ -59,9 +59,16 @@ export class ProductTransactionListComponent implements OnInit {
   }
 
   outgoingTransaction(transactionId: string): void {
+    const transaction = this.transactions.find(t => t.id === transactionId);
+    if (!transaction) return;
+
     const dialogRef = this.dialog.open(ProductTransactionOutgoingFormComponent, {
       width: '400px',
-      data: { productId: this.data.productId, transactionId: transactionId }
+      data: { 
+        productId: this.data.productId, 
+        transactionId: transactionId,
+        state: transaction.state
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {

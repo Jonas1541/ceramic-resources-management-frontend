@@ -1,11 +1,11 @@
 <h1 mat-dialog-title>Registrar Saída de Produto</h1>
 
-<div mat-dialog-content [formGroup]="outgoingForm">
+<div mat-dialog-content [formGroup]="form">
   <mat-form-field appearance="fill">
     <mat-label>Motivo da Saída</mat-label>
-    <mat-select formControlName="outgoingReason" required>
+    <mat-select formControlName="outgoingReason">
       <mat-option *ngFor="let reason of outgoingReasons" [value]="reason">
-        {{ reasonTranslations[reason] }}
+        {{ reason | translateOutgoingReason }}
       </mat-option>
     </mat-select>
   </mat-form-field>
@@ -13,5 +13,5 @@
 
 <div mat-dialog-actions>
   <button mat-button (click)="onCancel()">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="outgoingForm.invalid">Salvar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">Salvar</button>
 </div>
