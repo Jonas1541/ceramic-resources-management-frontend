@@ -19,52 +19,51 @@
 
   <h2 class="section-title">Produtos e Glasuras</h2>
 
-  <mat-accordion multi>
-    <mat-expansion-panel *ngFor="let group of groupedProducts | keyvalue: asIsOrder">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <mat-checkbox 
-            [checked]="isAllSelected(group.value)" 
-            [indeterminate]="isSomeSelected(group.value)"
-            (change)="toggleAllForGroup(group.value, $event)"
-            (click)="$event.stopPropagation()">
-          </mat-checkbox>
-          {{ group.key }} ({{ group.value.length }} unidades)
-        </mat-panel-title>
-      </mat-expansion-panel-header>
+  <div formArrayName="productGroups">
+    <mat-accordion multi>
+      <mat-expansion-panel *ngFor="let group of productGroups.controls; let i = index" [formGroupName]="i">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ group.get('productName')?.value }} ({{ getAvailableForProduct(i) }} unidades disponíveis)
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
-      <div class="group-content">
-        <mat-form-field appearance="fill" class="glaze-selector">
-          <mat-label>Aplicar Glasura para TODO o Grupo</mat-label>
-          <mat-select (selectionChange)="setGlazeForAllInGroup(group.value, $event.value)">
-            <mat-option *ngIf="glazes.length === 0" disabled>Não há glasuras cadastradas.</mat-option>
-            <mat-option *ngFor="let glaze of glazes" [value]="glaze.id">{{ glaze.color }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <div *ngFor="let transaction of group.value" class="checkbox-item-row">
-          <mat-checkbox 
-            class="item-checkbox"
-            [checked]="productIdsControl.value.includes(transaction.id)"
-            (change)="toggleSelection(transaction.id, $event)">
-            ID: {{ transaction.id }}
-          </mat-checkbox>
-          <mat-form-field appearance="fill" class="item-glaze-selector">
-            <mat-label>Glasura</mat-label>
-            <mat-select [value]="glazeAssignments.get(transaction.id)" 
-                        (selectionChange)="glazeAssignments.set(transaction.id, $event.value)">
-              <mat-option *ngIf="glazes.length === 0" disabled>Não há glasuras cadastradas.</mat-option>
-              <mat-option *ngFor="let glaze of glazes" [value]="glaze.id">{{ glaze.color }}</mat-option>
-            </mat-select>
-          </mat-form-field>
+        <div formArrayName="glazeApplications" class="glaze-applications-container">
+          <div *ngFor="let app of glazeApplications(i).controls; let j = index" [formGroupName]="j" class="form-array-item-row">
+            <button mat-icon-button color="warn" (click)="removeGlazeApplication(i, j)" title="Remover Glasura">
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+            <mat-form-field appearance="fill">
+              <mat-label>Glasura</mat-label>
+              <mat-select formControlName="glazeId" required>
+                <mat-option *ngIf="glazes.length === 0" disabled>Não há glasuras.</mat-option>
+                <mat-option *ngFor="let glaze of glazes" [value]="glaze.id">{{ glaze.color }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="app.get('glazeId')?.hasError('required')">Obrigatório.</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Quantidade</mat-label>
+              <input matInput type="number" formControlName="quantity" min="1" [max]="getAvailableForProduct(i) + app.get('quantity')?.value" required>
+              <mat-error *ngIf="app.get('quantity')?.hasError('required')">Obrigatório.</mat-error>
+              <mat-error *ngIf="app.get('quantity')?.hasError('min')">Deve ser > 0.</mat-error>
+              <mat-error *ngIf="app.get('quantity')?.hasError('max')">Excede o estoque.</mat-error>
+            </mat-form-field>
+          </div>
         </div>
-      </div>
 
-    </mat-expansion-panel>
-    <mat-option *ngIf="productTransactions.length === 0" disabled>Não há produtos disponíveis para queima.</mat-option>
-  </mat-accordion>
-  <mat-error *ngIf="productIdsControl.hasError('required') && productIdsControl.touched">
-    Pelo menos um produto deve ser selecionado.
+        <button mat-stroked-button color="primary" (click)="addGlazeApplication(i)" [disabled]="getAvailableForProduct(i) <= 0">
+          Adicionar Glasura
+        </button>
+        <mat-error *ngIf="getAvailableForProduct(i) <= 0" class="info-message">
+          Não há mais unidades disponíveis para este produto.
+        </mat-error>
+
+      </mat-expansion-panel>
+      <mat-option *ngIf="productTransactions.length === 0" disabled>Não há produtos (biscoitos) disponíveis para queima.</mat-option>
+    </mat-accordion>
+  </div>
+  <mat-error *ngIf="glazeFiringForm.hasError('invalid') && glazeFiringForm.touched">
+    Por favor, preencha todos os campos obrigatórios.
   </mat-error>
 
   <!-- Seção de Uso de Funcionários -->

@@ -35,7 +35,7 @@ export class GlazeFiringFormComponent implements OnInit {
     glazes: Glaze[] = [];
     productTransactions: ProductTransaction[] = [];
     employees: Employee[] = [];
-    glazeAssignments = new Map<string, string>(); // transactionId -> glazeId
+    productNameToIdMap: Map<string, string> = new Map();
 
     constructor(
         private fb: FormBuilder,
@@ -51,19 +51,24 @@ export class GlazeFiringFormComponent implements OnInit {
             temperature: [this.data.glazeFiring?.temperature || '', [Validators.required, Validators.min(0)]],
             burnTime: [this.data.glazeFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
             coolingTime: [this.data.glazeFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
-            productTransactionIds: [[] as string[], [Validators.required, Validators.minLength(1)]],
+            productGroups: this.fb.array([], [Validators.required, Validators.minLength(1)]),
             employeeUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
         });
     }
 
     ngOnInit(): void {
-        this.loadEmployees();
-        forkJoin({
+        const sources = {
+            employees: this.employeeService.getEmployees(),
             biscuitProducts: this.productService.getProductTransactions('1', 'BISCUIT'),
-            glazes: this.glazeService.getGlazes()
-        }).subscribe(({ biscuitProducts, glazes }) => {
+            glazes: this.glazeService.getGlazes(),
+            products: this.productService.getProducts()
+        };
+
+        forkJoin(sources).subscribe(({ employees, biscuitProducts, glazes, products }) => {
+            this.employees = employees;
             this.glazes = glazes;
             this.productTransactions = biscuitProducts;
+            products.forEach(p => this.productNameToIdMap.set(p.name, p.id));
 
             if (this.isEditMode && this.data.glazeFiring && this.data.glazeFiring.glosts.length > 0) {
                 const existingProducts$ = forkJoin(
@@ -79,6 +84,9 @@ export class GlazeFiringFormComponent implements OnInit {
                 });
             } else {
                 this.groupProducts(this.productTransactions);
+                if (this.isEditMode) {
+                    this.populateFormForEdit();
+                }
             }
         });
     }
@@ -91,15 +99,36 @@ export class GlazeFiringFormComponent implements OnInit {
 
     private populateFormForEdit(): void {
         if (!this.data.glazeFiring) return;
+
         this.glazeFiringForm.patchValue({
             temperature: this.data.glazeFiring.temperature,
             burnTime: this.data.glazeFiring.burnTime,
             coolingTime: this.data.glazeFiring.coolingTime
         });
-        this.productIdsControl.setValue(this.data.glazeFiring.glosts.map(g => g.productTxId));
 
-        this.data.glazeFiring.glosts.forEach(glost => {
-            this.glazeAssignments.set(glost.productTxId, glost.glazeId);
+        const glostProductDetails = this.data.glazeFiring.glosts.map(glost => {
+            const product = this.productTransactions.find(pt => pt.id === glost.productTxId);
+            return { ...glost, productName: product?.productName || 'Unknown' };
+        });
+
+        const groupedByProductAndGlaze = glostProductDetails.reduce((acc, glost) => {
+            const key = `${glost.productName}|${glost.glazeId}`;
+            if (!acc[key]) {
+                acc[key] = { productName: glost.productName, glazeId: glost.glazeId, quantity: 0 };
+            }
+            acc[key].quantity++;
+            return acc;
+        }, {} as Record<string, { productName: string, glazeId: string, quantity: number }>);
+
+        (Object.values(groupedByProductAndGlaze) as { productName: string, glazeId: string, quantity: number }[]).forEach(item => {
+            const groupIndex = this.productGroups.controls.findIndex(c => c.get('productName')?.value === item.productName);
+            if (groupIndex !== -1) {
+                const applications = this.glazeApplications(groupIndex);
+                applications.push(this.fb.group({
+                    glazeId: [item.glazeId, Validators.required],
+                    quantity: [item.quantity, [Validators.required, Validators.min(1), Validators.pattern(/^[0-9]+$/)]]
+                }));
+            }
         });
 
         this.data.glazeFiring.employeeUsages.forEach(usage => {
@@ -119,16 +148,54 @@ export class GlazeFiringFormComponent implements OnInit {
             }
             this.groupedProducts.get(key)!.push(transaction);
         });
-    }
 
-    setGlazeForAllInGroup(productGroup: ProductTransaction[], glazeId: string): void {
-        productGroup.forEach(transaction => {
-            this.glazeAssignments.set(transaction.id, glazeId);
+        this.productGroups.clear();
+        this.groupedProducts.forEach((value, key) => {
+            this.productGroups.push(this.fb.group({
+                productName: [key],
+                glazeApplications: this.fb.array([])
+            }));
         });
     }
 
-    get productIdsControl(): FormControl {
-        return this.glazeFiringForm.get('productTransactionIds') as FormControl;
+    get productGroups(): FormArray {
+        return this.glazeFiringForm.get('productGroups') as FormArray;
+    }
+
+    glazeApplications(groupIndex: number): FormArray {
+        return this.productGroups.at(groupIndex).get('glazeApplications') as FormArray;
+    }
+
+    addGlazeApplication(groupIndex: number): void {
+        const applications = this.glazeApplications(groupIndex);
+        const group = this.productGroups.at(groupIndex);
+        const productName = group.get('productName')?.value;
+        const productTransactions = this.groupedProducts.get(productName) || [];
+        
+        const currentTotalQuantity = applications.controls.reduce((sum, control) => sum + (control.get('quantity')?.value || 0), 0);
+        const remainingQuantity = productTransactions.length - currentTotalQuantity;
+
+        if (remainingQuantity > 0) {
+            applications.push(this.fb.group({
+                glazeId: ['', Validators.required],
+                quantity: [1, [Validators.required, Validators.min(1), Validators.pattern(/^[0-9]+$/)]]
+            }));
+        } else {
+            alert(`Não há mais unidades de "${productName}" disponíveis para adicionar outra glasura.`);
+        }
+    }
+
+    removeGlazeApplication(groupIndex: number, appIndex: number): void {
+        this.glazeApplications(groupIndex).removeAt(appIndex);
+    }
+
+    getAvailableForProduct(groupIndex: number): number {
+        const group = this.productGroups.at(groupIndex);
+        const productName = group.get('productName')?.value;
+        const productTransactions = this.groupedProducts.get(productName) || [];
+        const applications = group.get('glazeApplications') as FormArray;
+        const currentTotalQuantity = applications.controls.reduce((sum, control) => sum + (control.get('quantity')?.value || 0), 0);
+        return productTransactions.length - currentTotalQuantity;
     }
 
     get employeeUsages(): FormArray {
@@ -154,58 +221,52 @@ export class GlazeFiringFormComponent implements OnInit {
         return this.employees.filter(employee => !selectedEmployeeIds.includes(employee.id));
     }
 
-    isAllSelected(productGroup: ProductTransaction[]): boolean {
-        const selectedIds = this.productIdsControl.value as string[];
-        return productGroup.every(p => selectedIds.includes(p.id));
-    }
-
-    isSomeSelected(productGroup: ProductTransaction[]): boolean {
-        const selectedIds = this.productIdsControl.value as string[];
-        const groupIds = productGroup.map(p => p.id);
-        const intersection = groupIds.filter(id => selectedIds.includes(id));
-        return intersection.length > 0 && intersection.length < groupIds.length;
-    }
-
-    toggleAllForGroup(productGroup: ProductTransaction[], event: any): void {
-        const selectedIds = new Set<string>(this.productIdsControl.value);
-        const groupIds = productGroup.map(p => p.id);
-        if (event.checked) {
-            groupIds.forEach(id => selectedIds.add(id));
-        } else {
-            groupIds.forEach(id => selectedIds.delete(id));
-        }
-        this.productIdsControl.setValue(Array.from(selectedIds));
-    }
-
-    toggleSelection(transactionId: string, event: any): void {
-        const selectedIds = new Set<string>(this.productIdsControl.value);
-        if (event.checked) {
-            selectedIds.add(transactionId);
-        } else {
-            selectedIds.delete(transactionId);
-        }
-        this.productIdsControl.setValue(Array.from(selectedIds));
-    }
-
     asIsOrder(a: any, b: any): number { return 1; }
 
     onCancel(): void { this.dialogRef.close(); }
 
     onSubmit(): void {
-        if (this.glazeFiringForm.invalid) return;
+        if (this.glazeFiringForm.invalid) {
+            alert('O formulário contém erros. Por favor, verifique os campos.');
+            return;
+        }
 
         const formValue = this.glazeFiringForm.value;
-        const glostsPayload: { productTransactionId: string; glazeId: string }[] = [];
+        const glostsPayload: { productTransactionId: string; productId: string, glazeId: string }[] = [];
+        let totalQuantity = 0;
 
-        formValue.productTransactionIds.forEach((transactionId: string) => {
-            const glazeId = this.glazeAssignments.get(transactionId);
-            if (glazeId) {
-                glostsPayload.push({ productTransactionId: transactionId, glazeId: glazeId });
-            } 
-        });
+        const availableProducts = new Map(Array.from(this.groupedProducts.entries()).map(([key, value]) => [key, [...value]]));
 
-        if (glostsPayload.length !== formValue.productTransactionIds.length) {
-            alert('Todas os produtos selecionados devem ter uma glasura atribuída.');
+        for (const group of formValue.productGroups) {
+            const productName = group.productName;
+            const productTransactions = availableProducts.get(productName);
+            const productId = this.productNameToIdMap.get(productName);
+            if (!productTransactions || !productId) continue;
+
+            let totalForProduct = 0;
+            for (const app of group.glazeApplications) {
+                totalForProduct += app.quantity;
+            }
+            if (totalForProduct > productTransactions.length) {
+                alert(`A quantidade total para "${productName}" (${totalForProduct}) excede o estoque disponível (${productTransactions.length}).`);
+                return;
+            }
+
+            for (const app of group.glazeApplications) {
+                const quantity = app.quantity;
+                const glazeId = app.glazeId;
+                if (quantity > 0 && glazeId) {
+                    const transactionsToAssign = productTransactions.splice(0, quantity);
+                    transactionsToAssign.forEach(tx => {
+                        glostsPayload.push({ productTransactionId: tx.id, productId: productId, glazeId: glazeId });
+                    });
+                    totalQuantity += quantity;
+                }
+            }
+        }
+
+        if (totalQuantity === 0) {
+            alert('Pelo menos um produto deve ser selecionado para a queima.');
             return;
         }
 
