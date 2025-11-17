@@ -17,32 +17,30 @@
   </mat-form-field>
 
   <h2 class="section-title">Produtos</h2>
-  <mat-accordion multi>
-    <mat-expansion-panel *ngFor="let group of groupedProducts | keyvalue: asIsOrder">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <mat-checkbox 
-            [checked]="isAllSelected(group.value)" 
-            [indeterminate]="isSomeSelected(group.value)"
-            (change)="toggleAllForGroup(group.value, $event)"
-            (click)="$event.stopPropagation()">
-          </mat-checkbox>
-          {{ group.key }} ({{ group.value.length }} unidades)
-        </mat-panel-title>
-      </mat-expansion-panel-header>
+  <div formArrayName="firedProducts">
+    <mat-accordion multi>
+      <mat-expansion-panel *ngFor="let productGroup of firedProducts.controls; let i = index" [formGroupName]="i">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ productGroup.get('productName')?.value }} 
+            ({{ groupedProducts.get(productGroup.get('productName')?.value)?.length || 0 }} unidades disponíveis)
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
-      <div *ngFor="let transaction of group.value" class="checkbox-item">
-        <mat-checkbox 
-          [checked]="biscuitControl.value.includes(transaction.id)"
-          (change)="toggleSelection(transaction.id, $event)">
-          ID: {{ transaction.id }}
-        </mat-checkbox>
-      </div>
+        <mat-form-field appearance="fill">
+          <mat-label>Quantidade a queimar</mat-label>
+          <input matInput type="number" formControlName="quantity" min="0" [max]="groupedProducts.get(productGroup.get('productName')?.value)?.length || 0">
+          <mat-error *ngIf="productGroup.get('quantity')?.hasError('required')">A quantidade é obrigatória.</mat-error>
+          <mat-error *ngIf="productGroup.get('quantity')?.hasError('min')">A quantidade não pode ser negativa.</mat-error>
+          <mat-error *ngIf="productGroup.get('quantity')?.hasError('max')">A quantidade excede o disponível.</mat-error>
+          <mat-error *ngIf="productGroup.get('quantity')?.hasError('pattern')">A quantidade deve ser um número inteiro.</mat-error>
+        </mat-form-field>
 
-    </mat-expansion-panel>
-    <mat-option *ngIf="productTransactions.length === 0" disabled>Não há produtos disponíveis para queima.</mat-option>
-  </mat-accordion>
-  <mat-error *ngIf="biscuitControl.hasError('required') && biscuitControl.touched">
+      </mat-expansion-panel>
+      <mat-option *ngIf="productTransactions.length === 0" disabled>Não há produtos disponíveis para queima.</mat-option>
+    </mat-accordion>
+  </div>
+  <mat-error *ngIf="firedProducts.hasError('required') && firedProducts.touched">
     Pelo menos um produto deve ser selecionado.
   </mat-error>
 

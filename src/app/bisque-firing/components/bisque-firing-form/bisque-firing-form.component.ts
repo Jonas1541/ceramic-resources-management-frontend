@@ -46,7 +46,7 @@ export class BisqueFiringFormComponent implements OnInit {
       temperature: [this.data.bisqueFiring?.temperature || '', [Validators.required, Validators.min(0)]],
       burnTime: [this.data.bisqueFiring?.burnTime || '', [Validators.required, Validators.min(0)]],
       coolingTime: [this.data.bisqueFiring?.coolingTime || '', [Validators.required, Validators.min(0)]],
-      biscuits: [[] as string[], [Validators.required, Validators.minLength(1)]],
+      firedProducts: this.fb.array([], [Validators.required, Validators.minLength(1)]),
       employeeUsages: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
   }
@@ -69,7 +69,17 @@ export class BisqueFiringFormComponent implements OnInit {
         this.productTransactions = [...this.productTransactions, ...existingBiscuitProducts];
         
         this.groupProducts(this.productTransactions);
-        this.biscuitControl.setValue(this.data.bisqueFiring.biscuits.map(b => b.id));
+
+        const biscuitCounts = new Map<string, number>();
+        this.data.bisqueFiring.biscuits.forEach(biscuit => {
+          biscuitCounts.set(biscuit.productName, (biscuitCounts.get(biscuit.productName) || 0) + 1);
+        });
+
+        this.firedProducts.controls.forEach(control => {
+          const productName = control.get('productName')?.value;
+          const count = biscuitCounts.get(productName) || 0;
+          control.get('quantity')?.patchValue(count);
+        });
 
         this.data.bisqueFiring.employeeUsages.forEach(usage => {
             this.employeeUsages.push(this.fb.group({
@@ -99,10 +109,19 @@ export class BisqueFiringFormComponent implements OnInit {
       }
       this.groupedProducts.get(key)!.push(transaction);
     });
+
+    this.firedProducts.clear();
+    this.groupedProducts.forEach((value, key) => {
+      const formGroup = this.fb.group({
+        productName: [key],
+        quantity: [0, [Validators.required, Validators.min(0), Validators.max(value.length), Validators.pattern(/^[0-9]+$/)]]
+      });
+      this.firedProducts.push(formGroup);
+    });
   }
 
-  get biscuitControl(): FormControl {
-    return this.bisqueFiringForm.get('biscuits') as FormControl;
+  get firedProducts(): FormArray {
+    return this.bisqueFiringForm.get('firedProducts') as FormArray;
   }
 
   get employeeUsages(): FormArray {
@@ -128,39 +147,6 @@ export class BisqueFiringFormComponent implements OnInit {
     return this.employees.filter(employee => !selectedEmployeeIds.includes(employee.id));
   }
 
-  isAllSelected(productGroup: ProductTransaction[]): boolean {
-    const selectedIds = this.biscuitControl.value as string[];
-    return productGroup.every(p => selectedIds.includes(p.id));
-  }
-
-  isSomeSelected(productGroup: ProductTransaction[]): boolean {
-    const selectedIds = this.biscuitControl.value as string[];
-    const groupIds = productGroup.map(p => p.id);
-    const intersection = groupIds.filter(id => selectedIds.includes(id));
-    return intersection.length > 0 && intersection.length < groupIds.length;
-  }
-
-  toggleAllForGroup(productGroup: ProductTransaction[], event: any): void {
-    const selectedIds = new Set<string>(this.biscuitControl.value);
-    const groupIds = productGroup.map(p => p.id);
-    if (event.checked) {
-      groupIds.forEach(id => selectedIds.add(id));
-    } else {
-      groupIds.forEach(id => selectedIds.delete(id));
-    }
-    this.biscuitControl.setValue(Array.from(selectedIds));
-  }
-
-  toggleSelection(transactionId: string, event: any): void {
-    const selectedIds = new Set<string>(this.biscuitControl.value);
-    if (event.checked) {
-      selectedIds.add(transactionId);
-    } else {
-      selectedIds.delete(transactionId);
-    }
-    this.biscuitControl.setValue(Array.from(selectedIds));
-  }
-
   asIsOrder(a: any, b: any): number { return 1; }
 
   onCancel(): void { this.dialogRef.close(); }
@@ -169,6 +155,29 @@ export class BisqueFiringFormComponent implements OnInit {
     if (this.bisqueFiringForm.invalid) return;
 
     const formData = { ...this.bisqueFiringForm.value };
+    
+    const biscuits: string[] = [];
+    this.firedProducts.controls.forEach(control => {
+      const productName = control.get('productName')?.value;
+      const quantity = control.get('quantity')?.value;
+      if (quantity > 0) {
+        const transactions = this.groupedProducts.get(productName);
+        if (transactions) {
+          for (let i = 0; i < quantity; i++) {
+            biscuits.push(transactions[i].id);
+          }
+        }
+      }
+    });
+
+    if (biscuits.length === 0) {
+      alert('Pelo menos um produto deve ser selecionado para a queima.');
+      return;
+    }
+
+    formData.biscuits = biscuits;
+    delete formData.firedProducts;
+
     if (typeof formData.temperature === 'string') formData.temperature = parseFloat(formData.temperature.replace(',', '.'));
     if (typeof formData.burnTime === 'string') formData.burnTime = parseFloat(formData.burnTime.replace(',', '.'));
     if (typeof formData.coolingTime === 'string') formData.coolingTime = parseFloat(formData.coolingTime.replace(',', '.'));
