@@ -136,4 +136,13 @@ export class ProductTransactionListComponent implements OnInit {
       }
     });
   }
+
+  getRowClass(transaction: ProductTransaction): string {
+    if (transaction.outgoingReason === 'SOLD') {
+      return 'sold-transaction';
+    } else if (transaction.outgoingReason === 'DEFECT_DISPOSAL') {
+      return 'disposed-transaction';
+    }
+    return '';
+  }
 }
