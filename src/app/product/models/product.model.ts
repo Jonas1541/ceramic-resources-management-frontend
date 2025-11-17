@@ -9,4 +9,5 @@ export interface Product {
     glazeQuantityPerUnit: number;
     type: string;
     line: string;
+    productStock: number;
 }
