@@ -19,7 +19,7 @@
     <table mat-table [dataSource]="bisqueFiring.biscuits" class="mat-elevation-z8">
       <ng-container matColumnDef="product">
         <th mat-header-cell *matHeaderCellDef> Produto </th>
-        <td mat-cell *matCellDef="let element"> {{element.productName}} - ID: {{element.id}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.productName}} - {{element.unitName}} </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="biscuitsColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: biscuitsColumns;"></tr>

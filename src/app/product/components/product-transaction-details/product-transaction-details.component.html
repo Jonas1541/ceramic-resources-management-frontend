@@ -5,6 +5,7 @@
   <div class="info-section">
     <h2>Informações Gerais</h2>
     <p><strong>ID da Transação:</strong> {{ transaction.id }}</p>
+    <p><strong>Nome da Unidade:</strong> {{ transaction.unitName }}</p>
     <p><strong>Produto:</strong> {{ transaction.productName }} (ID: {{ data.productId }})</p>
     <p><strong>Estado:</strong> {{ transaction.state | translateProductState }}</p>
     <p><strong>Criado Em:</strong> {{ transaction.createdAt | date:'short' }}</p>

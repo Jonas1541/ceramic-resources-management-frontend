@@ -32,7 +32,7 @@ import { ProductTransactionDetailsComponent } from '../product-transaction-detai
 export class ProductTransactionListComponent implements OnInit {
 
   transactions: ProductTransaction[] = [];
-  displayedColumns: string[] = ['id', 'productName', 'state', 'totalCost', 'profit', 'createdAt', 'actions'];
+  displayedColumns: string[] = ['unitName', 'productName', 'state', 'totalCost', 'profit', 'createdAt', 'actions'];
 
   constructor(
     private productService: ProductService,

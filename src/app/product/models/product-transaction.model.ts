@@ -2,6 +2,7 @@ import { ProductTransactionEmployeeUsage } from "./product-transaction-employee-
 
 export interface ProductTransaction {
     id: string;
+    unitName: string,
     productId: string;
     createdAt: string;
     updatedAt: string;

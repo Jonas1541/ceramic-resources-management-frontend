@@ -19,7 +19,7 @@
     <table mat-table [dataSource]="glazeFiring.glosts" class="mat-elevation-z8">
       <ng-container matColumnDef="productName">
         <th mat-header-cell *matHeaderCellDef> Produto </th>
-        <td mat-cell *matCellDef="let element"> {{element.productName}} - ID: {{element.productTxId}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.productName}} - {{element.unitName}} </td>
       </ng-container>
       <ng-container matColumnDef="glazeColor">
         <th mat-header-cell *matHeaderCellDef> Cor da Glasura </th>
