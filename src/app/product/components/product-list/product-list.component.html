@@ -7,7 +7,7 @@
     <button mat-raised-button (click)="openProductLinesDialog()">Gerenciar Linhas</button>
   </div>
 
-  <table mat-table [dataSource]="products" class="mat-elevation-z8">
+  <table mat-table [dataSource]="products" multiTemplateDataRows class="mat-elevation-z8">
 
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef> Nome </th>
@@ -76,6 +76,10 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> Ações </th>
       <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="expandedElement = expandedElement === element ? null : element"
+          title="Ver Detalhes de Funcionários">
+          <mat-icon>{{expandedElement === element ? 'expand_less' : 'expand_more'}}</mat-icon>
+        </button>
         <button mat-icon-button color="primary" (click)="openProductForm(element)" title="Editar Produto">
           <mat-icon>edit</mat-icon>
         </button>
@@ -91,7 +95,29 @@
       </td>
     </ng-container>
 
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div class="employee-usage-list">
+            <h3 *ngIf="element.employeeUsages?.length">Uso de Funcionários</h3>
+            <h3 *ngIf="!element.employeeUsages?.length">Sem uso de funcionários cadastrado.</h3>
+            <ul>
+              <li *ngFor="let usage of element.employeeUsages">
+                <span><strong>{{usage.employeeName}}</strong></span>
+                <span>{{usage.usageTime | decimalFormat}} horas</span>
+                <span>{{usage.cost | currency:'BRL'}}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
   </table>
 </div>

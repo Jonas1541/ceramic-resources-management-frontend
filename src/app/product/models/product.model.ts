@@ -1,3 +1,5 @@
+import { EmployeeUsage } from "./employee-usage.model";
+
 export interface Product {
     id: string;
     name: string;
@@ -10,4 +12,5 @@ export interface Product {
     type: string;
     line: string;
     productStock: number;
+    employeeUsages: EmployeeUsage[];
 }

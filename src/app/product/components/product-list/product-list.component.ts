@@ -3,7 +3,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 import { ProductFormComponent } from '../product-form/product-form.component';
-import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common'; 
+import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +12,7 @@ import { ProductTypeListComponent } from '../../../product-type/components/produ
 import { ProductLineListComponent } from '../../../product-line/components/product-line-list/product-line-list.component';
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 import { ProductReportComponent } from '../product-report/product-report.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-product-list',
@@ -24,15 +25,24 @@ import { ProductReportComponent } from '../product-report/product-report.compone
     MatDialogModule,
     CurrencyPipe,
     DecimalFormatPipe
-],
-  providers: [ DecimalPipe ],
+  ],
+  providers: [DecimalPipe],
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.scss']
+  styleUrls: ['./product-list.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class ProductListComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'price', 'height', 'length', 'width', 'glazeQuantityPerUnit', 'weight', 'type', 'line', 'productStock', 'actions'];
   products: Product[] = [];
+  expandedElement: Product | null = null;
+  columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
 
   constructor(
     private productService: ProductService,
@@ -73,7 +83,7 @@ export class ProductListComponent implements OnInit {
       this.loadProducts();
     });
   }
-  
+
   openReport(productId: string): void {
     this.dialog.open(ProductReportComponent, {
       minWidth: '80vw',

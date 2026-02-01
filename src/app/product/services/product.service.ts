@@ -8,7 +8,7 @@ import { YearReport } from '../../report/models/year-report.model';
 import { environment } from '../../../environments/environment';
 
 import { HttpParams } from '@angular/common/http';
-import { ProductTransactionEmployeeUsage } from '../models/product-transaction-employee-usage.model';
+
 
 @Injectable({
   providedIn: 'root'

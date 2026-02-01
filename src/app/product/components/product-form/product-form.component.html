@@ -27,14 +27,14 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill">
-          <mat-label>Qtd. de Glasura por Unidade (kg)</mat-label>
-          <input matInput type="text" formControlName="glazeQuantityPerUnit" appDecimalMask required>
-        </mat-form-field>
-    
-        <mat-form-field appearance="fill">
-          <mat-label>Peso (kg)</mat-label>
-          <input matInput type="text" formControlName="weight" appDecimalMask required>
-        </mat-form-field>    <mat-form-field appearance="fill">
+        <mat-label>Qtd. de Glasura por Unidade (kg)</mat-label>
+        <input matInput type="text" formControlName="glazeQuantityPerUnit" appDecimalMask required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Peso (kg)</mat-label>
+        <input matInput type="text" formControlName="weight" appDecimalMask required>
+    </mat-form-field> <mat-form-field appearance="fill">
         <mat-label>Tipo de Produto</mat-label>
         <mat-select formControlName="typeId" required>
             <mat-option *ngFor="let type of productTypes" [value]="type.id">{{ type.name }}</mat-option>
@@ -47,6 +47,35 @@
             <mat-option *ngFor="let line of productLines" [value]="line.id">{{ line.name }}</mat-option>
         </mat-select>
     </mat-form-field>
+
+    <div class="employee-usage-section">
+        <h3>Uso de Funcionários</h3>
+        <button mat-raised-button type="button" (click)="addEmployeeUsage()">
+            <mat-icon>add</mat-icon> Adicionar Funcionário
+        </button>
+
+        <div formArrayName="employeeUsages" *ngFor="let usage of employeeUsages.controls; let i = index">
+            <div [formGroupName]="i" class="usage-row">
+                <mat-form-field appearance="fill">
+                    <mat-label>Funcionário</mat-label>
+                    <mat-select formControlName="employeeId" required>
+                        <mat-option *ngFor="let employee of employees" [value]="employee.id">
+                            {{ employee.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Tempo de Uso (horas)</mat-label>
+                    <input matInput type="number" formControlName="usageTime" required min="0" step="0.1">
+                </mat-form-field>
+
+                <button mat-icon-button color="warn" type="button" (click)="removeEmployeeUsage(i)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div mat-dialog-actions>

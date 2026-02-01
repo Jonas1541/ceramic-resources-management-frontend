@@ -6,6 +6,27 @@
   }
 }
 
+table {
+  width: 100%;
+}
+
+/* Forcing width on the actions column */
+.mat-column-actions {
+  width: 280px !important;
+  min-width: 280px !important;
+  text-align: center;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  padding-right: 16px !important;
+  /* vertical-align: middle is default for td, but good to enforce if issues persist */
+  vertical-align: middle !important;
+}
+
+/* Ensure buttons inside don't wrap */
+.mat-column-actions button {
+  display: inline-block;
+}
+
 .button-row {
   display: flex;
   gap: 16px;
@@ -13,14 +34,69 @@
   padding: 10px 0;
 
   @media (max-width: 599px) {
-    flex-direction: column; /* Empilha os botões em mobile */
-    align-items: center; /* Centraliza os botões empilhados */
-    gap: 10px; /* Espaçamento entre os botões empilhados */
-    justify-content: center; /* Centraliza apenas em mobile */
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+  background-color: #f9f9f9;
+}
+
+.employee-usage-list {
+  padding: 16px;
+  width: 100%;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #555;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid #eee;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span {
+      font-size: 13px;
+    }
   }
 }
 
 h1 {
   margin-top: 0px;
-  margin-bottom: 16px; /* Reduz a margem inferior do título */
+  margin-bottom: 16px;
 }
