@@ -51,7 +51,7 @@ export class EmployeeFormComponent implements OnInit {
     this.employeeForm = this.fb.group({
       name: ['', Validators.required],
       costPerHour: ['', Validators.required],
-      categoryId: ['', Validators.required]
+      categoryIds: [[], Validators.required]
     });
 
     if (data && data.employee) {
@@ -67,7 +67,7 @@ export class EmployeeFormComponent implements OnInit {
         this.employeeForm.setValue({
           name: this.data.employee.name,
           costPerHour: this.data.employee.costPerHour.toString(),
-          categoryId: this.data.employee.categoryId
+          categoryIds: this.data.employee.categories.map(c => c.id)
         });
       }
     });

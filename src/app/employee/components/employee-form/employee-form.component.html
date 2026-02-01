@@ -12,8 +12,8 @@
     </mat-form-field>
     
     <mat-form-field appearance="fill">
-        <mat-label>Categoria</mat-label>
-        <mat-select formControlName="categoryId" required>
+        <mat-label>Categorias</mat-label>
+        <mat-select formControlName="categoryIds" multiple required>
             <mat-option *ngIf="employeeCategories.length === 0" disabled>Não há categorias cadastradas.</mat-option>
             <mat-option *ngFor="let category of employeeCategories" [value]="category.id">{{ category.name }}</mat-option>
         </mat-select>

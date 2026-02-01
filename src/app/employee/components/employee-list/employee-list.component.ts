@@ -78,4 +78,7 @@ export class EmployeeListComponent implements OnInit {
       });
     }
   }
+  getCategoryNames(employee: Employee): string {
+    return employee.categories.map(c => c.name).join(', ');
+  }
 }
