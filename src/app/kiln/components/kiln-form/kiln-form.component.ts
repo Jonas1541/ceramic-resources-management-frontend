@@ -39,7 +39,8 @@ export class KilnFormComponent implements OnInit {
     this.isEditMode = !!this.data.kiln;
     this.kilnForm = this.fb.group({
       name: ['', Validators.required],
-      gasConsumptionPerHour: ['', Validators.required],
+      averageBisqueGasConsumption: ['', Validators.required],
+      averageGlazeGasConsumption: ['', Validators.required],
       machineIds: this.fb.array([])
     });
   }
@@ -51,7 +52,8 @@ export class KilnFormComponent implements OnInit {
         this.kilnService.getKiln(this.data.kiln.id).subscribe(kilnDetails => {
           this.kilnForm.patchValue({
             name: kilnDetails.name,
-            gasConsumptionPerHour: kilnDetails.gasConsumptionPerHour
+            averageBisqueGasConsumption: kilnDetails.averageBisqueGasConsumption,
+            averageGlazeGasConsumption: kilnDetails.averageGlazeGasConsumption
           });
           kilnDetails.machines.forEach(machine => {
             this.machineIds.push(new FormControl<string>(machine.id, { nonNullable: true }));
@@ -95,7 +97,8 @@ export class KilnFormComponent implements OnInit {
 
     const payload = {
       ...formValue,
-      gasConsumptionPerHour: parseFloat(String(formValue.gasConsumptionPerHour).replace(',', '.')),
+      averageBisqueGasConsumption: parseFloat(String(formValue.averageBisqueGasConsumption).replace(',', '.')),
+      averageGlazeGasConsumption: parseFloat(String(formValue.averageGlazeGasConsumption).replace(',', '.')),
       machines: formValue.machineIds.map((id: string) => Number(id))
     };
 

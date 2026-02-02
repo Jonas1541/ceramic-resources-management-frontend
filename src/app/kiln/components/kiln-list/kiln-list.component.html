@@ -13,9 +13,14 @@
       <td mat-cell *matCellDef="let element"> {{element.name}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="gasConsumptionPerHour">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Consumo de Gás Por Hora</th>
-      <td mat-cell *matCellDef="let element"> {{element.gasConsumptionPerHour | decimalFormat}} kg/h </td>
+    <ng-container matColumnDef="averageBisqueGasConsumption">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Gás Biscoito </th>
+      <td mat-cell *matCellDef="let element"> {{element.averageBisqueGasConsumption | decimalFormat}} kg/h </td>
+    </ng-container>
+
+    <ng-container matColumnDef="averageGlazeGasConsumption">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Gás Esmalte </th>
+      <td mat-cell *matCellDef="let element"> {{element.averageGlazeGasConsumption | decimalFormat}} kg/h </td>
     </ng-container>
 
     <ng-container matColumnDef="power">

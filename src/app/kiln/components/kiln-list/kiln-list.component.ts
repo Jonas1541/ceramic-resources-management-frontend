@@ -35,7 +35,7 @@ import { Machine } from '../../../machine/models/machine.model';
 })
 export class KilnListComponent implements OnInit {
 
-  displayedColumns: string[] = ['name', 'gasConsumptionPerHour', 'power', 'actions'];
+  displayedColumns: string[] = ['name', 'averageBisqueGasConsumption', 'averageGlazeGasConsumption', 'power', 'actions'];
   dataSource = new MatTableDataSource<Kiln>([]);
   expandedElement: Kiln | null = null;
   detailsCache = new Map<string, Machine[]>();
