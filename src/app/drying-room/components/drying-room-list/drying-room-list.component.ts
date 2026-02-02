@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DryingRoomService } from '../../services/drying-room.service';
 import { DryingRoom } from '../../models/drying-room.model';
 import { DryingRoomFormComponent } from '../drying-room-form/drying-room-form.component';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { DryingSessionListComponent } from '../drying-session-list/drying-session-list.component';
@@ -18,14 +19,14 @@ import { Machine } from '../../../machine/models/machine.model';
 @Component({
   selector: 'app-drying-room-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, DecimalFormatPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatSortModule, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './drying-room-list.component.html',
   styleUrls: ['./drying-room-list.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
@@ -33,9 +34,11 @@ import { Machine } from '../../../machine/models/machine.model';
 export class DryingRoomListComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'gasConsumptionPerHour', 'actions'];
-  dryingRooms: DryingRoom[] = [];
+  dataSource = new MatTableDataSource<DryingRoom>([]);
   expandedElement: DryingRoom | null = null;
   detailsCache = new Map<string, Machine[]>();
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private dryingRoomService: DryingRoomService,
@@ -48,16 +51,17 @@ export class DryingRoomListComponent implements OnInit {
 
   loadDryingRooms(): void {
     this.dryingRoomService.getDryingRooms().subscribe(data => {
-      this.dryingRooms = data;
+      this.dataSource.data = data;
+      this.dataSource.sort = this.sort;
     });
   }
 
   toggleDetails(element: DryingRoom): void {
     this.expandedElement = this.expandedElement === element ? null : element;
     if (this.expandedElement && !this.detailsCache.has(element.id)) {
-        this.dryingRoomService.getDryingRoom(element.id).subscribe(detailedDryingRoom => {
-            this.detailsCache.set(element.id, detailedDryingRoom.machines);
-        });
+      this.dryingRoomService.getDryingRoom(element.id).subscribe(detailedDryingRoom => {
+        this.detailsCache.set(element.id, detailedDryingRoom.machines);
+      });
     }
   }
 

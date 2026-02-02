@@ -1,12 +1,13 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { BisqueFiringService } from '../../services/bisque-firing.service';
 import { BisqueFiring } from '../../models/bisque-firing.model';
 import { BisqueFiringFormComponent } from '../bisque-firing-form/bisque-firing-form.component';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
@@ -15,7 +16,7 @@ import { BisqueFiringDetailsComponent } from '../bisque-firing-details/bisque-fi
 @Component({
   selector: 'app-bisque-firing-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatSortModule, CurrencyPipe, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './bisque-firing-list.component.html',
   styleUrls: ['./bisque-firing-list.component.scss']
@@ -23,11 +24,13 @@ import { BisqueFiringDetailsComponent } from '../bisque-firing-details/bisque-fi
 export class BisqueFiringListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'createdAt', 'updatedAt', 'temperature', 'burnTime', 'coolingTime', 'gasConsumption', 'cost', 'actions'];
-  bisqueFirings: BisqueFiring[] = [];
+  dataSource = new MatTableDataSource<BisqueFiring>([]);
 
   errorMessages: { [key: string]: string } = {
     'A queima não pode ser apagada pois há um produto que já passou pela 2° queima.': 'Não é possível deletar esta queima de biscoito pois há um produto que já passou pela 2° queima.'
   };
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private bisqueFiringService: BisqueFiringService,
@@ -42,7 +45,8 @@ export class BisqueFiringListComponent implements OnInit {
 
   loadBisqueFirings(): void {
     this.bisqueFiringService.getBisqueFirings(this.data.kilnId).subscribe(data => {
-      this.bisqueFirings = data;
+      this.dataSource.data = data;
+      this.dataSource.sort = this.sort;
     });
   }
 

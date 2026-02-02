@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ResourceService } from '../../services/resource.service';
 import { Resource } from '../../models/resource.model';
 import { ResourceFormComponent } from '../resource-form/resource-form.component';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatOptionModule } from '@angular/material/core';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { TranslateResourceCategoryPipe } from '../../../shared/pipes/translate-resource-category.pipe';
 
 import { ResourceTransactionListComponent } from '../resource-transaction-list/resource-transaction-list.component';
@@ -19,7 +20,7 @@ import { ResourceReportComponent } from '../resource-report/resource-report.comp
 @Component({
   selector: 'app-resource-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, CurrencyPipe, TranslateResourceCategoryPipe, DecimalFormatPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, MatSortModule, CurrencyPipe, TranslateResourceCategoryPipe, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './resource-list.component.html',
   styleUrls: ['./resource-list.component.scss']
@@ -28,9 +29,13 @@ export class ResourceListComponent implements OnInit {
 
   basicDisplayedColumns: string[] = ['name', 'category', 'unitValue', 'actions'];
   ceramicDisplayedColumns: string[] = ['name', 'category', 'unitValue', 'currentQuantity', 'currentQuantityPrice', 'actions'];
-  basicResources: Resource[] = [];
-  ceramicResources: Resource[] = [];
+
+  basicDataSource = new MatTableDataSource<Resource>([]);
+  ceramicDataSource = new MatTableDataSource<Resource>([]);
   missingBasicResources: string[] = [];
+
+  @ViewChild('sortBasic') sortBasic!: MatSort;
+  @ViewChild('sortCeramic') sortCeramic!: MatSort;
 
   constructor(
     private resourceService: ResourceService,
@@ -43,12 +48,15 @@ export class ResourceListComponent implements OnInit {
 
   loadResources(): void {
     this.resourceService.getResources().subscribe(data => {
-      this.basicResources = data.filter(r => [
+      const basic = data.filter(r => [
         'ELECTRICITY',
         'WATER',
         'GAS'
       ].includes(r.category));
-      this.ceramicResources = data
+      this.basicDataSource.data = basic;
+      this.basicDataSource.sort = this.sortBasic;
+
+      const ceramic = data
         .filter(r => !['ELECTRICITY', 'WATER', 'GAS'].includes(r.category))
         .sort((a, b) => {
           if (a.category < b.category) return -1;
@@ -57,6 +65,8 @@ export class ResourceListComponent implements OnInit {
           if (a.name > b.name) return 1;
           return 0;
         });
+      this.ceramicDataSource.data = ceramic;
+      this.ceramicDataSource.sort = this.sortCeramic;
 
       this.checkMissingBasicResources();
     });
@@ -64,7 +74,7 @@ export class ResourceListComponent implements OnInit {
 
   checkMissingBasicResources(): void {
     const basicCategories = ['ELECTRICITY', 'WATER', 'GAS'];
-    const existingCategories = this.basicResources.map(r => r.category);
+    const existingCategories = this.basicDataSource.data.map(r => r.category);
     this.missingBasicResources = basicCategories
       .filter(c => !existingCategories.includes(c))
       .map(c => {

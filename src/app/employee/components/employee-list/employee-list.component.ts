@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EmployeeService } from '../../services/employee.service';
 import { Employee } from '../../models/employee.model';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { EmployeeFormComponent } from '../employee-form/employee-form.component';
 import { EmployeeCategoryListComponent } from '../../../employee-category/components/employee-category-list/employee-category-list.component';
 
@@ -18,6 +19,7 @@ import { EmployeeCategoryListComponent } from '../../../employee-category/compon
     MatTableModule,
     MatIconModule,
     MatDialogModule,
+    MatSortModule,
     CurrencyPipe,
     DatePipe
   ],
@@ -27,7 +29,9 @@ import { EmployeeCategoryListComponent } from '../../../employee-category/compon
 export class EmployeeListComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'category', 'costPerHour', 'createdAt', 'updatedAt', 'actions'];
-  employees: Employee[] = [];
+  dataSource = new MatTableDataSource<Employee>([]);
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private employeeService: EmployeeService,
@@ -35,12 +39,23 @@ export class EmployeeListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.configureSorting();
     this.loadEmployees();
+  }
+
+  configureSorting(): void {
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'category': return item.categories.map(c => c.name).join(', ');
+        default: return (item as any)[property];
+      }
+    };
   }
 
   loadEmployees(): void {
     this.employeeService.getEmployees().subscribe(data => {
-      this.employees = data;
+      this.dataSource.data = data;
+      this.dataSource.sort = this.sort;
     });
   }
 

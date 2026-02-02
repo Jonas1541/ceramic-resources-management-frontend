@@ -1,18 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MachineService } from '../../services/machine.service';
 import { Machine } from '../../models/machine.model';
 import { MachineFormComponent } from '../machine-form/machine-form.component';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
 @Component({
   selector: 'app-machine-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, DecimalFormatPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatSortModule, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './machine-list.component.html',
   styleUrls: ['./machine-list.component.scss']
@@ -20,7 +21,9 @@ import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 export class MachineListComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'power', 'actions'];
-  machines: Machine[] = [];
+  dataSource = new MatTableDataSource<Machine>([]);
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private machineService: MachineService, public dialog: MatDialog) { }
 
@@ -30,7 +33,8 @@ export class MachineListComponent implements OnInit {
 
   loadMachines(): void {
     this.machineService.getMachines().subscribe(data => {
-      this.machines = data;
+      this.dataSource.data = data;
+      this.dataSource.sort = this.sort;
     });
   }
 

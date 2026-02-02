@@ -5,21 +5,21 @@
     <button mat-raised-button color="primary" (click)="openGlazeForm()" class="add-button">Adicionar Glasura</button>
   </div>
 
-  <table mat-table [dataSource]="glazes" class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
     <!-- Colunas de Dados -->
     <ng-container matColumnDef="color">
-      <th mat-header-cell *matHeaderCellDef> Cor </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Cor </th>
       <td mat-cell *matCellDef="let element"> {{element.color}} </td>
     </ng-container>
 
     <ng-container matColumnDef="currentQuantity">
-      <th mat-header-cell *matHeaderCellDef> Qtd. em Estoque </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Qtd. em Estoque </th>
       <td mat-cell *matCellDef="let element"> {{element.currentQuantity | decimalFormat}} kg </td>
     </ng-container>
 
     <ng-container matColumnDef="unitCost">
-      <th mat-header-cell *matHeaderCellDef> Custo de Produção </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Custo de Produção </th>
       <td mat-cell *matCellDef="let element"> {{element.unitCost | currency:'BRL'}} /kg </td>
     </ng-container>
 

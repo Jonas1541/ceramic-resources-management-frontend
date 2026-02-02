@@ -1,23 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { EmployeeCategoryService } from '../../services/employee-category.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EmployeeCategory } from '../../models/employee-category.model';
 import { EmployeeCategoryFormComponent } from '../employee-category-form/employee-category-form.component';
-import { MatTableModule } from "@angular/material/table";
+import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule, DatePipe } from '@angular/common';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 @Component({
     selector: 'app-employee-category-list',
-    imports: [CommonModule, MatTableModule, MatIconModule, MatButtonModule, MatDialogModule, DatePipe],
+    standalone: true,
+    imports: [CommonModule, MatTableModule, MatIconModule, MatButtonModule, MatDialogModule, MatSortModule, DatePipe],
     templateUrl: './employee-category-list.component.html',
     styleUrl: './employee-category-list.component.scss'
 })
-export class EmployeeCategoryListComponent {
+export class EmployeeCategoryListComponent implements OnInit {
 
     displayedColumns: string[] = ['name', 'createdAt', 'updatedAt', 'actions'];
-    employeeCategories: EmployeeCategory[] = [];
+    dataSource = new MatTableDataSource<EmployeeCategory>([]);
+
+    @ViewChild(MatSort) sort!: MatSort;
 
     constructor(
         private employeeCategoryService: EmployeeCategoryService,
@@ -30,7 +34,8 @@ export class EmployeeCategoryListComponent {
 
     loadEmployeeCategories(): void {
         this.employeeCategoryService.getEmployeeCategories().subscribe(data => {
-            this.employeeCategories = data;
+            this.dataSource.data = data;
+            this.dataSource.sort = this.sort;
         });
     }
 

@@ -1,19 +1,19 @@
 <div class="container">
     <h1>Categorias de Funcionário</h1>
 
-    <table mat-table [dataSource]="employeeCategories" class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
         <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef> Nome </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome </th>
             <td mat-cell *matCellDef="let element"> {{element.name}} </td>
         </ng-container>
 
         <ng-container matColumnDef="createdAt">
-            <th mat-header-cell *matHeaderCellDef> Data de Criação </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Data de Criação </th>
             <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'short'}} </td>
         </ng-container>
 
         <ng-container matColumnDef="updatedAt">
-            <th mat-header-cell *matHeaderCellDef> Data de Atualização </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Data de Atualização </th>
             <td mat-cell *matCellDef="let element">
                 <span *ngIf="element.updatedAt !== element.createdAt">
                     {{element.updatedAt | date:'short'}}
@@ -43,6 +43,6 @@
 </div>
 
 <div mat-dialog-actions>
-  <button mat-raised-button color="primary" (click)="openEmployeeCategoryForm()">Adicionar Categoria</button>
-  <button mat-button (click)="onClose()">Fechar</button>
+    <button mat-raised-button color="primary" (click)="openEmployeeCategoryForm()">Adicionar Categoria</button>
+    <button mat-button (click)="onClose()">Fechar</button>
 </div>

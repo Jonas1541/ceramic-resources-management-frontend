@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { ProductTransactionListComponent } from '../product-transaction-list/product-transaction-list.component';
 import { ProductTypeListComponent } from '../../../product-type/components/product-type-list/product-type-list.component';
 import { ProductLineListComponent } from '../../../product-line/components/product-line-list/product-line-list.component';
@@ -23,6 +24,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     MatTableModule,
     MatIconModule,
     MatDialogModule,
+    MatSortModule,
     CurrencyPipe,
     DecimalFormatPipe
   ],
@@ -40,9 +42,10 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 export class ProductListComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'price', 'height', 'length', 'width', 'glazeQuantityPerUnit', 'weight', 'type', 'line', 'productStock', 'actions'];
-  products: Product[] = [];
+  dataSource = new MatTableDataSource<Product>([]);
   expandedElement: Product | null = null;
-  columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private productService: ProductService,
@@ -55,7 +58,8 @@ export class ProductListComponent implements OnInit {
 
   loadProducts(): void {
     this.productService.getProducts().subscribe(data => {
-      this.products = data;
+      this.dataSource.data = data;
+      this.dataSource.sort = this.sort;
     });
   }
 

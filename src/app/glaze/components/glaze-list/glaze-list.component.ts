@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { GlazeService } from '../../services/glaze.service';
 import { Glaze } from '../../models/glaze.model';
 import { GlazeFormComponent } from '../glaze-form/glaze-form.component';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatOptionModule } from '@angular/material/core';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { GlazeTransactionListComponent } from '../glaze-transaction-list/glaze-transaction-list.component';
 
@@ -20,7 +21,7 @@ import { GlazeDetailsComponent } from '../glaze-details/glaze-details.component'
 @Component({
   selector: 'app-glaze-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, CurrencyPipe, DecimalFormatPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatOptionModule, MatSortModule, CurrencyPipe, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './glaze-list.component.html',
   styleUrls: ['./glaze-list.component.scss']
@@ -28,7 +29,9 @@ import { GlazeDetailsComponent } from '../glaze-details/glaze-details.component'
 export class GlazeListComponent implements OnInit {
 
   displayedColumns: string[] = ['color', 'currentQuantity', 'unitCost', 'actions'];
-  glazes: Glaze[] = [];
+  dataSource = new MatTableDataSource<Glaze>([]);
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private glazeService: GlazeService,
@@ -41,7 +44,8 @@ export class GlazeListComponent implements OnInit {
 
   loadGlazes(): void {
     this.glazeService.getGlazes().subscribe(data => {
-      this.glazes = data;
+      this.dataSource.data = data;
+      this.dataSource.sort = this.sort;
     });
   }
 

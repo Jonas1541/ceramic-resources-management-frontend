@@ -1,11 +1,11 @@
 <div class="container">
   <h1>Linhas de Produto</h1>
 
-  <table mat-table [dataSource]="productLines" class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
     <!-- Colunas de Dados -->
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Nome </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome </th>
       <td mat-cell *matCellDef="let element"> {{element.name}} </td>
     </ng-container>
 

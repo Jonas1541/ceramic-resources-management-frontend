@@ -1,41 +1,41 @@
 <h1 mat-dialog-title>Transações da Glasura</h1>
 
 <div mat-dialog-content>
-  <table mat-table [dataSource]="transactions" class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
     <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef> ID </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
       <td mat-cell *matCellDef="let element"> {{element.id}} </td>
     </ng-container>
     <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef> Tipo </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
       <td mat-cell *matCellDef="let element"> {{element.type === 'INCOMING' ? 'Entrada' : 'Saída'}} </td>
     </ng-container>
     <ng-container matColumnDef="quantity">
-      <th mat-header-cell *matHeaderCellDef> Quantidade </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Quantidade </th>
       <td mat-cell *matCellDef="let element"> {{element.quantity | decimalFormat}} kg </td>
     </ng-container>
     <ng-container matColumnDef="glazeColor">
-      <th mat-header-cell *matHeaderCellDef> Cor da Glasura </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Cor da Glasura </th>
       <td mat-cell *matCellDef="let element"> {{element.glazeColor}} </td>
     </ng-container>
     <ng-container matColumnDef="resourceTotalCostAtTime">
-      <th mat-header-cell *matHeaderCellDef> Custo Total dos Recursos </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Custo Total dos Recursos </th>
       <td mat-cell *matCellDef="let element"> {{element.resourceTotalCostAtTime | currency:'BRL'}} </td>
     </ng-container>
     <ng-container matColumnDef="machineEnergyConsumptionCostAtTime">
-      <th mat-header-cell *matHeaderCellDef> Custo de Energia das Máquinas </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Custo de Energia das Máquinas </th>
       <td mat-cell *matCellDef="let element"> {{element.machineEnergyConsumptionCostAtTime | currency:'BRL'}} </td>
     </ng-container>
     <ng-container matColumnDef="employeeTotalCostAtTime">
-      <th mat-header-cell *matHeaderCellDef> Custo Total dos Funcionários </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Custo Total dos Funcionários </th>
       <td mat-cell *matCellDef="let element"> {{element.employeeTotalCostAtTime | currency:'BRL'}} </td>
     </ng-container>
     <ng-container matColumnDef="glazeFinalCostAtTime">
-      <th mat-header-cell *matHeaderCellDef> Custo Final da Glasura </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Custo Final da Glasura </th>
       <td mat-cell *matCellDef="let element"> {{element.glazeFinalCostAtTime | currency:'BRL'}} </td>
     </ng-container>
     <ng-container matColumnDef="createdAt">
-      <th mat-header-cell *matHeaderCellDef> Data </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Data </th>
       <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'short'}} </td>
     </ng-container>
     <ng-container matColumnDef="actions">

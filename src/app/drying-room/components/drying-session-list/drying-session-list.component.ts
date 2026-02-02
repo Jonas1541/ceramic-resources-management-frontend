@@ -1,12 +1,13 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { DryingRoomService } from '../../services/drying-room.service';
 import { DryingSession } from '../../models/drying-session.model';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { DryingSessionFormComponent } from '../drying-session-form/drying-session-form.component';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
@@ -15,23 +16,25 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 @Component({
   selector: 'app-drying-session-list',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, MatIconModule, CurrencyPipe, DecimalFormatPipe],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, MatIconModule, MatSortModule, CurrencyPipe, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './drying-session-list.component.html',
   styleUrls: ['./drying-session-list.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
 export class DryingSessionListComponent implements OnInit {
 
-  sessions: DryingSession[] = [];
+  dataSource = new MatTableDataSource<DryingSession>([]);
   displayedColumns: string[] = ['id', 'hours', 'createdAt', 'updatedAt', 'employeeTotalCost', 'costAtTime', 'actions'];
   expandedElement: DryingSession | null = null;
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private dryingRoomService: DryingRoomService,
@@ -46,7 +49,8 @@ export class DryingSessionListComponent implements OnInit {
 
   loadSessions(): void {
     this.dryingRoomService.getDryingSessions(this.data.dryingRoomId).subscribe(data => {
-      this.sessions = data;
+      this.dataSource.data = data;
+      this.dataSource.sort = this.sort;
     });
   }
 

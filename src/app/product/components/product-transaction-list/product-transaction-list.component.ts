@@ -1,11 +1,12 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { ProductService } from '../../services/product.service';
 import { ProductTransaction } from '../../models/product-transaction.model';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { ProductTransactionFormComponent } from '../product-transaction-form/product-transaction-form.component';
 import { ProductTransactionOutgoingFormComponent } from '../product-transaction-outgoing-form/product-transaction-outgoing-form.component';
@@ -24,15 +25,17 @@ import { ProductTransactionDetailsComponent } from '../product-transaction-detai
 @Component({
   selector: 'app-product-transaction-list',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, CurrencyPipe, MatIconModule, DecimalFormatPipe, TranslateProductStatePipe, TranslateOutgoingReasonPipe],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, CurrencyPipe, MatIconModule, MatSortModule, DecimalFormatPipe, TranslateProductStatePipe, TranslateOutgoingReasonPipe],
   providers: [DecimalPipe],
   templateUrl: './product-transaction-list.component.html',
   styleUrls: ['./product-transaction-list.component.scss']
 })
 export class ProductTransactionListComponent implements OnInit {
 
-  transactions: ProductTransaction[] = [];
+  dataSource = new MatTableDataSource<ProductTransaction>([]);
   displayedColumns: string[] = ['unitName', 'productName', 'state', 'totalCost', 'profit', 'createdAt', 'actions'];
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private productService: ProductService,
@@ -47,7 +50,8 @@ export class ProductTransactionListComponent implements OnInit {
 
   loadTransactions(): void {
     this.productService.getProductTransactions(this.data.productId).subscribe(data => {
-      this.transactions = data;
+      this.dataSource.data = data;
+      this.dataSource.sort = this.sort;
     });
   }
 
@@ -59,13 +63,13 @@ export class ProductTransactionListComponent implements OnInit {
   }
 
   outgoingTransaction(transactionId: string): void {
-    const transaction = this.transactions.find(t => t.id === transactionId);
+    const transaction = this.dataSource.data.find(t => t.id === transactionId);
     if (!transaction) return;
 
     const dialogRef = this.dialog.open(ProductTransactionOutgoingFormComponent, {
       width: '400px',
-      data: { 
-        productId: this.data.productId, 
+      data: {
+        productId: this.data.productId,
         transactionId: transactionId,
         state: transaction.state
       }

@@ -5,16 +5,16 @@
     <button mat-raised-button color="primary" (click)="openMachineForm()" class="add-button">Adicionar Máquina</button>
   </div>
 
-  <table mat-table [dataSource]="machines" class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
     <!-- Colunas de Dados -->
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Nome </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome </th>
       <td mat-cell *matCellDef="let element"> {{element.name}} </td>
     </ng-container>
 
     <ng-container matColumnDef="power">
-      <th mat-header-cell *matHeaderCellDef> Potência </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Potência </th>
       <td mat-cell *matCellDef="let element"> {{element.power | decimalFormat}} CV </td>
     </ng-container>
 

@@ -1,12 +1,13 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { GlazeFiringService } from '../../services/glaze-firing.service';
 import { GlazeFiring } from '../../models/glaze-firing.model';
 import { GlazeFiringFormComponent } from '../glaze-firing-form/glaze-firing-form.component';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { DecimalFormatPipe } from '../../../shared/pipes/decimal-format.pipe';
 
@@ -15,7 +16,7 @@ import { GlazeFiringDetailsComponent } from '../glaze-firing-details/glaze-firin
 @Component({
   selector: 'app-glaze-firing-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, CurrencyPipe, DecimalFormatPipe],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatSortModule, CurrencyPipe, DecimalFormatPipe],
   providers: [DecimalPipe],
   templateUrl: './glaze-firing-list.component.html',
   styleUrls: ['./glaze-firing-list.component.scss']
@@ -23,7 +24,9 @@ import { GlazeFiringDetailsComponent } from '../glaze-firing-details/glaze-firin
 export class GlazeFiringListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'createdAt', 'updatedAt', 'temperature', 'burnTime', 'coolingTime', 'gasConsumption', 'cost', 'actions'];
-  glazeFirings: GlazeFiring[] = [];
+  dataSource = new MatTableDataSource<GlazeFiring>([]);
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private glazeFiringService: GlazeFiringService,
@@ -38,7 +41,8 @@ export class GlazeFiringListComponent implements OnInit {
 
   loadGlazeFirings(): void {
     this.glazeFiringService.getGlazeFirings(this.data.kilnId).subscribe(data => {
-      this.glazeFirings = data;
+      this.dataSource.data = data;
+      this.dataSource.sort = this.sort;
     });
   }
 

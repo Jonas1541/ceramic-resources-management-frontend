@@ -1,24 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProductLineService } from '../../services/product-line.service';
 import { ProductLine } from '../../models/product-line.model';
 import { ProductLineFormComponent } from '../product-line-form/product-line-form.component';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-product-line-list',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule],
+  imports: [CommonModule, MatButtonModule, MatTableModule, MatIconModule, MatDialogModule, MatSortModule],
   templateUrl: './product-line-list.component.html',
   styleUrls: ['./product-line-list.component.scss']
 })
 export class ProductLineListComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'actions'];
-  productLines: ProductLine[] = [];
+  dataSource = new MatTableDataSource<ProductLine>([]);
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private productLineService: ProductLineService, public dialog: MatDialog) { }
 
@@ -28,7 +31,8 @@ export class ProductLineListComponent implements OnInit {
 
   loadProductLines(): void {
     this.productLineService.getProductLines().subscribe(data => {
-      this.productLines = data;
+      this.dataSource.data = data;
+      this.dataSource.sort = this.sort;
     });
   }
 

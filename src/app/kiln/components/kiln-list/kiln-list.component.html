@@ -5,21 +5,21 @@
     <button mat-raised-button color="primary" (click)="openKilnForm()" class="add-button">Adicionar Forno</button>
   </div>
 
-  <table mat-table [dataSource]="kilns" multiTemplateDataRows class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort class="mat-elevation-z8">
 
     <!-- Colunas de Dados -->
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Nome </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome </th>
       <td mat-cell *matCellDef="let element"> {{element.name}} </td>
     </ng-container>
 
     <ng-container matColumnDef="gasConsumptionPerHour">
-      <th mat-header-cell *matHeaderCellDef> Consumo de Gás Por Hora</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Consumo de Gás Por Hora</th>
       <td mat-cell *matCellDef="let element"> {{element.gasConsumptionPerHour | decimalFormat}} kg/h </td>
     </ng-container>
 
     <ng-container matColumnDef="power">
-      <th mat-header-cell *matHeaderCellDef> Potência </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Potência </th>
       <td mat-cell *matCellDef="let element"> {{element.power | decimalFormat}} CV </td>
     </ng-container>
 
@@ -33,7 +33,8 @@
         <button mat-icon-button color="warn" (click)="deleteKiln(element.id)" title="Excluir Forno">
           <mat-icon>delete</mat-icon>
         </button>
-        <button mat-icon-button color="accent" (click)="openBisqueFiringList(element.id)" title="Ver Queimas de Biscoito">
+        <button mat-icon-button color="accent" (click)="openBisqueFiringList(element.id)"
+          title="Ver Queimas de Biscoito">
           <mat-icon>local_fire_department</mat-icon>
         </button>
         <button mat-icon-button color="accent" (click)="openGlazeFiringList(element.id)" title="Ver Queimas de Glasura">
@@ -42,7 +43,8 @@
         <button mat-icon-button (click)="openReport(element.id)" title="Ver Relatório">
           <mat-icon>bar_chart</mat-icon>
         </button>
-        <button mat-icon-button (click)="toggleDetails(element)" [title]="expandedElement === element ? 'Esconder detalhes' : 'Ver máquinas'">
+        <button mat-icon-button (click)="toggleDetails(element)"
+          [title]="expandedElement === element ? 'Esconder detalhes' : 'Ver máquinas'">
           <mat-icon>{{expandedElement === element ? 'expand_less' : 'expand_more'}}</mat-icon>
         </button>
       </td>
@@ -50,29 +52,28 @@
 
     <!-- Linha de Detalhes Expandida -->
     <ng-container matColumnDef="expandedDetail">
-        <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-            <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                <div *ngIf="detailsCache.has(element.id)" class="details-container">
-                    <ng-container *ngIf="detailsCache.get(element.id) as machines">
-                        <div *ngIf="machines.length > 0; else noMachines">
-                            <h4>Máquinas no Forno</h4>
-                            <ul>
-                                <li *ngFor="let machine of machines">{{machine.name}}</li>
-                            </ul>
-                        </div>
-                        <ng-template #noMachines>
-                            <p>Nenhuma máquina associada a este forno.</p>
-                        </ng-template>
-                    </ng-container>
-                </div>
-            </div>
-        </td>
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+        <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div *ngIf="detailsCache.has(element.id)" class="details-container">
+            <ng-container *ngIf="detailsCache.get(element.id) as machines">
+              <div *ngIf="machines.length > 0; else noMachines">
+                <h4>Máquinas no Forno</h4>
+                <ul>
+                  <li *ngFor="let machine of machines">{{machine.name}}</li>
+                </ul>
+              </div>
+              <ng-template #noMachines>
+                <p>Nenhuma máquina associada a este forno.</p>
+              </ng-template>
+            </ng-container>
+          </div>
+        </div>
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let element; columns: displayedColumns;"
-        class="element-row"
-        [class.expanded-row]="expandedElement === element"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="element-row"
+      [class.expanded-row]="expandedElement === element"></tr>
     <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
   </table>
 </div>
